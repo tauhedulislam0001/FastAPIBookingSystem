@@ -9,7 +9,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 import models
 from sqlalchemy.orm import Session
 from typing import Annotated, Optional
-from datetime import date
+from core.helper import insert_image
 
 router = APIRouter()
 
@@ -21,7 +21,6 @@ def get_db():
     finally:
         db.close()
 
-IMAGEDIR = "templates/assets/upload/profile/"
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
@@ -39,18 +38,16 @@ async def register(
     confirm_password: str = Form(...),
     image: UploadFile = File(...),
 ):
-    currentDate = date.today()
     if password != confirm_password:
         return RedirectResponse("/?error=Passwords+do+not+match")
     existing_user = await get_user_by_email(email,db)
     if existing_user:
         return RedirectResponse("/?error=Email+already+exists")
     hashed_password = pwd_context.hash(password)
-    contents = await image.read()
-    filename=f'{currentDate}' +image.filename 
-    with open(f"{IMAGEDIR}{filename}", "wb") as f:
-        f.write(contents)
 
+    dir = "templates/assets/upload/profile/"
+    filename = await insert_image(image, dir)
+    print (f"file:{filename}")
     register = models.Customers(
         name=name,
         email=email,
