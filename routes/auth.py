@@ -9,7 +9,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 import models
 from sqlalchemy.orm import Session
 from typing import Annotated, Optional
-from core.helper import insert_image
+from core.helper import insert_image,get_user_by_email
 
 from pydantic import BaseModel
 import hashlib
@@ -36,9 +36,6 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
-async def get_user_by_email(email: str, db,models):
-    user = db.query(models).filter(models.email == email).first()
-    return user
 
 
 @router.post("/customer/register/submit")
