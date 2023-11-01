@@ -9,14 +9,58 @@ from sqlalchemy.orm import Session
 app = FastAPI()
 models.base.metadata.create_all(bind=engine)
 
-class Customers(BaseModel):
-    choice_text: str
-    is_correct: bool
+class Customers(Base):
+    __tablename__ = "customers"
+    
+    user_type : str
+    name : str 
+    email : str 
+    password : str 
+    access_token : str 
+    refresh_token : str 
+    image : str 
+    status : str 
+    created_at : str 
+    
+    
+class Drivers(Base):
+    __tablename__ = "drivers"
+
+
+    user_type : int 
+    name : str 
+    email : str 
+    password : str 
+    access_token : str 
+    refresh_token : str 
+    image : str 
+    status : int 
+    created_at : str 
     
 
-class QuestionBase(BaseModel):
-    question_text: str
-    choices: List[ChoiceBase]
+class Trips(Base):
+    __tablename__ = "trips"
+
+
+    user_id : int 
+    driver_id : int 
+    car_name : str 
+    location : str 
+    fare : str 
+    status : int 
+    created_at : str 
+    
+    
+
+class Bids(Base):
+    __tablename__ = "bids"
+    
+    id : int 
+    trip_id : int 
+    driver_id : int 
+    amount : int 
+    status : int 
+    created_at : int 
     
 
 def get_db():
