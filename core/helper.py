@@ -8,7 +8,6 @@ async def insert_image(image, dir):
     random_filename = str(uuid.uuid4())
     filename = f'{formatted_date}_{image.filename}' 
 
-    # Check if the directory exists, if not, create it
     if not os.path.exists(dir):
         os.makedirs(dir)
 
