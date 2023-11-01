@@ -53,10 +53,21 @@
                 </div>
             </div>
         </div>
-
+   
         <div class="register-box-wrapper mt-4">
             <div class="container">
                 <div class="row">
+                    <div class="error_div text-center  mt-3">
+                        {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                        {% elif success%}
+                        <div class="alert alert-success" role="alert">
+                            {{ success }}
+                        </div>
+                        {% endif %}
+                    </div>
                     <div class="col-md-6 col-12">
                         <div class="register-wrapper">
                             <div class="register-header bg-primary p-3 rounded-3 mb-2">
@@ -173,11 +184,11 @@
                         <form method="POST" action="/driver-login">
                             <div class="mb-3">
                               <label for="usermail" class="form-label">Email address</label>
-                              <input type="email" class="form-control" name="usermail" id="usermail" aria-describedby="emailHelp">
+                              <input type="email" class="form-control" name="email" id="usermail" aria-describedby="emailHelp">
                             </div>
                             <div class="mb-3">
                               <label for="userPassword" class="form-label">Password</label>
-                              <input type="password" class="form-control" name="userPassword" id="userPassword">
+                              <input type="password" class="form-control" name="password" id="userPassword">
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Login</button>
                         </form>
