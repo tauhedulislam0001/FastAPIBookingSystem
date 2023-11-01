@@ -8,6 +8,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import mapped_column 
 from sqlalchemy.ext.declarative import declarative_base
+import routes.auth
 
 Base = declarative_base()
 
@@ -15,6 +16,7 @@ app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 templates = Jinja2Templates(directory="templates")
 app.mount("/assets", StaticFiles(directory="templates/assets"), name="assets")
+app.include_router(routes.auth.router)
 
 
 class Customers(Base):
@@ -82,7 +84,7 @@ def get_db():
 db_dependency = Depends(get_db)
 
 
-@app.get("/")
+@app.route("/", methods=["GET", "POST"])
 async def read_root(request: Request):
     error_message = request.query_params.get("error")
     success_message = request.query_params.get("success")
