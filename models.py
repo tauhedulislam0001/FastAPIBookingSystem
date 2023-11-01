@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, TIMESTAMP, func
 from database import Base
 
 
@@ -15,7 +15,7 @@ class Customers(Base):
     refresh_token = Column(String(300), default=None)
     image = Column(String(100))
     status = Column(Integer, default=1)
-    created_at = Column(Timestamp)
+    created_at = Column(TIMESTAMP, default=func.now())
     
     
 class Drivers(Base):
@@ -30,7 +30,7 @@ class Drivers(Base):
     refresh_token = Column(String(300), default=None)
     image = Column(String(100))
     status = Column(Integer, default=1)
-    created_at = Column(Timestamp)
+    created_at = Column(TIMESTAMP, default=func.now())
     
 
 class Trips(Base):
@@ -40,10 +40,11 @@ class Trips(Base):
     user_id = Column(Integer)
     driver_id = Column(Integer, nullable=True)
     car_name = Column(String(50))
+    pick_up_location = Column(String(100))
     location = Column(String(100))
     fare = Column(String(500), nullable=True)
     status = Column(Integer, default=1)
-    created_at = Column(Timestamp)
+    created_at = Column(TIMESTAMP, default=func.now())
     
     
 
@@ -55,6 +56,6 @@ class Bids(Base):
     driver_id = Column(Integer, nullable=True)
     amount = Column(Integer)
     status = Column(Integer, default=1)
-    created_at = Column(Timestamp)
+    created_at = Column(TIMESTAMP, default=func.now())
     
 
