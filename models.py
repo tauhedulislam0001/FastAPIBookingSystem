@@ -40,6 +40,7 @@ class Trips(Base):
     user_id = Column(Integer)
     driver_id = Column(Integer, nullable=True)
     car_name = Column(String(50))
+    pick_up_location = Column(String(100))
     location = Column(String(100))
     fare = Column(String(500), nullable=True)
     status = Column(Integer, default=1)
