@@ -35,14 +35,7 @@ class Drivers(Base):
     created_at = Column(TIMESTAMP, default=func.now())
     
 
-class CustomerLogin(BaseModel):
-    email: str
-    password: str
 
-class DriverLogin(BaseModel):
-    email: str
-    password: str
-    
 
 class Trips(Base):
     __tablename__ = "trips"
