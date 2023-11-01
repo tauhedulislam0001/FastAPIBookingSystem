@@ -21,6 +21,7 @@ class Customers(Base):
 class Drivers(Base):
     __tablename__ = "drivers"
     
+    
     id = Column(Integer, primary_key=True, index=True)
     user_type = Column(Integer)
     name = Column(String(50))
@@ -35,6 +36,7 @@ class Drivers(Base):
 
 class Trips(Base):
     __tablename__ = "trips"
+    
     
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer)
