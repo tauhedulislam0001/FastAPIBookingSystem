@@ -9,7 +9,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 import models
 from sqlalchemy.orm import Session
 from typing import Annotated, Optional
-from core.helper import insert_image
+from core.helper import insert_image,get_user_by_email
 
 from pydantic import BaseModel
 import hashlib
@@ -36,9 +36,6 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
-async def get_user_by_email(email: str, db,models):
-    user = db.query(models).filter(models.email == email).first()
-    return user
 
 
 @router.post("/customer/register/submit")
@@ -55,8 +52,8 @@ async def register(
     existing_user = await get_user_by_email(email,db,models.Customers)
     if existing_user:
         return RedirectResponse("/?success_customer=Email+already+exists")
-    hashed_password = pwd_context.hash(password)
-
+    # hashed_password = pwd_context.hash(password)
+    hashed_password = hashlib.md5(password.encode()).hexdigest()
     dir = "templates/assets/upload/profile/"
     filename = await insert_image(image, dir)
     print (f"file:{filename}")
@@ -86,7 +83,8 @@ async def driver_register(
     existing_user = await get_user_by_email(email,db,models.Drivers)
     if existing_user:
         return RedirectResponse("/?error_driver=Email+already+exists")
-    hashed_password = pwd_context.hash(password)
+    # hashed_password = pwd_context.hash(password)
+    hashed_password = hashlib.md5(password.encode()).hexdigest()
 
     dir = "templates/assets/upload/profile/"
     filename = await insert_image(image, dir)
@@ -120,15 +118,15 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
 #login user
 @router.post("/driver-login", status_code=status.HTTP_200_OK, tags=["Authentication"])
 async def login_user(user: models.DriverLogin, db:db_dependency):
-    db_user = db.query(models.User).filter(models.User.username == user.username).first()
+    db_user = db.query(models.Drivers).filter(models.Drivers.email == user.email).first()
     if db_user and db_user.password == hashlib.md5(user.password.encode()).hexdigest():
         if db_user.status == 1:
                 # If the user is authenticated, generate an access token
                 access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-                access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
+                access_token = create_access_token(data={"sub": user.email}, expires_delta=access_token_expires)
                 
                 # Update the access token in the database
-                db_user = db.query(models.User).filter(models.User.username == user.username).first()
+                db_user = db.query(models.Drivers).filter(models.Drivers.email == user.email).first()
                 db_user.access_token = access_token
                 db.commit()
                 
@@ -141,15 +139,15 @@ async def login_user(user: models.DriverLogin, db:db_dependency):
 #login user
 @router.post("/customer-login", status_code=status.HTTP_200_OK, tags=["Authentication"])
 async def login_user(user:  models.CustomerLogin, db:db_dependency):
-    db_user = db.query(models.User).filter(models.User.username == user.username).first()
+    db_user = db.query(models.Customers).filter(models.Customers.email == user.email).first()
     if db_user and db_user.password == hashlib.md5(user.password.encode()).hexdigest():
         if db_user.status == 1:
                 # If the user is authenticated, generate an access token
                 access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-                access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
+                access_token = create_access_token(data={"sub": user.email}, expires_delta=access_token_expires)
                 
                 # Update the access token in the database
-                db_user = db.query(models.User).filter(models.User.username == user.username).first()
+                db_user = db.query(models.Customers).filter(models.Customers.email == user.email).first()
                 db_user.access_token = access_token
                 db.commit()
                 
