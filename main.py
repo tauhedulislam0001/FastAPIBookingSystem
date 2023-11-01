@@ -4,15 +4,15 @@ from typing import List, Annotated
 import models
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
-
+from database import Base
 
 app = FastAPI()
-models.base.metadata.create_all(bind=engine)
+models.Base.metadata.create_all(bind=engine)
 
 class Customers(Base):
     __tablename__ = "customers"
     
-    user_type : str
+    user_type : int
     name : str 
     email : str 
     password : str 
