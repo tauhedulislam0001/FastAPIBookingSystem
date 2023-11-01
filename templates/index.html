@@ -66,22 +66,44 @@
                 </div>
             </div>
         </div>
-
+   
         <div class="register-box-wrapper mt-4">
             <div class="container">
                 <div class="row">
+                    <div class="error_div text-center  mt-3">
+                        {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                        {% elif success%}
+                        <div class="alert alert-success" role="alert">
+                            {{ success }}
+                        </div>
+                        {% endif %}
+                    </div>
                     <div class="col-md-6 col-12">
                         <div class="register-wrapper">
                             <div class="register-header bg-primary p-3 rounded-3 mb-2">
                                 <h5 class="text-white m-0">Driver Register</h5>
                             </div>
-                            <form action="" method="post" class="p-3">
+                            <div class="error_div  mt-3">
+                                {% if error_driver %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ error_driver }}
+                                </div>
+                                {% elif success_driver %}
+                                <div class="alert alert-success" role="alert">
+                                    {{ success_driver }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <form action="/driver/register/submit" method="post" enctype="multipart/form-data" class="p-3">
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" name="name" id="name" placeholder="Driver Name ... ">
                                     <label for="name">Name</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="email" class="form-control" name="emailAddress" id="emailAddress" placeholder="name@example.com">
+                                    <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com">
                                     <label for="name">Email Address</label>
                                 </div>
                                 <div class="form-floating mb-3">
@@ -89,8 +111,8 @@
                                     <label for="password">Password</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="password" class="form-control" name="cpassword" id="cpassword" placeholder="*********">
-                                    <label for="cpassword">Confirm Password</label>
+                                    <input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="*********">
+                                    <label for="confirm_password">Confirm Password</label>
                                 </div>
                                 <div class="form-group mb-3">
                                     <input type="file" class="form-control" name="image" id="image" >
@@ -104,13 +126,24 @@
                             <div class="register-header bg-success p-3 rounded-3 mb-2">
                                 <h5 class="text-white m-0">Customer Register</h5>
                             </div>
-                            <form action="" method="post" class="p-3">
+                            <div class="error_div  mt-3">
+                                {% if error_customer %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ error_customer }}
+                                </div>
+                                {% elif success_customer %}
+                                <div class="alert alert-success" role="alert">
+                                    {{ success_customer }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <form action="/customer/register/submit" method="post" enctype="multipart/form-data" class="p-3">
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" name="name" id="name" placeholder="Driver Name ... ">
                                     <label for="name">Name</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="email" class="form-control" name="emailAddress" id="emailAddress" placeholder="name@example.com">
+                                    <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com">
                                     <label for="name">Email Address</label>
                                 </div>
                               <div class="form-floating mb-3">
@@ -118,8 +151,8 @@
                                     <label for="password">Password</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="password" class="form-control" name="cpassword" id="cpassword" placeholder="*********">
-                                    <label for="cpassword">Confirm Password</label>
+                                    <input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="*********">
+                                    <label for="confirm_password">Confirm Password</label>
                                 </div>
                                 <div class="form-group mb-3">
                                     <input type="file" class="form-control" name="image" id="image" placeholder="name@example.com">
@@ -161,14 +194,14 @@
                 </div>
                 <div class="modal-body">
                     <div class="driver-login-form-wrapper">
-                        <form method="post" action="/">
+                        <form method="POST" action="/driver-login">
                             <div class="mb-3">
                               <label for="usermail" class="form-label">Email address</label>
-                              <input type="email" class="form-control" name="usermail" id="usermail" aria-describedby="emailHelp">
+                              <input type="email" class="form-control" name="email" id="usermail" aria-describedby="emailHelp">
                             </div>
                             <div class="mb-3">
                               <label for="userPassword" class="form-label">Password</label>
-                              <input type="password" class="form-control" name="userPassword" id="userPassword">
+                              <input type="password" class="form-control" name="password" id="userPassword">
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Login</button>
                         </form>
@@ -189,14 +222,14 @@
                 </div>
                 <div class="modal-body">
                     <div class="customer-login-form-wrapper">
-                        <form method="post" action="/">
+                        <form method="post" action="/customer-login">
                             <div class="mb-3">
                               <label for="usermail" class="form-label">Email address</label>
-                              <input type="email" class="form-control" name="usermail" id="usermail" aria-describedby="emailHelp">
+                              <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp">
                             </div>
                             <div class="mb-3">
                               <label for="userPassword" class="form-label">Password</label>
-                              <input type="password" class="form-control" name="userPassword" id="userPassword">
+                              <input type="password" class="form-control" name="password" id="userPassword">
                             </div>
                             <button type="submit" class="btn btn-success w-100">Login</button>
                         </form>
