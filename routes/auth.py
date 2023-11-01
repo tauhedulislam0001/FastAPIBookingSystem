@@ -118,15 +118,15 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
 #login user
 @router.post("/driver-login", status_code=status.HTTP_200_OK, tags=["Authentication"])
 async def login_user(user: models.DriverLogin, db:db_dependency):
-    db_user = db.query(models.User).filter(models.User.username == user.username).first()
+    db_user = db.query(models.Drivers).filter(models.Drivers.email == user.email).first()
     if db_user and db_user.password == hashlib.md5(user.password.encode()).hexdigest():
         if db_user.status == 1:
                 # If the user is authenticated, generate an access token
                 access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-                access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
+                access_token = create_access_token(data={"sub": user.email}, expires_delta=access_token_expires)
                 
                 # Update the access token in the database
-                db_user = db.query(models.User).filter(models.User.username == user.username).first()
+                db_user = db.query(models.Drivers).filter(models.Drivers.email == user.email).first()
                 db_user.access_token = access_token
                 db.commit()
                 
@@ -139,15 +139,15 @@ async def login_user(user: models.DriverLogin, db:db_dependency):
 #login user
 @router.post("/customer-login", status_code=status.HTTP_200_OK, tags=["Authentication"])
 async def login_user(user:  models.CustomerLogin, db:db_dependency):
-    db_user = db.query(models.User).filter(models.User.username == user.username).first()
+    db_user = db.query(models.Customers).filter(models.Customers.email == user.email).first()
     if db_user and db_user.password == hashlib.md5(user.password.encode()).hexdigest():
         if db_user.status == 1:
                 # If the user is authenticated, generate an access token
                 access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-                access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
+                access_token = create_access_token(data={"sub": user.email}, expires_delta=access_token_expires)
                 
                 # Update the access token in the database
-                db_user = db.query(models.User).filter(models.User.username == user.username).first()
+                db_user = db.query(models.Customers).filter(models.Customers.email == user.email).first()
                 db_user.access_token = access_token
                 db.commit()
                 
