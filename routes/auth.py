@@ -16,7 +16,6 @@ import hashlib
 from jose import JWTError, jwt
 import secrets
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi.security import OAuth2PasswordBearer
 templates = Jinja2Templates(directory="templates")
 
 SECRET_KEY = secrets.token_hex(32)  # Generate a random secret key with 32 bytes
@@ -117,58 +116,75 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
 
 #login user
 @router.post("/driver-login", status_code=status.HTTP_200_OK, tags=["Authentication"])
-async def login_user(user: models.DriverLogin, db:db_dependency):
-    db_user = db.query(models.Drivers).filter(models.Drivers.email == user.email).first()
-    if db_user and db_user.password == hashlib.md5(user.password.encode()).hexdigest():
+async def customer_login_user(    
+    db:db_dependency,
+    email: str = Form(...),
+    password: str = Form(...)):
+    db_user = db.query(models.Drivers).filter(models.Drivers.email == email).first()
+    if db_user and db_user.password == hashlib.md5(password.encode()).hexdigest():
         if db_user.status == 1:
                 # If the user is authenticated, generate an access token
                 access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-                access_token = create_access_token(data={"sub": user.email}, expires_delta=access_token_expires)
+                access_token = create_access_token(data={"sub": email}, expires_delta=access_token_expires)
                 
                 # Update the access token in the database
-                db_user = db.query(models.Drivers).filter(models.Drivers.email == user.email).first()
+                db_user = db.query(models.Drivers).filter(models.Drivers.email == email).first()
                 db_user.access_token = access_token
                 db.commit()
-                
+                response = RedirectResponse("/?success=Login+successfully")
+                response.set_cookie(key="access_token", value=access_token, expires=access_token_expires)
+                return response
                 # Return the token in the response
-                return {"access_token": access_token, "token_type": "bearer", "user_type":1}
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Account is banned")
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
+                # return {"access_token": access_token, "token_type": "bearer", "user_type":1}
+        return RedirectResponse("/?error=Account+is+banned")
+    return RedirectResponse("/?error=Invalid+username+or+password")
 
 
 #login user
 @router.post("/customer-login", status_code=status.HTTP_200_OK, tags=["Authentication"])
-async def login_user(user:  models.CustomerLogin, db:db_dependency):
-    db_user = db.query(models.Customers).filter(models.Customers.email == user.email).first()
-    if db_user and db_user.password == hashlib.md5(user.password.encode()).hexdigest():
+async def drover_login_user(
+    db:db_dependency,
+    email: str = Form(...),
+    password: str = Form(...)):
+    db_user = db.query(models.Customers).filter(models.Customers.email == email).first()
+    if db_user and db_user.password == hashlib.md5(password.encode()).hexdigest():
         if db_user.status == 1:
                 # If the user is authenticated, generate an access token
                 access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-                access_token = create_access_token(data={"sub": user.email}, expires_delta=access_token_expires)
+                access_token = create_access_token(data={"sub": email}, expires_delta=access_token_expires)
                 
                 # Update the access token in the database
-                db_user = db.query(models.Customers).filter(models.Customers.email == user.email).first()
+                db_user = db.query(models.Customers).filter(models.Customers.email == email).first()
                 db_user.access_token = access_token
                 db.commit()
-                
+                response = RedirectResponse("/?success=Login+successfully")
+                response.set_cookie(key="access_token", value=access_token, expires=access_token_expires)
+                return response
                 # Return the token in the response
-                return {"access_token": access_token, "token_type": "bearer", "user_type":1}
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Account is banned")
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
+                # return {"access_token": access_token, "token_type": "bearer", "user_type":1}
+        return RedirectResponse("/?error=Account+is+banned")
+    return RedirectResponse("/?error=Invalid+username+or+password")
+    # raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
 
 
-# logout
-@router.post('/driver-logout', status_code=status.HTTP_101_SWITCHING_PROTOCOLS, tags=["Authentication"])
-async def logout_user(user:  models.CustomerLogin, db: db_dependency):
-    db_user = db.query(models.User).filter(models.User.username == user.username).first()
-    db_user.access_token = None
-    db.commit()
-    return {"message":"User logged out successfully"}
+# # logout
+# @router.post('/driver-logout', status_code=status.HTTP_101_SWITCHING_PROTOCOLS, tags=["Authentication"])
+# async def logout_user(user:  models.CustomerLogin, db: db_dependency):
+#     db_user = db.query(models.User).filter(models.User.username == user.username).first()
+#     db_user.access_token = None
+#     db.commit()
+#     return {"message":"User logged out successfully"}
 
 
-@router.post('/customer-logout', status_code=status.HTTP_101_SWITCHING_PROTOCOLS, tags=["Authentication"])
-async def logout_user(user:  models.DriverLogin, db: db_dependency):
-    db_user = db.query(models.User).filter(models.User.username == user.username).first()
-    db_user.access_token = None
-    db.commit()
-    return {"message":"User logged out successfully"}
+# @router.post('/customer-logout', status_code=status.HTTP_101_SWITCHING_PROTOCOLS, tags=["Authentication"])
+# async def logout_user(user:  models.DriverLogin, db: db_dependency):
+#     db_user = db.query(models.User).filter(models.User.username == user.username).first()
+#     db_user.access_token = None
+#     db.commit()
+#     return {"message":"User logged out successfully"}
+
+@router.post("/logout")
+async def logout(request: Request):
+    response = RedirectResponse("/?success=Logged+out")
+    response.delete_cookie("access_token")
+    return response
