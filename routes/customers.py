@@ -5,7 +5,6 @@ from database import database, connect_to_database, close_database_connection
 from fastapi.staticfiles import StaticFiles
 
 
-
 customer = APIRouter()
 
 templates = Jinja2Templates(directory="templates")
