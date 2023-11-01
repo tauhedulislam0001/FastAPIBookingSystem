@@ -86,9 +86,11 @@ db_dependency = Depends(get_db)
 
 @app.route("/", methods=["GET", "POST"])
 async def read_root(request: Request):
-    error_message = request.query_params.get("error")
-    success_message = request.query_params.get("success")
-    return templates.TemplateResponse("index.html", {"request": request, "error": error_message, "success": success_message})
+    error_driver = request.query_params.get("error_driver")
+    error_customer = request.query_params.get("error_customer")
+    success_customer = request.query_params.get("success_customer")
+    success_driver = request.query_params.get("success_driver")
+    return templates.TemplateResponse("index.html", {"request": request, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
 
 
 if __name__ == "__main__":
