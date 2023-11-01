@@ -1,5 +1,6 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, TIMESTAMP, func
 from database import Base
+from pydantic import BaseModel, Field, EmailStr
 
 
 class Customers(Base):
@@ -32,6 +33,15 @@ class Drivers(Base):
     image = Column(String(100))
     status = Column(Integer, default=1)
     created_at = Column(TIMESTAMP, default=func.now())
+    
+
+class CustomerLogin(BaseModel):
+    email: str
+    password: str
+
+class DriverLogin(BaseModel):
+    email: str
+    password: str
     
 
 class Trips(Base):
