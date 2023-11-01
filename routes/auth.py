@@ -52,8 +52,8 @@ async def register(
     existing_user = await get_user_by_email(email,db,models.Customers)
     if existing_user:
         return RedirectResponse("/?success_customer=Email+already+exists")
-    hashed_password = pwd_context.hash(password)
-
+    # hashed_password = pwd_context.hash(password)
+    hashed_password = hashlib.md5(password.encode()).hexdigest()
     dir = "templates/assets/upload/profile/"
     filename = await insert_image(image, dir)
     print (f"file:{filename}")
@@ -83,7 +83,8 @@ async def driver_register(
     existing_user = await get_user_by_email(email,db,models.Drivers)
     if existing_user:
         return RedirectResponse("/?error_driver=Email+already+exists")
-    hashed_password = pwd_context.hash(password)
+    # hashed_password = pwd_context.hash(password)
+    hashed_password = hashlib.md5(password.encode()).hexdigest()
 
     dir = "templates/assets/upload/profile/"
     filename = await insert_image(image, dir)
