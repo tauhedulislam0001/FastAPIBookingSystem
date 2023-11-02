@@ -26,7 +26,12 @@
                                 <ul class="dropdown-menu  dropdown-menu-end fade">
                                     <li><a class="dropdown-item" href="#">Profile</a></li>
                                     <li><a class="dropdown-item" href="#">Dashboard</a></li>
-                                    <li><a class="dropdown-item bg-warning text-white" href="#"><b>Logout</b></a></li>
+                                    <li>
+                                        <form id="logoutForm" action="/logout" method="post" style="display:none;">
+                                            <input type="hidden" name="_method" value="POST">
+                                        </form>
+                                        <a href="#" class="dropdown-item text-white" onclick="document.getElementById('logoutForm').submit();"><b>Logout</b></a></a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
