@@ -4,3 +4,8 @@ header{
     box-shadow: 3px 8px 11px -11px #000;
     width: 100%;
 }
+.dropdown.user-dropdown img.user-image {
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
+}
