@@ -10,6 +10,7 @@ import models
 from sqlalchemy.orm import Session
 from typing import Annotated, Optional
 from core.helper import insert_image,get_user_by_email
+from core.utils import create_access_token,create_refresh_token
 
 from pydantic import BaseModel
 import hashlib
@@ -18,9 +19,7 @@ import secrets
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 templates = Jinja2Templates(directory="templates")
 
-SECRET_KEY = secrets.token_hex(32)  # Generate a random secret key with 32 bytes
-ALGORITHM = "HS256" # The algorithm used to sign the tokens
-ACCESS_TOKEN_EXPIRE_MINUTES = 30  # Token expiration time in minutes
+from core.utils import ACCESS_TOKEN_EXPIRE_MINUTES,REFRESH_TOKEN_EXPIRE_MINUTES
 
 
 router = APIRouter()
@@ -47,10 +46,10 @@ async def register(
     image: UploadFile = File(...),
 ):
     if password != confirm_password:
-        return RedirectResponse("/?success_customer=Passwords+do+not+match")
+        return RedirectResponse("/?success_customer=Passwords+do+not+match",302)
     existing_user = await get_user_by_email(email,db,models.Customers)
     if existing_user:
-        return RedirectResponse("/?success_customer=Email+already+exists")
+        return RedirectResponse("/?success_customer=Email+already+exists",302)
     # hashed_password = pwd_context.hash(password)
     hashed_password = hashlib.md5(password.encode()).hexdigest()
     dir = "templates/assets/upload/profile/"
@@ -65,7 +64,7 @@ async def register(
     db.add(register)
     db.commit()
     db.refresh(register)
-    return RedirectResponse("/?success_customer=Customer+Registration+successfully")
+    return RedirectResponse("/?success_customer=Customer+Registration+successfully",302)
 
 
 @router.post("/driver/register/submit")
@@ -78,10 +77,10 @@ async def driver_register(
     image: UploadFile = File(...),
 ):
     if password != confirm_password:
-        return RedirectResponse("/?error_driver=Passwords+do+not+match")
+        return RedirectResponse("/?error_driver=Passwords+do+not+match",302)
     existing_user = await get_user_by_email(email,db,models.Drivers)
     if existing_user:
-        return RedirectResponse("/?error_driver=Email+already+exists")
+        return RedirectResponse("/?error_driver=Email+already+exists",302)
     # hashed_password = pwd_context.hash(password)
     hashed_password = hashlib.md5(password.encode()).hexdigest()
 
@@ -97,21 +96,10 @@ async def driver_register(
     db.add(register)
     db.commit()
     db.refresh(register)
-    return RedirectResponse("/?success_driver=Driver+Registration+successfully")
+    return RedirectResponse("/?success_driver=Driver+Registration+successfully",302)
 
 
 
-
-# create login system
-def create_access_token(data: dict, expires_delta: timedelta = None):
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=15)  # Default expiration time
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
 
 
 #login user
@@ -125,19 +113,24 @@ async def customer_login_user(
         if db_user.status == 1:
                 # If the user is authenticated, generate an access token
                 access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-                access_token = create_access_token(data={"sub": email}, expires_delta=access_token_expires)
+                refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
+                access_token = create_access_token(db_user.email)
+                refresh_token = create_refresh_token(db_user.email)
                 
                 # Update the access token in the database
-                db_user = db.query(models.Drivers).filter(models.Drivers.email == email).first()
                 db_user.access_token = access_token
                 db.commit()
-                response = RedirectResponse("/?success=Login+successfully")
+                print (f"db_user:{db_user}")
+                response = RedirectResponse("/?success=Login+successfully", 302)
                 response.set_cookie(key="access_token", value=access_token, expires=access_token_expires)
+                response.set_cookie(key="refresh_token", value=refresh_token, expires=refresh_token_expires)
                 return response
-                # Return the token in the response
-                # return {"access_token": access_token, "token_type": "bearer", "user_type":1}
-        return RedirectResponse("/?error=Account+is+banned")
-    return RedirectResponse("/?error=Invalid+username+or+password")
+                
+                # return {
+                # "access_token": create_access_token(db_user.email),
+                # "refresh_token": create_refresh_token(db_user.email),}
+        return RedirectResponse("/?error=Account+is+banned",302)
+    return RedirectResponse("/?error=Invalid+username+or+password",302)
 
 
 #login user
@@ -151,19 +144,22 @@ async def drover_login_user(
         if db_user.status == 1:
                 # If the user is authenticated, generate an access token
                 access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-                access_token = create_access_token(data={"sub": email}, expires_delta=access_token_expires)
+                refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
+                access_token = create_access_token(db_user.email)
+                refresh_token = create_refresh_token(db_user.email)
                 
                 # Update the access token in the database
-                db_user = db.query(models.Customers).filter(models.Customers.email == email).first()
                 db_user.access_token = access_token
                 db.commit()
-                response = RedirectResponse("/?success=Login+successfully")
+                print (f"db_user:{db_user}")
+                response = RedirectResponse("/?success=Login+successfully",302)
                 response.set_cookie(key="access_token", value=access_token, expires=access_token_expires)
+                response.set_cookie(key="refresh_token", value=refresh_token, expires=refresh_token_expires)
                 return response
                 # Return the token in the response
                 # return {"access_token": access_token, "token_type": "bearer", "user_type":1}
-        return RedirectResponse("/?error=Account+is+banned")
-    return RedirectResponse("/?error=Invalid+username+or+password")
+        return RedirectResponse("/?error=Account+is+banned",302)
+    return RedirectResponse("/?error=Invalid+username+or+password",302)
     # raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
 
 
@@ -185,6 +181,9 @@ async def drover_login_user(
 
 @router.post("/logout")
 async def logout(request: Request):
-    response = RedirectResponse("/?success=Logged+out")
+    response = RedirectResponse(
+        '/?success=Logged+out', 302
+    )
+    # response = RedirectResponse("/")
     response.delete_cookie("access_token")
     return response
