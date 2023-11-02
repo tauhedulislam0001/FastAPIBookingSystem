@@ -8,7 +8,7 @@ class Customers(Base):
     
     
     id = Column(Integer, primary_key=True, index=True)
-    user_type = Column(Integer)
+    user_type = Column(Integer,default=1)
     name = Column(String(50))
     email = Column(String(100))
     password = Column(String(500))
@@ -24,7 +24,7 @@ class Drivers(Base):
     
     
     id = Column(Integer, primary_key=True, index=True)
-    user_type = Column(Integer)
+    user_type = Column(Integer,default=2)
     name = Column(String(50))
     email = Column(String(100))
     password = Column(String(500))

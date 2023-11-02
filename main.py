@@ -10,6 +10,8 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import mapped_column 
 from sqlalchemy.ext.declarative import declarative_base
 import routes.auth
+import routes.drivers
+import routes.customers
 from jose import JWTError, jwt
 from core.utils import ALGORITHM,JWT_SECRET_KEY,decode_token,TokenDecodeError
 from core.helper import get_user_by_email
@@ -20,7 +22,10 @@ models.Base.metadata.create_all(bind=engine)
 templates = Jinja2Templates(directory="templates")
 app.mount("/assets", StaticFiles(directory="templates/assets"), name="assets")
 app.include_router(routes.auth.router)
+from middleware.CheckUser import UserCheck
 
+app.include_router(routes.drivers.driver)
+app.include_router(routes.customers.customer)
 
 class Customers(Base):
     __tablename__ = "customers"
@@ -100,8 +105,7 @@ async def read_root(request: Request,db:Annotated[Session, Depends(get_db)]):
         user = await decode_token(token, db)
         return templates.TemplateResponse("index.html", {"user": user,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
     except TokenDecodeError as e:
-        return templates.TemplateResponse("index.html", {"request": request,"error": e.message, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
-
+        return templates.TemplateResponse("index.html", {"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
 
 
 

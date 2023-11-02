@@ -18,29 +18,46 @@
                             <img src="https://garibook.com/dashboard/new-ui/assets/image/icon/logo.png" alt="Logo" width="200" class="d-inline-block align-text-top">
                         </a>
                         <div class="d-flex" >
+                            {% if user %}
                             <div class="dropdown user-dropdown">
                                 <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <img class="user-image" src="https://i.postimg.cc/s2HBGrpK/Profile-Picture.png" >
                                 </a>
 
                                 <ul class="dropdown-menu  dropdown-menu-end fade">
-                                    <li><a class="dropdown-item" href="#">Profile</a></li>
-                                    <li><a class="dropdown-item" href="#">Dashboard</a></li>
+                                    <li>
+                                        {% if user.user_type ==1 %}
+                                             <a class="dropdown-item" href="/customer">Dashboard</a>
+                                        {% elif user.user_type ==2 %}
+                                            <a class="dropdown-item" href="/driver">Dashboard</a>
+
+                                         {% endif %}
+                                    </li>
                                     <li>
                                         <form id="logoutForm" action="/logout" method="post" style="display:none;">
                                             <input type="hidden" name="_method" value="POST">
                                         </form>
-                                        <a href="#" class="dropdown-item text-white" onclick="document.getElementById('logoutForm').submit();"><b>Logout</b></a></a>
+                                        <a href="#" class="dropdown-item" onclick="document.getElementById('logoutForm').submit();"><b>Logout</b></a></a>
                                     </li>
                                 </ul>
                             </div>
+                            {% endif %}
+                            
                         </div>
                     </div>
                 </nav>
             </div>
         </div>
     </header>
-
+    {% if user %}
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="text-center p-5">Welcome  {{ user.name }}</h1>
+                </div>
+            </div>
+        </div>
+    {% else %}
     <div class="main-wrapper mt-5">
 
         <div class="login-box-wrapper">
@@ -173,7 +190,7 @@
 
     </div>
 
-
+    {% endif %}
 
 
     <footer class="bg-primary w-100 py-4 text-center">
