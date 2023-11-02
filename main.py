@@ -23,8 +23,8 @@ templates = Jinja2Templates(directory="templates")
 app.mount("/assets", StaticFiles(directory="templates/assets"), name="assets")
 app.include_router(routes.auth.router)
 from middleware.CheckUser import UserCheck
-from core.socket_manager import get_socketio_asgi_app
 # Start Socket 
+from core.socket_manager import get_socketio_asgi_app
 from core.socket_io import sio
 
 sio_asgi_app = get_socketio_asgi_app(app)
@@ -104,7 +104,6 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 @app.get("/")
 async def read_root(request: Request,db:Annotated[Session, Depends(get_db)]):
-    await sio.emit("response", "hello everyone")
     error = request.query_params.get("error")
     success = request.query_params.get("success")
     error_driver = request.query_params.get("error_driver")
