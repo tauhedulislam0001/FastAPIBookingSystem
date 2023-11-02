@@ -25,6 +25,16 @@ templates = Jinja2Templates(directory="templates")
 app.mount("/assets", StaticFiles(directory="templates/assets"), name="assets")
 app.include_router(routes.auth.router)
 from middleware.CheckUser import UserCheck
+# Start Socket 
+from core.socket_manager import get_socketio_asgi_app
+from core.socket_io import sio
+
+sio_asgi_app = get_socketio_asgi_app(app)
+app.add_route("/socket.io/", route=sio_asgi_app, methods=["GET", "POST"])
+app.add_websocket_route("/socket.io/", sio_asgi_app)
+
+
+# End Sokcet
 
 app.include_router(routes.drivers.driver)
 app.include_router(routes.customers.customer)
