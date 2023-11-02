@@ -16,7 +16,6 @@ import hashlib
 from jose import JWTError, jwt
 import secrets
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi.security import OAuth2PasswordBearer
 templates = Jinja2Templates(directory="templates")
 
 SECRET_KEY = secrets.token_hex(32)  # Generate a random secret key with 32 bytes
@@ -137,8 +136,8 @@ async def customer_login_user(
                 return response
                 # Return the token in the response
                 # return {"access_token": access_token, "token_type": "bearer", "user_type":1}
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Account is banned")
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
+        return RedirectResponse("/?error=Account+is+banned")
+    return RedirectResponse("/?error=Invalid+username+or+password")
 
 
 #login user
