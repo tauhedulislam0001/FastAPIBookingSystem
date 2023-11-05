@@ -41,17 +41,16 @@ class Drivers(Base):
 class Trips(Base):
     __tablename__ = "trips"
     
-    
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer)
-    driver_id = Column(Integer, nullable=True)
+    driver_id = Column(Integer, ForeignKey('drivers.id'), nullable=True)
     car_name = Column(String(50))
     pick_up_location = Column(String(100))
     location = Column(String(100))
     fare = Column(String(500), nullable=True)
     status = Column(Integer, default=1)
     created_at = Column(TIMESTAMP, default=func.now())
-    
+    driver = relationship('Drivers', backref='trips')
     
 
 class Bids(Base):
