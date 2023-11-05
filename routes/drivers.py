@@ -41,7 +41,7 @@ async def read_root(request: Request,db:Annotated[Session, Depends(get_db)]):
 
 @driver.get("/trips/get")
 async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)]):
-    trips = db.query(models.Trips).order_by(models.Trips.id.desc()).all()
+    trips = db.query(models.Trips).order_by(models.Trips.id.desc()).filter(models.Trips.fare.is_(None)).all()
     return trips
 
 @driver.get("/bid/submit/{id}")

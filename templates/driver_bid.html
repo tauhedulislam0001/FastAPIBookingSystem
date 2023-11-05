@@ -85,7 +85,8 @@
                                 </ul>
                             </div>
                             <div class="card-footer">
-                                {% if (trips.fare ==null) %}
+                                
+                                {% if (trips.fare ==None) %}
                                 <form action="/bid-submit/{{trips.id}}" method="post">
                                     <div class="input-group">
                                         <input id="btn-input" name="amount" type="number" class="form-control input-sm"
@@ -142,7 +143,10 @@
             var chatList = $('.chat');
             chatList.empty();
             BidGet();
-
+        });        
+        socket.on("TripAccept{{trips.id}}", function (data) {
+            console.log(data);
+            location.reload();
         });
         BidGet();
         function displayBidInfo(bid, user) {

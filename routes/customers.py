@@ -139,5 +139,6 @@ async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(g
         TripAccept.fare=bid.amount
         db.commit()
         db.refresh(TripAccept)
-        return RedirectResponse(url=f"/customer?success_customer=Trips+Accept+successfully", status_code=302)
+        await sio.emit("TripAccept" + str(bid.trip_id), 'Trip Accepted' + str(bid.trip_id))
+        return RedirectResponse(url=f"/trip/accept?success_customer=Trips+Accept+successfully", status_code=302)
     
