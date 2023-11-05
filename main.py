@@ -78,6 +78,7 @@ class Trips(Base):
     driver_id = mapped_column(Integer)
     car_name = mapped_column(String)
     location = mapped_column(String)
+    pick_up_location = mapped_column(String)
     fare = mapped_column(String)
     status = mapped_column(Integer)
     created_at = mapped_column(String)

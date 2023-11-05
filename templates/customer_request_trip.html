@@ -60,7 +60,7 @@
                                 <div class="row">
                                     <div class="col-md-4 col-sm-6 col-12">
                                         <div class="form-floating ">
-                                            <input type="text" class="form-control" name="pick_up_location"
+                                            <input required type="text" class="form-control" name="pick_up_location"
                                                 id="pickPoint" placeholder="Pick Up Location">
 
                                             <label for="pickPoint">Pick Up Location</label>
@@ -68,7 +68,7 @@
                                     </div>
                                     <div class="col-md-4 col-sm-6 col-12">
                                         <div class="form-floating ">
-                                            <select class="form-select" name="car_name" id="carType">
+                                            <select required class="form-select" name="car_name" id="carType">
                                                 <option selected>Choose a Car Type</option>
                                                 <option value="Sedan">Sedan</option>
                                                 <option value="Noah">Noah</option>
@@ -79,7 +79,7 @@
                                     </div>
                                     <div class="col-md-4 col-sm-6 col-12">
                                         <div class="form-floating">
-                                            <input type="text" class="form-control" name="location"
+                                            <input required type="text" class="form-control" name="location"
                                                 id="destinationPoint" placeholder="Destination">
                                             <label for="destinationPoint">Destination </label>
                                         </div>
@@ -171,13 +171,15 @@
                     } else {
                         for (var i = 0; i < data.length; i++) {
                             var row = $('<tr>');
+                            var date = new Date(data[i].created_at);
+                            var formattedDate = date.toLocaleString();
                             var index = i + 1; // Incrementing index
                             row.append('<th scope="row">' + index + '</th>');
                             row.append('<td>' + data[i].car_name + '</td>');
                             row.append('<td><p class="text-success m-0">' + data[i].pick_up_location + '</p></td>');
-                            row.append('<td><p class="text-success m-0"><b>Pick Time: </b>' + data[i].location + '</p></td>');
-                            row.append('<td><p class="text-success m-0"><b>Pick Time: </b>' + data[i].created_at + '</p></td>');
-                            row.append('<td><a href="/show/bid/' + data[i].id + '" class="btn btn-info text-white">Bid Now</a></td>');
+                            row.append('<td><p class="text-success m-0">' + data[i].location + '</p></td>');
+                            row.append('<td><p class="text-success m-0">' + formattedDate + '</p></td>');
+                            row.append('<td><a href="/show/bid/' + data[i].id + '" class="btn btn-info text-white">Show Bid</a></td>');
                             $('#MyTripListShow').append(row);
                         }
                     }

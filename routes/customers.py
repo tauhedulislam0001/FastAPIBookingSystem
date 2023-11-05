@@ -90,4 +90,10 @@ async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)]):
 async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(get_db)]):
     trips_by_id = db.query(models.Trips).filter(models.Trips.id == id).first()
     # Example: trips = db.query(models.Trips).filter(models.Trips.id == id).all()
-    return {"id": trips_by_id}
+    error = request.query_params.get("error")
+    success = request.query_params.get("success")
+    error_driver = request.query_params.get("error_driver")
+    error_customer = request.query_params.get("error_customer")
+    success_customer = request.query_params.get("success_customer")
+    success_driver = request.query_params.get("success_driver")
+    return templates.TemplateResponse("customer_bid.html", {"trips": trips_by_id,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
