@@ -78,7 +78,7 @@ async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)]):
     try:
         user = await decode_token(token, db)
         if user.user_type==1 :
-            my_trips = db.query(models.Trips).filter(models.Trips.user_id==user.id).all()
+            my_trips = db.query(models.Trips).filter(models.Trips.user_id==user.id).order_by(models.Trips.id.desc()).all()
             return my_trips
         return RedirectResponse("/?error=You+are+not+authorized",302)
 
