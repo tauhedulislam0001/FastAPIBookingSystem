@@ -6,7 +6,7 @@ from core.utils import decode_token,TokenDecodeError
 from typing import Annotated
 from sqlalchemy.orm import Session
 from database import engine, SessionLocal, Base,get_db
-
+import models
 
 driver = APIRouter()
 
@@ -27,4 +27,15 @@ async def read_root(request: Request,db:Annotated[Session, Depends(get_db)]):
             return templates.TemplateResponse("driver_trip_list.html", {"user": user,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
         return RedirectResponse("/?error=You+are+not+authorized",302)
     except TokenDecodeError as e:
-        return RedirectResponse("/?error=S+are+not+authorized",302)
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+
+@driver.get("/trips/get")
+async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)]):
+    trips = db.query(models.Trips).order_by(models.Trips.id.desc()).all()
+    return trips
+
+@driver.get("/bid/submit/{id}")
+async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(get_db)]):
+    trips_by_id = db.query(models.Trips).filter(models.Trips.id == id).first()
+    # Example: trips = db.query(models.Trips).filter(models.Trips.id == id).all()
+    return {"id": trips_by_id}

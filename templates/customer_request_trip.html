@@ -9,6 +9,7 @@
     <!-- bootstrap   -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -59,8 +60,9 @@
                                 <div class="row">
                                     <div class="col-md-4 col-sm-6 col-12">
                                         <div class="form-floating ">
-                                            <input type="text" class="form-control" name="pick_up_location" id="pickPoint" placeholder="Pick Up Location">
-                                            
+                                            <input type="text" class="form-control" name="pick_up_location"
+                                                id="pickPoint" placeholder="Pick Up Location">
+
                                             <label for="pickPoint">Pick Up Location</label>
                                         </div>
                                     </div>
@@ -77,7 +79,8 @@
                                     </div>
                                     <div class="col-md-4 col-sm-6 col-12">
                                         <div class="form-floating">
-                                            <input type="text" class="form-control" name="location" id="destinationPoint" placeholder="Destination">
+                                            <input type="text" class="form-control" name="location"
+                                                id="destinationPoint" placeholder="Destination">
                                             <label for="destinationPoint">Destination </label>
                                         </div>
 
@@ -100,60 +103,18 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <table class="table">
+                        <table id="example" class="display nowrap table" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th scope="col">Car ID</th>
-                                    <th scope="col">Card Name</th>
-                                    <th scope="col">Pickup location to Destination location</th>
-                                    <th scope="col">Pick Time</th>
-                                    <th scope="col">Fear</th>
-                                    <th scope="col">Bid</th>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Car Name</th>
+                                    <th scope="col">Pickup location </th>
+                                    <th scope="col">Destination</th>
+                                    <th scope="col">Booking Time</th>
+                                    <th scope="col">Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">23456</th>
-                                    <td>Toyota Corolla X</td>
-                                    <td>
-                                        <p class="text-success m-0">Mohammadpur (Dhaka) - Pirojpur (Barsal)</p>
-                                    </td>
-                                    <td>
-                                        <p class="text-success m-0"><b>Pick Time: </b> 12:00 PM</p>
-                                    </td>
-                                    <td>loream</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info text-white">Show Bid</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">23456</th>
-                                    <td>Toyota Corolla X</td>
-                                    <td>
-                                        <p class="text-success m-0">Mohammadpur (Dhaka) - Pirojpur (Barsal)</p>
-                                    </td>
-                                    <td>
-                                        <p class="text-success m-0"><b>Pick Time: </b> 12:00 PM</p>
-                                    </td>
-                                    <td>loream</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info text-white">Show Bid</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">23456</th>
-                                    <td>Toyota Corolla X</td>
-                                    <td>
-                                        <p class="text-success m-0">Mohammadpur (Dhaka) - Pirojpur (Barsal)</p>
-                                    </td>
-                                    <td>
-                                        <p class="text-success m-0"><b>Pick Time: </b> 12:00 PM</p>
-                                    </td>
-                                    <td>loream</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info text-white">Show Bid</button>
-                                    </td>
-                                </tr>
+                            <tbody id="MyTripListShow">
 
                             </tbody>
                         </table>
@@ -188,14 +149,45 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 
     <script>
-        const socket = io('ws://localhost:8000/', { transports: ["websocket"] });
-        socket.on("response", function (data) {
-            $('#id2').val($('#id2').val() + '\n' + $('#id1').val() + '->' + data)
-        });
 
+        // $(document).ready(function () {
+
+        // });
+        MyTripGet();
+
+        function MyTripGet() {
+            $.ajax({
+                url: '/customer/trips/get',
+                method: 'GET',
+                success: function (data) {
+                    console.log(data);
+                    $('#MyTripListShow').empty(); // Clear old data
+                    if (data.length === 0) {
+                        $('#MyTripListShow').html('<tr><td colspan="5">No trips found</td></tr>');
+                    } else {
+                        for (var i = 0; i < data.length; i++) {
+                            var row = $('<tr>');
+                            var index = i + 1; // Incrementing index
+                            row.append('<th scope="row">' + index + '</th>');
+                            row.append('<td>' + data[i].car_name + '</td>');
+                            row.append('<td><p class="text-success m-0">' + data[i].pick_up_location + '</p></td>');
+                            row.append('<td><p class="text-success m-0"><b>Pick Time: </b>' + data[i].location + '</p></td>');
+                            row.append('<td><p class="text-success m-0"><b>Pick Time: </b>' + data[i].created_at + '</p></td>');
+                            row.append('<td><a href="/show/bid/' + data[i].id + '" class="btn btn-info text-white">Bid Now</a></td>');
+                            $('#MyTripListShow').append(row);
+                        }
+                    }
+                    $('#example').DataTable({
+                        dom: 'Bfrtip',
+                        "order": [[0, "asc"]]
+                    });
+                }
+            });
+        }
     </script>
 </body>
 
