@@ -66,8 +66,28 @@ async def trip_store(
         db.commit()
         db.refresh(tripsAdd)
         print(f"trips: {tripsAdd.car_name}")
-        # await sio.emit("tripList", tripsAdd)
+        await sio.emit("tripList",'New Trip Store')
         return RedirectResponse("/customer?success_customer=Trips+Add+successfully",302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
    
+
+@customer.get("/customer/trips/get")
+async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)]):
+    token = request.cookies.get("access_token")
+    try:
+        user = await decode_token(token, db)
+        if user.user_type==1 :
+            my_trips = db.query(models.Trips).filter(models.Trips.user_id==user.id).all()
+            return my_trips
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+
+
+@customer.get("/show/bid/{id}")
+async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(get_db)]):
+    trips_by_id = db.query(models.Trips).filter(models.Trips.id == id).first()
+    # Example: trips = db.query(models.Trips).filter(models.Trips.id == id).all()
+    return {"id": trips_by_id}
