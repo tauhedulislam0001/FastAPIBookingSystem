@@ -28,3 +28,4 @@ async def read_root(request: Request,db:Annotated[Session, Depends(get_db)]):
         return RedirectResponse("/?error=You+are+not+authorized",302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=S+are+not+authorized",302)
+
