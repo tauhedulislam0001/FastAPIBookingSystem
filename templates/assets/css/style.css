@@ -12,8 +12,6 @@ header{
 
 
 
-
-
 /* ==== chat box css  ============ */
 .chat
 {
@@ -52,6 +50,9 @@ header{
 .chat-care .img-circle
 {
     border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    border: solid 1px #ddd;
 }
 .chat-care .chat-img
 {
@@ -99,9 +100,12 @@ header{
 .chat-care .left
 {
     float: left;
+    margin-right: 15px;;
+
 }
 .chat-care .right
 {
+    margin-left: 15px;;
     float: right;
 }
 

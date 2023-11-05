@@ -4,13 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Driver Trip List || Garibook.com</title>
+    <title>Customer Request Trip List || Garibook.com</title>
     <link rel="stylesheet" href="./assets/css/style.css">
     <!-- bootstrap   -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
-
 </head>
 
 <body>
@@ -28,6 +27,11 @@
             </div>
         </div>
     </header>
+    <!-- <input id="id1" type="text" value="world">
+    <button type="button" onclick="socket.emit('message', $('#id1').val())">Emit</button>
+    <br>
+    <textarea id="id2" style="width: 300px; height: 300px"></textarea> -->
+
 
     <div class="main-wrapper mt-5">
 
@@ -38,7 +42,7 @@
                         <nav class="navbar bg-body-tertiary">
                             <div class="container-fluid">
                                 <a class="navbar-brand" href="#">
-                                    Trip List
+                                    My  Trip List
                                 </a>
                             </div>
                         </nav>
@@ -47,7 +51,8 @@
             </div>
         </div>
 
-        <div class="trip-list-wrapper mt-5">
+
+        <div class="request-trip-list-wrapper mt-5">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
@@ -58,20 +63,13 @@
                                     <th scope="col">Car Name</th>
                                     <th scope="col">Pickup location </th>
                                     <th scope="col">Destination</th>
+                                    <th scope="col">Fare</th>
                                     <th scope="col">Booking Time</th>
+                                    <th scope="col">Driver Name</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="TripListShow">
-                                <!-- <tr>
-                                    <th scope="row">23456</th>
-                                    <td>Toyota Corolla X</td>
-                                    <td><p class="text-success m-0">Mohammadpur (Dhaka) - Pirojpur (Barsal)</p></td>
-                                    <td><p class="text-success m-0"><b>Pick Time: </b> 12:00 PM</p> </td>
-                                    <td>
-                                        <button type="button" class="btn btn-info text-white">Bid Now</button>
-                                    </td>
-                                </tr> -->
+                            <tbody id="MyTripListShow">
 
                             </tbody>
                         </table>
@@ -84,7 +82,7 @@
 
 
 
-    <footer class="bottom-0 bg-primary w-100 py-4 text-center">
+    <footer class=" bottom-0 bg-primary w-100 py-4 text-center">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -108,28 +106,23 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
+
     <script>
-        const socket = io('ws://localhost:8000/', { transports: ["websocket"] });
-        socket.on("tripList", function (data) {
-            console.log(data);
-            TripGet();
 
-        });
-        TripGet()
+        // $(document).ready(function () {
 
-        function TripGet() {
+        // });
+        MyTripGet();
+
+        function MyTripGet() {
             $.ajax({
-                url: '/trips/get',
+                url: '/customer/trips/accepted',
                 method: 'GET',
                 success: function (data) {
-                    if ($.fn.DataTable.isDataTable('#example')) {
-                        $('#example').DataTable().clear(); // Clear DataTable
-                        $('#example').DataTable().destroy(); // Destroy existing DataTable instance
-                    }
                     console.log(data);
-                    $('#TripListShow').empty(); // Clear old data
+                    $('#MyTripListShow').empty(); // Clear old data
                     if (data.length === 0) {
-                        $('#TripListShow').html('<tr><td colspan="5">No trips found</td></tr>');
+                        $('#MyTripListShow').html('<tr><td colspan="5">No trips found</td></tr>');
                     } else {
                         for (var i = 0; i < data.length; i++) {
                             var row = $('<tr>');
@@ -140,12 +133,13 @@
                             row.append('<td>' + data[i].car_name + '</td>');
                             row.append('<td><p class="text-success m-0">' + data[i].pick_up_location + '</p></td>');
                             row.append('<td><p class="text-success m-0">' + data[i].location + '</p></td>');
+                            row.append('<td><p class="text-success m-0">' + data[i].fare + '</p></td>');
                             row.append('<td><p class="text-success m-0">' + formattedDate + '</p></td>');
-                            row.append('<td><a href="/bid/submit/' + data[i].id + '" class="btn btn-info text-white">Bid Now</a></td>');
-                            $('#TripListShow').append(row);
+                            row.append('<td><p class="text-success m-0">' + data[i].driver.name + '</p></td>');
+                            row.append('<td><a href="/show/bid/' + data[i].id + '" class="btn btn-info text-white">Show Bid</a></td>');
+                            $('#MyTripListShow').append(row);
                         }
                     }
-
                     $('#example').DataTable({
                         dom: 'Bfrtip',
                         "order": [[0, "asc"]]
@@ -153,7 +147,6 @@
                 }
             });
         }
-
     </script>
 </body>
 

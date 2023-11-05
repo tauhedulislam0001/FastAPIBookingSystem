@@ -43,6 +43,24 @@ async def read_root(request: Request,db:Annotated[Session, Depends(get_db)]):
 
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
+    
+@customer.get("/trip/accept")
+async def read_root(request: Request,db:Annotated[Session, Depends(get_db)]):
+    error = request.query_params.get("error")
+    success = request.query_params.get("success")
+    error_driver = request.query_params.get("error_driver")
+    error_customer = request.query_params.get("error_customer")
+    success_customer = request.query_params.get("success_customer")
+    success_driver = request.query_params.get("success_driver")
+    token = request.cookies.get("access_token")
+    try:
+        user = await decode_token(token, db)
+        if user.user_type==1 :
+            return templates.TemplateResponse("customer_accept_trips.html", {"user": user,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",302)
 
 @customer.post("/trip/store")
 async def trip_store(
@@ -66,8 +84,61 @@ async def trip_store(
         db.commit()
         db.refresh(tripsAdd)
         print(f"trips: {tripsAdd.car_name}")
-        # await sio.emit("tripList", tripsAdd)
+        await sio.emit("tripList",'New Trip Store')
         return RedirectResponse("/customer?success_customer=Trips+Add+successfully",302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
    
+
+@customer.get("/customer/trips/get")
+async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)]):
+    token = request.cookies.get("access_token")
+    try:
+        user = await decode_token(token, db)
+        if user.user_type==1 :
+            my_trips = db.query(models.Trips).filter(models.Trips.user_id==user.id).filter(models.Trips.fare.is_(None)).order_by(models.Trips.id.desc()).all()
+            return my_trips
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+
+@customer.get("/customer/trips/accepted")
+async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)]):
+    token = request.cookies.get("access_token")
+    try:
+        user = await decode_token(token, db)
+        if user.user_type==1 :
+            my_trips = db.query(models.Trips).join(models.Drivers).filter(models.Trips.user_id==user.id).order_by(models.Trips.id.desc()).all()
+            bid_data = [(trip.driver.name) for trip in my_trips]
+            return my_trips
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+
+
+@customer.get("/show/bid/{id}")
+async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(get_db)]):
+    trips_by_id = db.query(models.Trips).filter(models.Trips.id == id).first()
+    # Example: trips = db.query(models.Trips).filter(models.Trips.id == id).all()
+    error = request.query_params.get("error")
+    success = request.query_params.get("success")
+    error_driver = request.query_params.get("error_driver")
+    error_customer = request.query_params.get("error_customer")
+    success_customer = request.query_params.get("success_customer")
+    success_driver = request.query_params.get("success_driver")
+    return templates.TemplateResponse("customer_bid.html", {"trips": trips_by_id,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
+
+@customer.get("/bid/accept/{id}")
+async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(get_db)]):
+    bid = db.query(models.Bids).filter(models.Bids.id == id).first()
+    if bid is not None:
+        TripAccept = db.query(models.Trips).filter(models.Trips.id == bid.trip_id).first()
+        TripAccept.driver_id=bid.driver_id
+        TripAccept.fare=bid.amount
+        db.commit()
+        db.refresh(TripAccept)
+        await sio.emit("TripAccept" + str(bid.trip_id), 'Trip Accepted' + str(bid.trip_id))
+        return RedirectResponse(url=f"/trip/accept?success_customer=Trips+Accept+successfully", status_code=302)
+    
