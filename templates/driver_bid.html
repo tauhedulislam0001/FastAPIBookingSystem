@@ -85,6 +85,7 @@
                                 </ul>
                             </div>
                             <div class="card-footer">
+                                {% if (trips.fare ==null) %}
                                 <form action="/bid-submit/{{trips.id}}" method="post">
                                     <div class="input-group">
                                         <input id="btn-input" name="amount" type="number" class="form-control input-sm"
@@ -96,6 +97,7 @@
                                         </span>
                                     </div>
                                 </form>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
