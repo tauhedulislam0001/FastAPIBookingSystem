@@ -1,6 +1,7 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, TIMESTAMP, func
 from database import Base
 from pydantic import BaseModel, Field, EmailStr
+from sqlalchemy.orm import relationship
 
 
 class Customers(Base):
@@ -57,10 +58,11 @@ class Bids(Base):
     __tablename__ = "bids"
     
     id = Column(Integer, primary_key=True, index=True)
-    trip_id = Column(Integer)
-    driver_id = Column(Integer, nullable=True)
+    trip_id =Column(Integer, ForeignKey('trips.id'))
+    driver_id = Column(Integer, ForeignKey('drivers.id'))
     amount = Column(Integer)
     status = Column(Integer, default=1)
     created_at = Column(TIMESTAMP, default=func.now())
-    
+    driver = relationship('Drivers', backref='bids')
+    trip = relationship('Trips', backref='bids')
 

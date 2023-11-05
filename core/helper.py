@@ -6,7 +6,7 @@ async def insert_image(image, dir):
     currentDate = datetime.today()
     formatted_date = currentDate.strftime("%Y-%m-%d_%H-%M-%S-%f")
     random_filename = str(uuid.uuid4())
-    filename = f'{formatted_date}_{image.filename}' 
+    filename = f'{random_filename}_{image.filename}' 
 
     if not os.path.exists(dir):
         os.makedirs(dir)
@@ -18,4 +18,7 @@ async def insert_image(image, dir):
 
 async def get_user_by_email(email: str, db,models):
     user = db.query(models).filter(models.email == email).first()
+    return user
+async def get_user_by_id(id: int, db,models):
+    user = db.query(models).filter(models.id == id).first()
     return user
