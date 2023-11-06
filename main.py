@@ -26,6 +26,7 @@ app.mount("/assets", StaticFiles(directory="templates/assets"), name="assets")
 app.include_router(routes.auth.router)
 from middleware.CheckUser import UserCheck
 # Start Socket 
+import socket
 from core.socket_manager import get_socketio_asgi_app
 from core.socket_io import sio
 
@@ -131,8 +132,12 @@ async def read_root(request: Request, db: Annotated[Session, Depends(get_db)]):
 
 @app.get("/ip")
 def read_root(request: Request):
-    client_host = request.client.host
-    return {"client_host": client_host}
+    host_name = socket.gethostname()
+    
+    # Get the IP address of the server
+    host_ip = socket.gethostbyname(host_name)
+    
+    return host_ip
 
 if __name__ == "__main__":
     import uvicorn
