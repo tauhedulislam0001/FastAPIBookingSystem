@@ -66,7 +66,7 @@ async def trips_get(id: int,request: Request,db:Annotated[Session, Depends(get_d
         bidsss = db.query(models.Bids).filter(models.Bids.trip_id == id).all()
         bid_data = [(bid.id, bid.amount, bid.driver.name) for bid in bids]
         trip_data = [(bid.id, bid.amount, bid.trip.fare) for bid in bids]
-        return {'bids': bids, 'user': user,'bidsss':bidsss}
+        return {'bids': bidsss, 'user': user,'bidsss':bidsss}
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
 
