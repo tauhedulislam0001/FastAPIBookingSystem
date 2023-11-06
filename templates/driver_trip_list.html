@@ -109,7 +109,7 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <script>
-        const socket = io('ws://localhost:8000/', { transports: ["websocket"] });
+        const socket = io('ws://143.110.250.65:8000/', { transports: ["websocket"] });
         socket.on("tripList", function (data) {
             console.log(data);
             TripGet();
