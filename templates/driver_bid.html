@@ -137,7 +137,7 @@
 
 
     <script>
-        const socket = io('ws://143.110.250.65:8000/', { transports: ["websocket"] });
+        const socket = io(`ws://{{base_url}}:8000/`, { transports: ["websocket"] });
         socket.on("BidList{{trips.id}}", function (data) {
             console.log(data);
             var chatList = $('.chat');
