@@ -62,7 +62,11 @@ async def trips_get(id: int,request: Request,db:Annotated[Session, Depends(get_d
     token = request.cookies.get("access_token")
     try:
         user = await decode_token(token, db)
-        bids = db.query(models.Bids).join(models.Drivers).join(models.Trips).filter(models.Bids.trip_id == id).all()
+        bids = db.query(models.Bids)\
+            .join(models.Drivers, models.Bids.driver_id == models.Drivers.id)\
+            .join(models.Trips, models.Bids.trip_id == models.Trips.id)\
+            .filter(models.Bids.trip_id == id)\
+            .all()
         bidsss = db.query(models.Bids).filter(models.Bids.trip_id == id).all()
         bid_data = [(bid.id, bid.amount, bid.driver.name) for bid in bids]
         trip_data = [(bid.id, bid.amount, bid.trip.fare) for bid in bids]
