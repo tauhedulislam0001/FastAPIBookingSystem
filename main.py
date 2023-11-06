@@ -129,6 +129,11 @@ async def read_root(request: Request, db: Annotated[Session, Depends(get_db)]):
                                                          "success_driver": success_driver})
 
 
+@app.get("/ip")
+def read_root(request: Request):
+    client_host = request.client.host
+    return {"client_host": client_host}
+
 if __name__ == "__main__":
     import uvicorn
 
