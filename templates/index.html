@@ -1,56 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Garibook.com</title>
-    <link rel="stylesheet" href="./assets/css/style.css">
-    <!-- bootstrap   -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-</head>
-<body>
-    <header class="header-wrapper">
-        <div class="container">
-            <div class="col-md-12">
-                <nav class="navbar">
-                    <div class="container-fluid">
-                        <a class="navbar-brand m-0" href="/login.html">
-                            <img src="https://garibook.com/dashboard/new-ui/assets/image/icon/logo.png" alt="Logo" width="200" class="d-inline-block align-text-top">
-                        </a>
-                        <div class="d-flex" >
-                            {% if user %}
-                            <div class="dropdown user-dropdown">
-                                <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img class="user-image" src="assets/upload/profile/{{user.image}}">
-                                </a>
 
-                                <ul class="dropdown-menu  dropdown-menu-end fade">
-                                    <li>
-                                        {% if user.user_type ==1 %}
-                                             <a class="dropdown-item" href="/customer">Dashboard</a>
-                                             <a class="dropdown-item" href="/trip/accept">My Trip</a>
+    {% include 'layouts/header.html' %}
 
-                                        {% elif user.user_type ==2 %}
-                                            <a class="dropdown-item" href="/driver">Dashboard</a>
-
-                                         {% endif %}
-                                    </li>
-                                    <li>
-                                        <form id="logoutForm" action="/logout" method="post" style="display:none;">
-                                            <input type="hidden" name="_method" value="POST">
-                                        </form>
-                                        <a href="#" class="dropdown-item" onclick="document.getElementById('logoutForm').submit();"><b>Logout</b></a></a>
-                                    </li>
-                                </ul>
-                            </div>
-                            {% endif %}
-                            
-                        </div>
-                    </div>
-                </nav>
-            </div>
-        </div>
-    </header>
     {% if user %}
         <div class="container">
             <div class="row">
@@ -60,213 +10,103 @@
             </div>
         </div>
     {% else %}
-    <div class="main-wrapper mt-5">
+    <div class="main-wrapper">
+        <!-- Banner -->
+		<section class="banner-section banner-slider">
+			<div class="container">
+			   	<div class="home-banner">
+				   <div class="row align-items-center">
+					   	<div class="col-lg-6" data-aos="fade-down">
+							<p class="explore-text"> <span><i class="fa-solid fa-thumbs-up me-2"></i></span>100% Trusted car rental platform in the World</p>
+							<h1>Find Your Best <br>
+							<span>Dream Car for Rent   <b class="text-primary">Garibook.com</b></span></h1>
+							<p class="mb-3">
+                                Garibook provides various kinds of vehicle from economy, Comfort to Luxury class. For Booking any class and model vehicle online simply enter your pickup and drop locations then select car type.
+                            </p>
+							<div class="view-all ">
+								<a href="#" class="btn-theme-primary text-decoration-none d-inline-block">
+                                    View all Cars
+                                </a>
+							</div>
+					   	</div>
+					   	<div class="col-lg-6" data-aos="fade-down">
+						   	<div class="banner-imgs">
+								<img src="https://i.postimg.cc/C1zXbbRx/image.png" class="img-fluid aos" alt="bannerimage">
+						   	</div>
+					   	</div>
+				   	</div>
+			   	</div>
+		   	</div>
+		</section>
+	   	<!-- /Banner -->
 
-        <div class="login-box-wrapper">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="login-btn-wrap">
-                            <div class="row justify-content-center">
-                                <div class="col-md-6 col-12 text-end">
-                                    <button
-                                        type="button"
-                                        class="btn btn-primary"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#driverLogin"
-                                    >Driver Sign In</button>
-                                </div>
-                                <div class="col-md-6 col-12">
-                                    <button
-                                        type="button"
-                                        class="btn btn-success"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#customerLogin"
-                                    >Customer Sign In</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-   
-        <div class="register-box-wrapper mt-4">
-            <div class="container">
-                <div class="row">
-                    <div class="error_div text-center  mt-3">
-                        {% if error %}
-                        <div class="alert alert-danger" role="alert">
-                            {{ error }}
-                        </div>
-                        {% elif success%}
-                        <div class="alert alert-success" role="alert">
-                            {{ success }}
-                        </div>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-6 col-12">
-                        <div class="register-wrapper">
-                            <div class="register-header bg-primary p-3 rounded-3 mb-2">
-                                <h5 class="text-white m-0">Driver Register</h5>
-                            </div>
-                            <div class="error_div  mt-3">
-                                {% if error_driver %}
-                                <div class="alert alert-danger" role="alert">
-                                    {{ error_driver }}
-                                </div>
-                                {% elif success_driver %}
-                                <div class="alert alert-success" role="alert">
-                                    {{ success_driver }}
-                                </div>
-                                {% endif %}
-                            </div>
-                            <form action="/driver/register/submit" method="post" enctype="multipart/form-data" class="p-3">
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" name="name" id="name" placeholder="Driver Name ... ">
-                                    <label for="name">Name</label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com">
-                                    <label for="name">Email Address</label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input type="password" class="form-control" name="password" id="password" placeholder="*********">
-                                    <label for="password">Password</label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="*********">
-                                    <label for="confirm_password">Confirm Password</label>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <input type="file" class="form-control" name="image" id="image" >
-                                </div>
-                                <input type="submit" class="btn btn-primary" value="Driver Register">
-                            </form>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-12">
-                        <div class="register-wrapper">
-                            <div class="register-header bg-success p-3 rounded-3 mb-2">
-                                <h5 class="text-white m-0">Customer Register</h5>
-                            </div>
-                            <div class="error_div  mt-3">
-                                {% if error_customer %}
-                                <div class="alert alert-danger" role="alert">
-                                    {{ error_customer }}
-                                </div>
-                                {% elif success_customer %}
-                                <div class="alert alert-success" role="alert">
-                                    {{ success_customer }}
-                                </div>
-                                {% endif %}
-                            </div>
-                            <form action="/customer/register/submit" method="post" enctype="multipart/form-data" class="p-3">
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" name="name" id="name" placeholder="Driver Name ... ">
-                                    <label for="name">Name</label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com">
-                                    <label for="name">Email Address</label>
-                                </div>
-                              <div class="form-floating mb-3">
-                                    <input type="password" class="form-control" name="password" id="password" placeholder="*********">
-                                    <label for="password">Password</label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="*********">
-                                    <label for="confirm_password">Confirm Password</label>
-                                </div>
-                                <div class="form-group mb-3">
-                                    <input type="file" class="form-control" name="image" id="image" placeholder="name@example.com">
-                                </div>
-                                <input type="submit" class="btn btn-success" value="Customer Register">
-                            </form>
-                        </div>
-                    </div>
+		<div class="error_div text-center ">
+			{% if error %}
+			<div class="alert alert-danger" role="alert">
+				{{ error }}
+			</div>
+			{% elif success%}
+			<div class="alert alert-success" role="alert">
+				{{ success }}
+			</div>
+			{% endif %}
+		</div>
 
-                </div>
-            </div>
-        </div>
 
+		<!-- services -->
+		<section class="section services d-none">
+			<div class="service-right">
+				<img src="assets/img/bg/service-right.svg" class="img-fluid" alt="services right">
+			</div>
+			<div class="container">
+				<!-- Heading title-->
+				<div class="section-heading" data-aos="fade-down">
+					<h2>How It Works</h2>
+					<p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+				</div>
+				<!-- /Heading title -->
+				<div class="services-work">
+					<div class="row">
+						<div class="col-lg-4 col-md-4 col-12" data-aos="fade-down">
+							<div class="services-group">
+								<div class="services-icon border-secondary">
+									<img class="icon-img bg-secondary" src="assets/img/icons/services-icon-01.svg" alt="Choose Locations">
+								</div>
+								<div class="services-content">
+									<h3>1. Choose Locations</h3>
+									<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-4 col-md-4 col-12" data-aos="fade-down">
+							<div class="services-group">
+								<div class="services-icon border-warning">
+									<img class="icon-img bg-warning" src="assets/img/icons/services-icon-01.svg" alt="Choose Locations">
+								</div>
+								<div class="services-content">
+									<h3>2. Pick-Up Locations</h3>
+									<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-4 col-md-4 col-12" data-aos="fade-down">
+							<div class="services-group">
+								<div class="services-icon border-dark">
+									<img class="icon-img bg-dark" src="assets/img/icons/services-icon-01.svg" alt="Choose Locations">
+								</div>
+								<div class="services-content">
+									<h3>3. Book your Car</h3>
+									<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<!-- /services -->
     </div>
-
     {% endif %}
 
+    {% include 'layouts/footer.html' %}
 
-    <footer class="bg-primary w-100 py-4 text-center">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="copyright-content text-white">
-                        <span>© Copyright @ 2023 garibook.com All rights reserved.</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-
-    <!-- Driver Modal -->
-    <div class="modal fade" id="driverLogin" tabindex="-1" aria-labelledby="driverLoginLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white text-center">
-                    <h1 class="modal-title fs-5" id="driverLoginLabel">Driver Sign In</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="driver-login-form-wrapper">
-                        <form method="POST" action="/driver-login">
-                            <div class="mb-3">
-                              <label for="usermail" class="form-label">Email address</label>
-                              <input type="email" class="form-control" name="email" id="usermail" aria-describedby="emailHelp">
-                            </div>
-                            <div class="mb-3">
-                              <label for="userPassword" class="form-label">Password</label>
-                              <input type="password" class="form-control" name="password" id="userPassword">
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">Login</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Modal -->
-    <div class="modal fade" id="customerLogin" tabindex="-1" aria-labelledby="customerLoginLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h1 class="modal-title fs-5" id="customerLoginLabel">Customer Sing In</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="customer-login-form-wrapper">
-                        <form method="post" action="/customer-login">
-                            <div class="mb-3">
-                              <label for="usermail" class="form-label">Email address</label>
-                              <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp">
-                            </div>
-                            <div class="mb-3">
-                              <label for="userPassword" class="form-label">Password</label>
-                              <input type="password" class="form-control" name="password" id="userPassword">
-                            </div>
-                            <button type="submit" class="btn btn-success w-100">Login</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-</body>
-</html>
