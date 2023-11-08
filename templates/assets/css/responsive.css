@@ -1,0 +1,5 @@
+@media screen and (max-width: 800px) {
+    section.section-padding{
+        padding: 40px 0 0;
+    }
+}

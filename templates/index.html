@@ -2,6 +2,7 @@
     {% include 'layouts/header.html' %}
 	
     {% if user %}
+
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -40,74 +41,64 @@
 		</section>
 	   	<!-- /Banner -->
 
-		<div class="error_div text-center ">
-			{% if error %}
-			<div class="toast align-items-center text-white bg-danger border-0 show position-fixed bottom-0 end-0 m-4" role="alert" aria-live="assertive" aria-atomic="true">
-				<div class="d-flex">
-				  <div class="toast-body">
-					 {{ error }}
-				  </div>
-				  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-				</div>
-			</div>
-			{% elif success%}
-			<div class="toast align-items-center text-white bg-success border-0 show position-fixed bottom-0 end-0 m-4" role="alert" aria-live="assertive" aria-atomic="true">
-				<div class="d-flex">
-				  <div class="toast-body">
-					You have successfully {{ success }}
-				  </div>
-				  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-				</div>
-			</div>
-			{% endif %}
-			
-		</div>
-
-
 		<!-- services -->
-		<section class="section services d-none">
-			<div class="service-right">
-				<img src="assets/img/bg/service-right.svg" class="img-fluid" alt="services right">
-			</div>
+		<section class="section services section-padding">
 			<div class="container">
-				<!-- Heading title-->
-				<div class="section-heading" data-aos="fade-down">
-					<h2>How It Works</h2>
-					<p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
-				</div>
-				<!-- /Heading title -->
-				<div class="services-work">
+				<div class="section-content">
 					<div class="row">
-						<div class="col-lg-4 col-md-4 col-12" data-aos="fade-down">
-							<div class="services-group">
-								<div class="services-icon border-secondary">
-									<img class="icon-img bg-secondary" src="assets/img/icons/services-icon-01.svg" alt="Choose Locations">
-								</div>
-								<div class="services-content">
-									<h3>1. Choose Locations</h3>
-									<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-4 col-md-4 col-12" data-aos="fade-down">
-							<div class="services-group">
-								<div class="services-icon border-warning">
-									<img class="icon-img bg-warning" src="assets/img/icons/services-icon-01.svg" alt="Choose Locations">
-								</div>
-								<div class="services-content">
-									<h3>2. Pick-Up Locations</h3>
-									<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+						<div class="col-md-3 col-sm-6 col-12">
+							<div class="ht-box-icon hover-animation-wrap">
+								<div class="icon-box-wrap mb-3" >
+									<div class="icon">
+										<img src="https://garibook.com/dashboard/new-ui/assets/image/icon/secvice_box_2.png" alt="">
+									</div>
+									<div class="content">
+										<h6 class="sub-heading text-white">01</h6>
+										<h5 class="heading text-white">Country Wise Network</h5>
+										<p class="text text-white mb-0	">City based vendor, easy customer solution.</p>
+									</div>
 								</div>
 							</div>
 						</div>
-						<div class="col-lg-4 col-md-4 col-12" data-aos="fade-down">
-							<div class="services-group">
-								<div class="services-icon border-dark">
-									<img class="icon-img bg-dark" src="assets/img/icons/services-icon-01.svg" alt="Choose Locations">
+						<div class="col-md-3 col-sm-6 col-12">
+							<div class="ht-box-icon hover-animation-wrap">
+								<div class="icon-box-wrap mb-3" >
+									<div class="icon">
+										<img src="https://garibook.com/dashboard/new-ui/assets\image\icon\secvice_box_3.png" alt="">
+									</div>
+									<div class="content">
+										<h6 class="sub-heading text-white">02</h6>
+										<h5 class="heading text-white">Worldwide Coverage</h5>
+										<p class="text text-white mb-0	">10 Countries • 30 Cities 20 Airports</p>
+									</div>
 								</div>
-								<div class="services-content">
-									<h3>3. Book your Car</h3>
-									<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+							</div>
+						</div>
+						<div class="col-md-3 col-sm-6 col-12">
+							<div class="ht-box-icon hover-animation-wrap">
+								<div class="icon-box-wrap mb-3" >
+									<div class="icon">
+										<img src="https://garibook.com/dashboard/new-ui/assets/image/icon/service_box_4.png" alt="">
+									</div>
+									<div class="content">
+										<h6 class="sub-heading text-white">03</h6>
+										<h5 class="heading text-white">Safety & Security</h5>
+										<p class="text text-white mb-0	">Quality, safe & licensed vehicles professional drivers.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3 col-sm-6 col-12">
+							<div class="ht-box-icon hover-animation-wrap">
+								<div class="icon-box-wrap mb-3" >
+									<div class="icon">
+										<img src="https://garibook.com/dashboard/new-ui/assets/image/icon/service_box_5.png" alt="">
+									</div>
+									<div class="content">
+										<h6 class="sub-heading text-white">04</h6>
+										<h5 class="heading text-white">Easy Payment</h5>
+										<p class="text text-white mb-0	">No hidden costs pay via trusted partners. Easy cancellation policy.</p>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -116,10 +107,33 @@
 			</div>
 		</section>
 		<!-- /services -->
+
+		
+		
     </div>
     {% endif %}
 
-
+	<div class="error_div text-center ">
+		{% if error %}
+		<div class="toast align-items-center text-white bg-danger border-0 show position-fixed bottom-0 end-0 m-4" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="d-flex">
+				<div class="toast-body">
+					{{ error }}
+				</div>
+				<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+		</div>
+		{% elif success%}
+		<div class="toast align-items-center text-white bg-success border-0 show position-fixed bottom-0 end-0 m-4" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="d-flex">
+				<div class="toast-body">
+				You have successfully {{ success }}
+				</div>
+				<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+		</div>
+		{% endif %}
+	</div>
 
     {% include 'layouts/footer.html' %}
 

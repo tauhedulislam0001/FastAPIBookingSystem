@@ -13,6 +13,9 @@ header{
 body, *{
     font-family: 'Roboto', sans-serif;
 }
+section.section-padding{
+    padding: 70px 0 0;
+}
 .text-primary{
     color: #01aeef;
 }
@@ -76,10 +79,6 @@ body, *{
 @media screen and (max-width: 991px) {
     .section {
         margin: 0 50px 0;
-    }
-    .banner-slider {
-        background: $__light__vampire;
-        margin: 0 70px 0;
     }
     .home-banner .banner-imgs img {
         display: none;
@@ -276,4 +275,52 @@ body, *{
     background: #a0d04c !important;
     color: #fff;
     font-weight: 500;
+}
+
+
+/* service section css  */
+.hover-animation-wrap {
+    position: relative;
+    transform: translateY(0px) !important;
+    transition: .5s;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    width: 100%;
+}
+
+.hover-animation-wrap:hover {
+    transform: translateY(-5px) !important;
+}
+
+.ht-box-icon .icon-box-wrap {
+    padding: 62px 24px 20px;
+    border-radius: 5px;
+    background: #00adee;
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    min-height: 212px;
+}
+.ht-box-icon .icon-box-wrap .content .sub-heading {
+    margin-bottom: 5px;
+}
+.ht-box-icon .icon-box-wrap .content .heading {
+    color: #33475b;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.ht-box-icon .icon-box-wrap .icon>img{
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    font-size: 48px;
+    margin: 0;
+    -webkit-flex-shrink: 0;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    line-height: 1;
+    color: #eddcd1;
+    z-index: -1;
+    height: 48px;
+    width: auto;
+    opacity: .5;
 }
