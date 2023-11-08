@@ -1,33 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+{% include 'layouts/header.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Driver Trip List || Garibook.com</title>
-    <link rel="stylesheet" href="./assets/css/style.css">
-    <!-- bootstrap   -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
-
-</head>
-
-<body>
-    <header class="header-wrapper">
-        <div class="container">
-            <div class="col-md-12">
-                <nav class="navbar">
-                    <div class="container-fluid">
-                        <a class="navbar-brand w-100 text-center m-0" href="/">
-                            <img src="https://garibook.com/dashboard/new-ui/assets/image/icon/logo.png" alt="Logo"
-                                width="200" class="d-inline-block align-text-top">
-                        </a>
-                    </div>
-                </nav>
-            </div>
-        </div>
-    </header>
 
     <div class="main-wrapper mt-5">
 
@@ -84,28 +56,12 @@
 
 
 
-    <footer class="bottom-0 bg-primary w-100 py-4 text-center">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="copyright-content text-white">
-                        <span>© Copyright @ 2023 garibook.com All rights reserved.</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
 
 
 
 
 
-    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 
     <script>
         const socket = io(`ws://{{base_url}}:8000/`, { transports: ["websocket"] });
@@ -154,6 +110,6 @@
         }
 
     </script>
-</body>
 
-</html>
+
+{% include 'layouts/footer.html' %}

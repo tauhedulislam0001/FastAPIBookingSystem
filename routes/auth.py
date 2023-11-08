@@ -119,7 +119,7 @@ async def customer_login_user(
             db_user.access_token = access_token
             db.commit()
             print(f"db_user:{db_user}")
-            response = RedirectResponse("/?success=Login+successfully", 302)
+            response = RedirectResponse("/driver", 302)
             response.set_cookie(key="access_token", value=access_token, expires=access_token_expires)
             response.set_cookie(key="refresh_token", value=refresh_token, expires=refresh_token_expires)
             return response

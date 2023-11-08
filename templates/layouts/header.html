@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Garibook.com</title>
+    <title> Garibook.com</title>
     <link rel="stylesheet" href="{{ url_for('assets', path='css/style.css') }}">
     <!-- bootstrap   -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -14,6 +14,7 @@
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 </head>
 <body>
@@ -23,27 +24,41 @@
         <div class="col-md-12">
             <nav class="navbar">
                 <div class="container-fluid">
-                    <a class="navbar-brand m-0" href="/customer">
-                        <img src="https://garibook.com/dashboard/new-ui/assets/image/icon/logo.png" alt="Logo" width="200" class="d-inline-block align-text-top">
-                    </a>
+                    {% if user %}
+                        <div>
+                            {% if user.user_type == 1 %}
+                                <a class="navbar-brand m-0" href="/customer">
+                                    <img src="https://garibook.com/dashboard/new-ui/assets/image/icon/logo.png" alt="Logo" width="200" class="d-inline-block align-text-top">
+                                </a>
+                            {% elif user.user_type == 2 %}
+                                <a class="navbar-brand m-0" href="/driver">
+                                    <img src="https://garibook.com/dashboard/new-ui/assets/image/icon/logo.png" alt="Logo" width="200" class="d-inline-block align-text-top">
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <a class="navbar-brand m-0" href="/">
+                            <img src="https://garibook.com/dashboard/new-ui/assets/image/icon/logo.png" alt="Logo" width="200" class="d-inline-block align-text-top">
+                        </a>
+                    {% endif %}
                     <div class="d-flex" >
 
                         {% if user %}
                         <div class="dropdown user-dropdown">
                             <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img class="user-image" src="assets/upload/profile/{{user.image}}">
+                                <img class="user-image" src="{{ url_for('assets', path='/upload/profile/' + user.image) }}">
                             </a>
 
                             <ul class="dropdown-menu  dropdown-menu-end fade">
                                 <li>
                                     {% if user.user_type ==1 %}
-                                         <!-- <a class="dropdown-item" href="/customer">Dashboard</a> -->
+                                         <a class="dropdown-item" href="/customer">Dashboard</a>
                                          <a class="dropdown-item" href="/trip/accept">My Trip</a>
 
                                     {% elif user.user_type ==2 %}
                                         <a class="dropdown-item" href="/driver">Dashboard</a>
 
-                                     {% endif %}
+                                    {% endif %}
                                 </li>
                                 <li>
                                     <form id="logoutForm" action="/logout" method="post" style="display:none;">
