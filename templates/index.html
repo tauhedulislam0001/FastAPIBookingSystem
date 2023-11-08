@@ -42,14 +42,25 @@
 
 		<div class="error_div text-center ">
 			{% if error %}
-			<div class="alert alert-danger" role="alert">
-				{{ error }}
+			<div class="toast align-items-center text-white bg-danger border-0 show position-fixed bottom-0 end-0 m-4" role="alert" aria-live="assertive" aria-atomic="true">
+				<div class="d-flex">
+				  <div class="toast-body">
+					 {{ error }}
+				  </div>
+				  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+				</div>
 			</div>
 			{% elif success%}
-			<div class="alert alert-success" role="alert">
-				{{ success }}
+			<div class="toast align-items-center text-white bg-success border-0 show position-fixed bottom-0 end-0 m-4" role="alert" aria-live="assertive" aria-atomic="true">
+				<div class="d-flex">
+				  <div class="toast-body">
+					You have successfully {{ success }}
+				  </div>
+				  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+				</div>
 			</div>
 			{% endif %}
+			
 		</div>
 
 
@@ -107,6 +118,8 @@
 		<!-- /services -->
     </div>
     {% endif %}
+
+
 
     {% include 'layouts/footer.html' %}
 
