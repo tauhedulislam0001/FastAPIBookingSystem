@@ -1,14 +1,6 @@
 
 	
-    {% if user %}
 
-		{% if user.user_type == 1 %}
-			{% include 'customer_request_trip.html' %}
-		{% elif user.user_type == 2 %}
-			{% include 'driver_trip_list.html' %}
-		{% endif %}
-
-    {% else %}
 
 	{% include 'layouts/header.html' %}
 
@@ -414,8 +406,6 @@
 		</div>
 
 		{% include 'layouts/footer.html' %}
-
-    {% endif %}
 
 	
 
