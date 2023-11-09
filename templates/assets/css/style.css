@@ -10,11 +10,15 @@ header{
     border-radius: 50%;
 }
 /* ==== Default css START  ============ */
-body, *{
-    font-family: 'Roboto', sans-serif;
+body{
+    font-family: 'Roboto', sans-serif !important;
+    background: #FCFBFB !important;
 }
 section.section-padding{
     padding: 70px 0 0;
+}
+.section-inside-top-margin{
+    margin-top: 50px;
 }
 .text-primary{
     color: #01aeef;
@@ -60,6 +64,20 @@ section.section-padding{
      border: 1px solid #01aeef !important;
     color: #ffffff
     transition: .5s;
+}
+
+.section-header > h2 {
+    font-size: 36px;
+    letter-spacing: 0;
+    line-height: 40px;
+    font-family: 'Raleway', sans-serif !important;
+    font-weight: 600;
+}
+
+.section-header > p {
+    font-size: 16px;
+    line-height: 25px;
+    color: #595959;
 }
 
 
@@ -323,4 +341,56 @@ section.section-padding{
     height: 48px;
     width: auto;
     opacity: .5;
+}
+
+
+/* live request box */
+.single-card-request {
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    position: relative;
+    padding: 15px;
+    border-radius: 8px;
+}
+img.car-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.scr-customer-image> img.scr-c-image {
+    height: 70px;
+    width: 70px;
+    border-radius: 50%;
+    border: 4px solid #fff;
+}
+
+.scr-customer-image {
+    position: absolute;
+    content: '';
+    bottom: -31px;
+    right: 22px;
+}
+
+.scr-car-label>span {
+    position: absolute;
+    content: '';
+    top: 10px;
+    left: 10px;
+    background: #fdfdfd;
+    padding: 5px 15px;
+    border-radius: 8px;
+}
+.scr-header > h2 {
+    font-size: 20px;
+}
+
+.rating > i {
+    color: #FF9307;
+    font-size: 14px;
+}
+.scr-locaiton {
+    background: #ddd;
+    padding: 15px;
+    border-radius: 8px;
 }
