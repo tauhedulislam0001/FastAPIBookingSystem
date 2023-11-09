@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Mofi admin is super flexible, powerful, clean &amp; modern responsive bootstrap 5 admin template with unlimited possibilities.">
+    <meta name="keywords" content="admin template, Mofi admin template, dashboard template, flat admin template, responsive admin template, web app">
+    <meta name="author" content="pixelstrap">
+    <link rel="icon" href="{{ url_for('admin-assets', path='images/favicon.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('admin-assets', path='images/favicon.png') }}" type="image/x-icon">
+    <title>Admin Login | Garibook</title>
+    <!-- Google font-->
+    <link rel="preconnect" href="{{ url_for('admin-assets', path='fonts.googleapis.com/index.html') }}">
+    <link rel="preconnect" href="{{ url_for('admin-assets', path='fonts.gstatic.com/index.html') }}" crossorigin="">
+    <link href="{{ url_for('admin-assets', path='fonts.googleapis.com/css2e6d1.css?family=Outfit:wght@100;200;300;400;500;600;700;800;900&amp;display=swap') }}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('admin-assets', path='css/font-awesome.css') }}">
+    <!-- ico-font-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('admin-assets', path='css/vendors/icofont.css') }}">
+    <!-- Themify icon-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('admin-assets', path='css/vendors/themify.css') }}">
+    <!-- Flag icon-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('admin-assets', path='css/vendors/flag-icon.css') }}">
+    <!-- Feather icon-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('admin-assets', path='css/vendors/feather-icon.css') }}">
+    <!-- Plugins css start-->
+    <!-- Plugins css Ends-->
+    <!-- Bootstrap css-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('admin-assets', path='css/vendors/bootstrap.css') }}">
+    <!-- App css-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('admin-assets', path='css/style.css') }}">
+
+
+    <link id="color" rel="stylesheet" href="{{ url_for('admin-assets', path='css/color-1.css') }}" media="screen">
+    <!-- Responsive css-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('admin-assets', path='css/responsive.css') }}">
+  </head>
+  <body>
+    <!-- login page start-->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xl-5"><img class="bg-img-cover bg-center" src="{{ url_for('admin-assets', path='images/login/3.jpg') }}" alt="looginpage"></div>
+        <div class="col-xl-7 p-0">    
+          <div class="login-card login-dark">
+            <div>
+              <div><a class="logo text-start" href="index.html"><img class="img-fluid for-light" src="{{ url_for('admin-assets', path='images/logo/logo.png') }}" alt="looginpage"><img class="img-fluid for-dark" src="../assets/images/logo/logo_dark.png" alt="looginpage"></a></div>
+              <div class="login-main"> 
+                <form class="theme-form" action="/admin/login/submit" method="post">
+                  <h4>Sign in to account</h4>
+                  <p>Enter your email & password to login</p>
+                  <div class="form-group">
+                    <label class="col-form-label">Email Address</label>
+                    <input class="form-control" type="email" name="email" required placeholder="Test@gmail.com">
+                  </div>
+                  <div class="form-group">
+                    <label class="col-form-label">Password</label>
+                    <div class="form-input position-relative">
+                      <input class="form-control" type="password" name="password" required placeholder="*********">
+                      <div class="show-hide"><span class="show">                         </span></div>
+                    </div>
+                  </div>
+                  <div class="form-group mb-0">
+                    <div class="checkbox p-0">
+                      <input id="checkbox1" type="checkbox">
+                      <label class="text-muted" for="checkbox1">Remember password</label>
+                    </div>
+                    <button class="btn btn-primary btn-block w-100" type="submit">Sign in</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- latest jquery-->
+      <script src="{{ url_for('admin-assets', path='js/jquery.min.js') }}"></script>
+      <!-- Bootstrap js-->
+      <script src="{{ url_for('admin-assets', path='js/bootstrap/bootstrap.bundle.min.js') }}"></script>
+      <!-- feather icon js-->
+      <script src="{{ url_for('admin-assets', path='js/icons/feather-icon/feather.min.js') }}"></script>
+      <script src="{{ url_for('admin-assets', path='js/icons/feather-icon/feather-icon.js') }}"></script>
+      <!-- scrollbar js-->
+      <!-- Sidebar jquery-->
+      <script src="{{ url_for('admin-assets', path='js/config.js') }}"></script>
+      <!-- Plugins JS start-->
+      <!-- calendar js-->
+      <!-- Plugins JS Ends-->
+      <!-- Theme js-->
+      <script src="{{ url_for('admin-assets', path='js/script.js') }}"></script>
+      <!-- Plugin used-->
+    </div>
+  </body>
+
+</html>
