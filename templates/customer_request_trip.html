@@ -1,24 +1,26 @@
 {% include 'layouts/header.html' %}
 
-    <div class="main-wrapper mt-5">
+    <div class="main-wrapper">
+        <!-- Breadscrumb Section -->
+		<div class="breadcrumb-bar layouts-by-padding-bottom">
+			<div class="container">
+				<div class="row align-items-center text-center">
+		    		<div class="col-md-12 col-12">
+			    	    <h2 class="breadcrumb-title">Choose A Trip</h2>
+				    	<nav aria-label="breadcrumb" class="page-breadcrumb">
+							<ol class="breadcrumb">
+								<li class="breadcrumb-item"><a href="#">Home</a></li>
+								<li class="breadcrumb-item active" aria-current="page">Trip</li>
+							</ol>
+						</nav>							
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /Breadscrumb Section -->
 
-        <div class="page-title-wrapper">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <nav class="navbar bg-body-tertiary">
-                            <div class="container-fluid">
-                                <a class="navbar-brand" href="#">
-                                    Request Trip List
-                                </a>
-                            </div>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="trip-filter-wrapper mt-3">
+        <div class="trip-filter-wrapper">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
@@ -54,8 +56,9 @@
                                     </div>
                                     <div class="col-md-12 col-sm-12 col-12">
                                         <div class="filter-btn-wrap mt-3">
-                                            <button type="submit" class="btn btn-info text-white w-100">Choose A
-                                                ride</button>
+                                            <button type="submit" class="btn-theme-primary text-white w-100">
+                                                Choose A ride
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
