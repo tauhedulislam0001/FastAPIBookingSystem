@@ -410,3 +410,80 @@ img.car-image {
     color: #201F1D;
     margin-bottom: 5px;
 }
+
+
+/* footer css  */
+.footer-bottom{
+    border-top: 1px dotted #ddd;
+}
+.footer {
+    background: #201F1D;
+    position: relative;
+}
+.footer .footer-top {
+    position: relative;
+    z-index: 99;
+    margin: 0;
+    padding: 60px 0 20px;
+}
+.footer .footer-widget .footer-title {
+    position: relative;
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 40px;
+}
+.footer .footer-widget .footer-title:before {
+    content: "";
+    background: #01aeef;
+    width: 27px;
+    height: 4px;
+    left: 0;
+    position: absolute;
+    bottom: -80%;
+}
+.footer .footer-widget.footer-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.footer .footer-menu ul li {
+    margin: 0 0 20px;
+   
+}
+.footer .footer-menu ul li a {
+    color: #828282;
+    text-decoration: none;
+    -webkit-transition: all 0.5s ease-in-out;
+    -ms-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+}
+
+.footer .footer-contact .footer-contact-info .footer-address {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+.footer .footer-contact .footer-contact-info .footer-address span {
+    margin-right: 20px;
+    width: 50px;
+    height: 50px;
+    background: #01aeef;
+    color: #ffffff;
+    font-size: 20px;
+    border-radius: 4px;
+    display: block;
+    line-height: 50px;
+    text-align: center;
+}
+
+.footer .footer-contact .footer-contact-info .footer-address .addr-info a {
+    font-weight: 500;
+    font-size: 18px;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.footer-social-widget .nav-social>li>a {
+    font-size: 24px;
+}
