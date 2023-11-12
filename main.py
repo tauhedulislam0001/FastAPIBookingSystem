@@ -6,7 +6,7 @@ from database import engine, SessionLocal, Base
 from sqlalchemy.orm import Session
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer , String
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.ext.declarative import declarative_base
 import routes.auth
@@ -118,10 +118,10 @@ async def read_root(request: Request, db: db_dependency):
     success_customer = request.query_params.get("success_customer")
     success_driver = request.query_params.get("success_driver")
     token = request.cookies.get("access_token")
+    
     try:
         user = await decode_token(token, db)
-        return templates.TemplateResponse("index.html",
-                                          {"user": user, "request": request, "error": error, "success": success,
+        return templates.TemplateResponse("index.html", {"user": user, "request": request, "error": error, "success": success,
                                            "error_driver": error_driver, "success_customer": success_customer,
                                            "error_customer": error_customer, "success_driver": success_driver})
     except TokenDecodeError as e:

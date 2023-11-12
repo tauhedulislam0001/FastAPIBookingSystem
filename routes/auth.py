@@ -81,10 +81,10 @@ async def register(
         image: UploadFile = File(...),
 ):
     if password != confirm_password:
-        return RedirectResponse("/?success_customer=Passwords+do+not+match", 302)
+        return RedirectResponse("/?error=Passwords+do+not+match", 302)
     existing_user = await get_user_by_email(email, db, models.Customers)
     if existing_user:
-        return RedirectResponse("/?success_customer=Email+already+exists", 302)
+        return RedirectResponse("/?error=Email+already+exists", 302)
     # hashed_password = pwd_context.hash(password)
     hashed_password = hashlib.md5(password.encode()).hexdigest()
     dir = "templates/assets/upload/profile/"
@@ -99,7 +99,7 @@ async def register(
     db.add(register)
     db.commit()
     db.refresh(register)
-    return RedirectResponse("/?success_customer=Customer+Registration+successfully", 302)
+    return RedirectResponse("/?success=Customer+Registration+successfully", 302)
 
 
 @router.post("/driver/register/submit")
@@ -112,10 +112,10 @@ async def driver_register(
         image: UploadFile = File(...),
 ):
     if password != confirm_password:
-        return RedirectResponse("/?error_driver=Passwords+do+not+match", 302)
+        return RedirectResponse("/?error=Passwords+do+not+match", 302)
     existing_user = await get_user_by_email(email, db, models.Drivers)
     if existing_user:
-        return RedirectResponse("/?error_driver=Email+already+exists", 302)
+        return RedirectResponse("/?error=Email+already+exists", 302)
     # hashed_password = pwd_context.hash(password)
     hashed_password = hashlib.md5(password.encode()).hexdigest()
 
@@ -131,7 +131,7 @@ async def driver_register(
     db.add(register)
     db.commit()
     db.refresh(register)
-    return RedirectResponse("/?success_driver=Driver+Registration+successfully", 302)
+    return RedirectResponse("/?success=Driver+Registration+successfully", 302)
 
 
 # login user
