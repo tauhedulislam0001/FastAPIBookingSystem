@@ -10,10 +10,10 @@
   font-weight: normal;
   font-style: normal;
 
-  src: url("../../../../../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/slick/slick.eot");
-  src: url("../../../../../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/slick/slick.eot?#iefix") format("embedded-opentype"),
-    url("../../../../../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/slick/slick.woff") format("woff"),
-    url("../../../../../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/slick/slick.ttf") format("truetype"),
+  src: url("../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/slick/slick.eot");
+  src: url("../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/slick/slick.eot?#iefix") format("embedded-opentype"),
+    url("../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/slick/slick.woff") format("woff"),
+    url("../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/slick/slick.ttf") format("truetype"),
     url("../../fonts/slick/slick.svg#slick") format("svg");
 }
 /* Arrows */

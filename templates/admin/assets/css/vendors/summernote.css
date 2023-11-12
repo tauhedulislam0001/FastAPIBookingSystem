@@ -66,8 +66,8 @@
   font-family: summernote;
   font-style: normal;
   font-weight: normal;
-  src: url(../../../../../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/summernote/summernote.eot?dbafe969167589eda84514394d126413);
-  src: url(../../../../../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/summernote/summernote.eot?#iefix) format("embedded-opentype"), url(../../../../../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/summernote/summernote.woff?dbafe969167589eda84514394d126413) format("woff"), url(../../../../../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/summernote/summernote.ttf?dbafe969167589eda84514394d126413) format("truetype");
+  src: url(../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/summernote/summernote.eot?dbafe969167589eda84514394d126413);
+  src: url(../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/summernote/summernote.eot?#iefix) format("embedded-opentype"), url(../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/summernote/summernote.woff?dbafe969167589eda84514394d126413) format("woff"), url(../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/summernote/summernote.ttf?dbafe969167589eda84514394d126413) format("truetype");
 }
 .note-editor {
   position: relative;

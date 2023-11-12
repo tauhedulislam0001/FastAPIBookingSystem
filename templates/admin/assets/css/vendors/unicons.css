@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'unicons';
-  src: url('../../../../../external.html?link=https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/unicons.eot');
-  src: url('../../../../../external.html?link=https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/unicons.eot') format('embedded-opentype'),
-       url('../../../../../external.html?link=https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/unicons.woff2') format('woff2'),
-       url('../../../../../external.html?link=https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/unicons.woff') format('woff'),
-       url('../../../../../external.html?link=https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/unicons.ttf') format('truetype'),
+  src: url('../external.html?link=https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/unicons.eot');
+  src: url('../external.html?link=https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/unicons.eot') format('embedded-opentype'),
+       url('../external.html?link=https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/unicons.woff2') format('woff2'),
+       url('../external.html?link=https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/unicons.woff') format('woff'),
+       url('../external.html?link=https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/unicons.ttf') format('truetype'),
        url('../../../../../s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/unicons.svg') format('svg');
   font-weight: normal;
   font-style: normal;

@@ -2,8 +2,8 @@
  * -------------------------- */
 @font-face {
   font-family: "themify";
-  src: url("../../../../../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/themify/themify.eot?-fvbane");
-  src: url("../../../../../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/themify/themify.eot?#iefix-fvbane") format("embedded-opentype"), url("../../../../../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/themify/themify.woff?-fvbane") format("woff"), url("../../../../../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/themify//themify.ttf?-fvbane") format("truetype"), url("../../fonts/themify/themify9f24.svg?-fvbane#themify") format("svg");
+  src: url("../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/themify/themify.eot?-fvbane");
+  src: url("../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/themify/themify.eot?#iefix-fvbane") format("embedded-opentype"), url("../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/themify/themify.woff?-fvbane") format("woff"), url("../external.html?link=https://admin.pixelstrap.net/mofi/assets/fonts/themify//themify.ttf?-fvbane") format("truetype"), url("../../fonts/themify/themify9f24.svg?-fvbane#themify") format("svg");
   font-weight: normal;
   font-style: normal;
 }
