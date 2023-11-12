@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from core.utils import decode_token,TokenDecodeError
 from typing import Annotated
 from sqlalchemy.orm import Session
-from database import engine, SessionLocal, Base,get_db,base_url
+from database import engine, SessionLocal, Base,get_db,base_url, db_dependency
 import models
 
 driver = APIRouter()
@@ -103,3 +103,77 @@ async def bid_store(
         return RedirectResponse(url=f"/bid/submit/{id}?success_customer=Trips+Add+successfully", status_code=302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
+    
+    
+
+# all driver
+@driver.get("/drivers")
+async def read_root(request: Request, db: db_dependency,base_url: str = base_url):
+    error = request.query_params.get("error")
+    success = request.query_params.get("success")
+    error_driver = request.query_params.get("error_driver")
+    error_customer = request.query_params.get("error_customer")
+    success_customer = request.query_params.get("success_customer")
+    success_driver = request.query_params.get("success_driver")
+    token = request.cookies.get("access_token")
+    try:
+        user = await decode_token(token, db)
+        if user.user_type==3 :
+            # drivers = db.query(models.Drivers).all()
+            drivers = db.query(models.Drivers).order_by(models.Drivers.id.desc()).all()
+            return templates.TemplateResponse("admin/pages/driver/driver.html", {"user": user, "drivers": drivers, "base_url": base_url,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+    
+    
+    
+@driver.get("/driver/active/{id}")
+async def active_status(id: int, db: Session = Depends(get_db)):
+    driver = db.query(models.Drivers).filter(models.Drivers.id == id).first()
+
+    if not driver:
+        raise HTTPException(status_code=404, detail="Driver not found")
+
+    driver.status = 1
+    db.commit()
+
+    return RedirectResponse("/drivers/?success=Driver+has+been+activated+successfully",302)
+
+
+@driver.get("/driver/inactive/{id}")
+async def active_status(id: int, db: Session = Depends(get_db)):
+    driver = db.query(models.Drivers).filter(models.Drivers.id == id).first()
+
+    if not driver:
+        raise HTTPException(status_code=404, detail="Driver not found")
+
+    driver.status = 2
+    db.commit()
+
+    return RedirectResponse("/drivers/?success=Driver+has+been+inactivated+successfully",302)
+
+
+@driver.get("/driver/edit/{id}")
+async def active_status(id: int, request: Request, db: db_dependency, base_url: str = base_url):
+    driver = db.query(models.Drivers).filter(models.Drivers.id == id).first()
+
+    if not driver:
+        return RedirectResponse("drivers/?error=Driver+not+found",302)
+
+    error = request.query_params.get("error")
+    success = request.query_params.get("success")
+    error_driver = request.query_params.get("error_driver")
+    error_customer = request.query_params.get("error_customer")
+    success_customer = request.query_params.get("success_customer")
+    success_driver = request.query_params.get("success_driver")
+    token = request.cookies.get("access_token")
+    
+    try:
+        user = await decode_token(token, db)
+        if user.user_type==3 :
+            return templates.TemplateResponse("admin/pages/driver/driverUpdate.html", {"user": user, "driver": driver, "base_url": base_url,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+

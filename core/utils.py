@@ -49,10 +49,14 @@ async def decode_token(token,db):
             email= payload['sub']
             exp=payload['exp']
             customer =await get_user_by_email(email,db,models.Customers)
+            driver =await get_user_by_email(email,db,models.Drivers)
+            admin =await get_user_by_email(email,db,models.Admins)
             if customer:
                 return customer
-            driver =await get_user_by_email(email,db,models.Drivers)
-            return driver
+            elif driver:
+                return driver
+            elif admin:
+                return admin
         except jwt.JWTError as e:
             print(f"Error decoding token: {e}")
             raise TokenDecodeError("You are not authorized")
