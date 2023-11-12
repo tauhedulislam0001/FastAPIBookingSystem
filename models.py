@@ -4,6 +4,24 @@ from pydantic import BaseModel, Field, EmailStr
 from sqlalchemy.orm import relationship
 
 
+class Admins(Base):
+    __tablename__ = "admins"
+    
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_type = Column(Integer,default=3)
+    full_name = Column(String(50))
+    username = Column(String(50))
+    email = Column(String(100))
+    password = Column(String(500))
+    access_token = Column(String(300), default=None)
+    refresh_token = Column(String(300), default=None)
+    image = Column(String(100))
+    can_login = Column(Integer, default=1)
+    status = Column(Integer, default=1)
+    created_at = Column(TIMESTAMP, default=func.now())
+
+
 class Customers(Base):
     __tablename__ = "customers"
     
