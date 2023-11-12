@@ -1,0 +1,89 @@
+<div class="footer">
+    <div class="copyright">
+        <p>Copyright © Developed by <a href="https://dexignzone.com/" target="_blank">DexignZone</a> 2023</p>
+    </div>
+</div>
+</div>
+
+<script src="{{ url_for('admin-assets', path='vendor/global/global.min.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='vendor/chart.js/Chart.bundle.min.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='vendor/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='vendor/apexchart/apexchart.js') }}"></script>
+
+<!-- Dashboard 1 -->
+<script src="{{ url_for('admin-assets', path='js/dashboard/dashboard-1.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='vendor/draggable/draggable.js') }}"></script>
+
+
+<!-- tagify -->
+<script src="{{ url_for('admin-assets', path='vendor/tagify/dist/tagify.js') }}"></script>
+
+<script src="{{ url_for('admin-assets', path='vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='vendor/datatables/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='vendor/datatables/js/buttons.html5.min.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='vendor/datatables/js/jszip.min.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='js/plugins-init/datatables.init.js') }}"></script>
+
+<!-- Apex Chart -->
+
+<script src="{{ url_for('admin-assets', path='vendor/bootstrap-datetimepicker/js/moment.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='vendor/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js') }}"></script>
+
+
+<!-- Vectormap -->
+<script src="{{ url_for('admin-assets', path='vendor/jqvmap/js/jquery.vmap.min.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='vendor/jqvmap/js/jquery.vmap.world.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='vendor/jqvmap/js/jquery.vmap.usa.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='js/custom.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='js/deznav-init.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='js/demo.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='js/styleSwitcher.js') }}"></script>
+
+<script>
+function performLogout() {
+  fetch('/admin/logout', {
+      method: 'POST',
+      credentials: 'same-origin',  // Send cookies if the request is same-origin
+      headers: {
+          'Content-Type': 'application/json',
+          // Add any additional headers if needed
+      },
+      // body: JSON.stringify({ /* add any data if needed */ }),
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      // Redirect to the login page after successful logout
+      window.location.href = '/admin/login';
+  })
+  .catch(error => {
+      console.error('Error during logout:', error);
+      // Handle errors, e.g., show an error message to the user
+  });
+}
+</script>
+
+
+<script>
+    function newDriver() {
+        const formData = new FormData(document.getElementById('driverForm'));
+    
+        fetch('/driver/register/submit', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            window.location.href = '/drivers';
+        })
+        .catch(error => {
+            console.error('Error during form submission:', error);
+        });
+    }
+</script>
+</body>
+
+</html>
