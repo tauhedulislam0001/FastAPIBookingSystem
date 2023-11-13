@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, TIMESTAMP, func
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, TIMESTAMP, func,Text
 from database import Base
 from pydantic import BaseModel, Field, EmailStr
 from sqlalchemy.orm import relationship
@@ -41,14 +41,13 @@ class Customers(Base):
 class DriverSubscriptions(Base):
     __tablename__ = "driver_subscriptions"
     
-    
     id = Column(Integer, primary_key=True, index=True)
-    driver_id = Column(Integer)
-    package_duration = Column(String)
+    package_name = Column(String)
+    package_description = Column(Text)
+    package_duration = Column(Integer)
     amount = Column(Integer)
-    validity = Column(String)
     status = Column(Integer, default=1)
-    created_at = Column(TIMESTAMP, default=func.now())
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     
     
 class Drivers(Base):
@@ -65,6 +64,8 @@ class Drivers(Base):
     image = Column(String(100))
     status = Column(Integer, default=1)
     subscription_status = Column(Integer, default=0)
+    subscription_id = Column(Integer, default=None)
+    subscription_at = Column(TIMESTAMP, default=None)
     created_at = Column(TIMESTAMP, default=func.now())
     
 

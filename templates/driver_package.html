@@ -20,24 +20,25 @@
 		</div>
 		<!-- /Breadscrumb Section -->
 
-
         <section class="section live-package-request section-padding">
             <div class="container">
                 <div class="section-content">
-                    <div class="row justify-content-center">
-                        <div class="col-xl-4 col-md-4 col-sm-6 col-12">
-                            <div class="single-package-request bg-white hover-animation-wrap text-center">
-                                <h2 class="bg-secondary p-2 text-white rounded-3 m-0">Basic Package</h2>
-                                <div class="p-2">
-                                    <ul class="list-group">
-                                        <li class="list-group-item"><b>Total Duration : </b> 30 Days</li>
-                                        <li class="list-group-item"><b>Validity : </b> 30 Days</li>
-                                        <li class="list-group-item"><b>Amount : </b> <span class="text-primary fs-3"><b>500</b> <sub>TK</sub></span></li>
-                                    </ul>
-                                    <button type="submit" class="btn-theme-primary d-block mt-2 w-100">Select</button>
+                    <div class="row">
+                        {% for item in package %}
+                            <div class="col-xl-4 col-md-4 col-sm-6 col-12">
+                                <div class="single-package-request bg-white hover-animation-wrap text-center">
+                                    <h2 class="bg-secondary p-2 text-white rounded-3 m-0"> {{ item.package_name }}</h2>
+                                    <div class="p-2">
+                                        <ul class="list-group">
+                                            <li class="list-group-item"><b>Validity  : </b> {{ item.package_duration }} Days</li>
+                                            <li class="list-group-item"><b>Description : </b> {{ item.package_description }} Days</li>
+                                            <li class="list-group-item"><b>Amount : </b> <span class="text-primary fs-3"><b> {{ item.amount }}</b> <sub>TK</sub></span></li>
+                                        </ul>
+                                        <a style="text-decoration: none;" href="/package/purchase/{{item.id}}"><button type="submit" class="btn-theme-primary d-block mt-2 w-100">Purchase </button></a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            {% endfor %}
                     </div>
                 </div>
             </div>
