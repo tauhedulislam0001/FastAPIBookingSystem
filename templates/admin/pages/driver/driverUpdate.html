@@ -42,9 +42,21 @@
 									</div>
 									<div class="info-list">
 										<ul>
-											<li><a href="app-profile.html">Models</a><span>36</span></li>
-											<li><a href="uc-lightgallery.html">Gallery</a><span>3</span></li>
-											<li><a href="app-profile.html">Lessons</a><span>1</span></li>
+											<li><a href="/driver/subscription">Driver subscription</a>
+												{% if driver.subscription_status == 1 %}
+													<span class="badge badge-success light border-0">Active</span>
+												{% elif driver.subscription_status == 0 %}
+													<span class="badge badge-danger light border-0">Inactive</span>
+												{% endif %}
+											</li>
+											<li><a href="uc-lightgallery.html">Driver Status</a><span>
+												{% if driver.status == 1 %}
+													<span class="badge badge-success light border-0">Active</span>
+												{% elif driver.status == 0 %}
+													<span class="badge badge-danger light border-0">Inactive</span>
+												{% endif %}
+											</span></li>
+											<li><a href="app-profile.html">Employement</a><span>{{ employement }} Days</span></li>
 										</ul>
 									</div>
 								</div>
@@ -64,7 +76,7 @@
 							<div class="card-header">
 								<h6 class="title">Account setup</h6>
 							</div>
-							<form class="profile-form">
+							<form class="profile-form" method="post" action="/driver/update/{{driver.id}}">
 								<div class="card-body">
 									<div class="row">
 										<div class="col-sm-6 m-b30">
@@ -78,7 +90,7 @@
 									</div>
 								</div>
 								<div class="card-footer">
-									<button class="btn btn-primary">UPDATE</button>
+									<button class="btn btn-primary" type="submit">UPDATE</button>
 								</div>
 							</form>
 						</div>
