@@ -47,6 +47,9 @@ async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(g
     token = request.cookies.get("access_token")
     try:
         user = await decode_token(token, db)
+        if user.subscription_status == 0:
+            return RedirectResponse("/?error=You+are+not+authorized",302)
+
         trips_by_id = db.query(models.Trips).filter(models.Trips.id == id).first()
         # Example: trips = db.query(models.Trips).filter(models.Trips.id == id).all()
         error = request.query_params.get("error")
@@ -60,6 +63,7 @@ async def trips_get(id: int,request: Request,db:Annotated[Session, Depends(get_d
     token = request.cookies.get("access_token")
     try:
         user = await decode_token(token, db)
+       
         bids = db.query(models.Bids)\
             .join(models.Drivers, models.Bids.driver_id == models.Drivers.id)\
             .join(models.Trips, models.Bids.trip_id == models.Trips.id)\
@@ -176,7 +180,8 @@ async def driver_package(request: Request, db: db_dependency,base_url: str = bas
     token = request.cookies.get("access_token")
     try:
         user = await decode_token(token, db)
-        return templates.TemplateResponse("driver_package.html", {"request": request,"user": user})
+        package = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.status == 1).all()
+        return templates.TemplateResponse("driver_package.html", {"request": request,"user": user, "package": package})
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
     
@@ -201,4 +206,26 @@ async def update_driver_endpoint(
     # Refresh the driver instance to reflect the changes
     db.refresh(driver)
     return RedirectResponse(f"/driver/edit/{driver_id}?success=Driver+information+updated+successfully!", status_code=302)
+
+
+    
+@driver.get("/package/purchase/{id}")
+async def update_driver_endpoint(
+    request: Request,
+    db:db_dependency,
+    id: int,):
+    token = request.cookies.get("access_token")
+    try:
+        user = await decode_token(token, db)
+        package = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.id == id).first()
+        driver = db.query(models.Drivers).filter(models.Drivers.id == user.id).first()
+        print(f"date: {id}")
+        driver.subscription_id = package.id
+        driver.subscription_status = 1
+        driver.subscription_at = datetime.now()
+        db.commit()
+        return RedirectResponse(f"/driver?success=Driver+subscription +successfully!", status_code=302)
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+    
 
