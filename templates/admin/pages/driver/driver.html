@@ -1,0 +1,278 @@
+{% include 'admin/layouts/header.html' %}
+		
+		<!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+            <!-- row -->	
+			<div class="page-titles">
+				<ol class="breadcrumb">
+					<li><h5 class="bc-title">Dashboard</h5></li>
+					<li class="breadcrumb-item"><a href="javascript:void(0)">
+						<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="../../external.html?link=http://www.w3.org/2000/svg">
+							<path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+							<path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+						Dashboard </a>
+					</li>
+					<li class="breadcrumb-item active"><a href="javascript:void(0)">Drivers</a></li>
+				</ol>
+				<a class="text-primary fs-13" data-bs-toggle="offcanvas" href="#offcanvasExample1" role="button" aria-controls="offcanvasExample1">+ Add Task</a>
+			</div>
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xl-12 bst-seller">
+						<div class="d-flex align-items-center justify-content-between mb-4">
+							<h4 class="heading mb-0">Drivers</h4>
+							<div class="d-flex align-items-center">
+								<button type="button" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-filter me-2"></i>Filter
+								</button>
+								
+								<a class="btn btn-primary btn-sm ms-2" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">+ Add Driver</a>
+							</div>
+						</div>
+						<div class="card h-auto">
+							<div class="card-body p-0">
+								<div class="table-responsive active-projects style-1 dt-filter exports">
+									<div class="tbl-caption">
+									</div>
+									<table id="customer-tbl" class="table shorting">
+										<thead>
+                                            <tr>
+												<th class="">
+													<div class="form-check custom-checkbox ms-0">
+														<input type="checkbox" class="form-check-input" id="checkAll" required="">
+														<label class="form-check-label" for="checkAll"></label>
+													</div>
+												</th>
+                                                <th>Driver ID</th>
+                                                <th>Full Name</th>
+                                                <th>User Type</th>
+                                                <th>Email Address</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+										<tbody>
+											{% for driver in drivers %}
+											<tr>
+												<td>
+													<div class="form-check custom-checkbox">
+														<input type="checkbox" class="form-check-input" id="customCheckBox022" required="">
+														<label class="form-check-label" for="customCheckBox022"></label>
+													</div>
+												</td>
+												<td><span>00{{ driver.id }}</span></td>
+												<td>
+													<div class="products">
+														<img src="{{ url_for('assets', path='/upload/profile/') }}{{driver.image}}" class="avatar avatar-md" alt="">
+														<div>
+															<h6><a href="app-profile-2.html">{{ driver.full_name }}</a></h6>
+															<span>{{ driver.full_name }}</span>	
+														</div>	
+													</div>
+												</td>
+												<td><span>{{ driver.user_type }}</span></td>
+												<td><a href="javascript:void(0)" class="text-primary">{{ driver.email }}</a></td>
+												<td>
+													{% if driver.status == 1 %}
+													<span class="badge badge-success light border-0">Active</span>
+													{% elif driver.status == 2 %}
+													<span class="badge badge-danger light border-0">Inactive</span>
+													{% endif %}
+												</td>
+												<td>
+													<a href="/driver/edit/{{driver.id}}">
+														<button type="button" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-edit me-2"></i>Edit</button>
+													</a>
+													{% if driver.status == 1 %}
+													<a href="/driver/inactive/{{driver.id}}">
+														<button type="button" class="btn btn-danger btn-sm me-2"><i class="fa-solid fa-exchange me-2"></i>Inactive</button>
+													</a>
+													{% elif driver.status == 2 %}
+													<a href="/driver/active/{{driver.id}}">
+														<button type="button" class="btn btn-success btn-sm me-2"><i class="fa-solid fa-exchange me-2"></i>Active</button>
+													</a>
+													{% endif %}
+												</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			
+			</div>
+        </div>
+		
+        <!--**********************************
+            Content body end
+        ***********************************-->
+		<div class="offcanvas offcanvas-end customeoff" tabindex="-1" id="offcanvasExample">
+		  <div class="offcanvas-header">
+		  <h5 class="modal-title" id="#gridSystemModal">Add Driver</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+				<i class="fa-solid fa-xmark"></i>
+			</button>
+		  </div>
+		  <div class="offcanvas-body">
+			<div class="container-fluid">
+				<form id="driverForm" action="/driver/register/submit" class="dropzone" enctype="multipart/form-data" method="post">
+					<div>
+						<label>Profile Picture</label>
+						<div class="dz-default dlab-message upload-img mb-3">	
+								<svg width="41" height="40" viewBox="0 0 41 40" fill="none" xmlns="../../external.html?link=http://www.w3.org/2000/svg">
+									<path d="M27.1666 26.6667L20.4999 20L13.8333 26.6667" stroke="#DADADA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+									<path d="M20.5 20V35" stroke="#DADADA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+									<path d="M34.4833 30.6501C36.1088 29.7638 37.393 28.3615 38.1331 26.6644C38.8731 24.9673 39.027 23.0721 38.5703 21.2779C38.1136 19.4836 37.0724 17.8926 35.6111 16.7558C34.1497 15.619 32.3514 15.0013 30.4999 15.0001H28.3999C27.8955 13.0488 26.9552 11.2373 25.6498 9.70171C24.3445 8.16614 22.708 6.94647 20.8634 6.1344C19.0189 5.32233 17.0142 4.93899 15.0001 5.01319C12.9861 5.0874 11.015 5.61722 9.23523 6.56283C7.45541 7.50844 5.91312 8.84523 4.7243 10.4727C3.53549 12.1002 2.73108 13.9759 2.37157 15.959C2.01205 17.9421 2.10678 19.9809 2.64862 21.9222C3.19047 23.8634 4.16534 25.6565 5.49994 27.1667" stroke="#DADADA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+									<path d="M27.1666 26.6667L20.4999 20L13.8333 26.6667" stroke="#DADADA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+								<div class="fallback">
+									<input name="image" type="file" multiple>
+								</div>
+						</div>	
+					</div>
+					<div class="row">
+						<div class="col-xl-6 mb-3">
+							<label for="exampleFormControlInput2" class="form-label">Driver Name<span class="text-danger">*</span></label>
+							<input type="text" class="form-control" name="name" id="exampleFormControlInput2" placeholder="">
+						</div>	
+						<div class="col-xl-6 mb-3">
+							<label for="exampleFormControlInput3" class="form-label">Driver Email<span class="text-danger">*</span></label>
+							<input type="email" class="form-control" name="email" id="exampleFormControlInput3" placeholder="">
+						</div>
+						<div class="col-xl-6 mb-3">
+							<label for="exampleFormControlInput4" class="form-label">Password<span class="text-danger">*</span></label>
+							<input type="password" class="form-control" name="password" id="exampleFormControlInput4" placeholder="">
+						</div>
+						<div class="col-xl-6 mb-3">
+							<label for="exampleFormControlInput4" class="form-label">Confirm Password<span class="text-danger">*</span></label>
+							<input type="password" class="form-control" name="confirm_password" id="exampleFormControlInput4" placeholder="">
+						</div>
+					<div>
+						<button class="btn btn-danger light me-1">Cancel</button>
+						<button class="btn btn-primary me-1" type="button" onclick="newDriver()">Submit</button>
+					</div>
+				</form>
+			  </div>
+		  </div>
+		</div>		
+		
+		<div class="offcanvas offcanvas-end customeoff" tabindex="-1" id="offcanvasExample1">
+		  <div class="offcanvas-header">
+		  <h5 class="modal-title" id="#gridSystemModal1">Add New Task</h5>
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
+				<i class="fa-solid fa-xmark"></i>
+			</button>
+		  </div>
+		  <div class="offcanvas-body">
+			<div class="container-fluid">
+				<form>
+					<div class="row">
+						<div class="col-xl-6 mb-3">
+							<label for="exampleFormControlInputfirst" class="form-label">Title<span class="text-danger">*</span></label>
+							<input type="text" class="form-control" id="exampleFormControlInputfirst" placeholder="Title">
+						</div>	
+						<div class="col-xl-6 mb-3">
+							<label class="form-label">Project<span class="text-danger">*</span></label>
+							<select class="default-select style-1 form-control">
+								<option  data-display="Select">Project</option>
+								<option value="html">Salesmate</option>
+								<option value="css">ActiveCampaign</option>
+								<option value="javascript">Insightly</option>
+							</select>
+						</div>	
+						<div class="col-xl-6 mb-3">
+							<label for="exampleFormControlInputthree" class="form-label">Start Date<span class="text-danger">*</span></label>
+							<input type="date" class="form-control" id="exampleFormControlInputthree">
+						</div>
+						<div class="col-xl-6 mb-3">
+							<label for="exampleFormControlInputfour" class="form-label">End Date<span class="text-danger">*</span></label>
+							<input type="date" class="form-control" id="exampleFormControlInputfour">
+						</div>
+						<div class="col-xl-6 mb-3">
+							<label class="form-label">Estimated Hour<span class="text-danger">*</span></label>
+							<div class="input-group">
+								<input type="text" class="form-control" value="09:30"><span class="input-group-text"><i
+											class="fas fa-clock"></i></span>
+                            </div>
+						</div>
+						<div class="col-xl-6 mb-3">
+							<label class="form-label">Status<span class="text-danger">*</span></label>
+							<select class="default-select style-1 form-control">
+								<option  data-display="Select">Status</option>
+								<option value="html">In Progess</option>
+								<option value="css">Pending</option>
+								<option value="javascript">Completed</option>
+							</select>
+						</div>
+						<div class="col-xl-6 mb-3">
+							<label class="form-label">priority<span class="text-danger">*</span></label>
+							<select class="default-select style-1 form-control">
+								<option  data-display="Select">priority</option>
+								<option value="html">Hight</option>
+								<option value="css">Medium</option>
+								<option value="javascript">Low</option>
+							</select>
+						</div>
+						<div class="col-xl-6 mb-3">
+							<label class="form-label">Category<span class="text-danger">*</span></label>
+							<select class="default-select style-1 form-control">
+								<option  data-display="Select">Category</option>
+								<option value="html">Designing</option>
+								<option value="css">Development</option>
+								<option value="javascript">react developer</option>
+							</select>
+						</div>
+						<div class="col-xl-6 mb-3">
+							<label class="form-label">Permission<span class="text-danger">*</span></label>
+							<select class="default-select style-1 form-control">
+								<option  data-display="Select">Permission</option>
+								<option value="html">Public</option>
+								<option value="css">Private</option>
+							</select>
+						</div>
+						<div class="col-xl-6 mb-3">
+							<label class="form-label">Deadline add<span class="text-danger">*</span></label>
+							<select class="default-select style-1 form-control">
+								<option  data-display="Select">Deadline</option>
+								<option value="html">Yes</option>
+								<option value="css">No</option>
+							</select>
+						</div>
+						<div class="col-xl-6 mb-3">
+							<label class="form-label">Assigned to<span class="text-danger">*</span></label>
+							<select class="default-select style-1 form-control">
+								<option  data-display="Select">Assigned</option>
+								<option value="html">Bernard</option>
+								<option value="css">Sergey Brin</option>
+								<option value="javascript"> Larry Ellison</option>
+							</select>
+						</div>
+						<div class="col-xl-6 mb-3">
+							<label class="form-label">Responsible Person<span class="text-danger">*</span></label>
+							<input name='tagify' class="form-control py-0 ps-0" value='James, Harry'>
+							
+						</div>
+						<div class="col-xl-12 mb-3">
+							<label class="form-label">Description<span class="text-danger">*</span></label>
+							<textarea rows="3" class="form-control"></textarea>
+						</div>
+						<div class="col-xl-12 mb-3">
+							<label class="form-label">Summary<span class="text-danger">*</span></label>
+							<textarea rows="3" class="form-control"></textarea>
+						</div>
+						
+					</div>
+					<div>
+						<button class="btn btn-danger light me-1">Cancel</button>
+						<button class="btn btn-primary me-1">Help Desk</button>
+					</div>
+				</form>
+			  </div>
+		  </div>
+		</div>	
+	{% include 'admin/layouts/footer.html' %}

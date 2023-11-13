@@ -95,17 +95,16 @@ async def read_root(request: Request, db: db_dependency,base_url: str = base_url
     success_customer = request.query_params.get("success_customer")
     success_driver = request.query_params.get("success_driver")
     token = request.cookies.get("access_token")
-    
     try:
         user = await decode_token(token, db)
+        print(user)
 
-        # if hasattr(user, 'user_type') and user.user_type == 3:
-            # print(f"User Information: {user.dict()}")
-        return templates.TemplateResponse("admin/pages/dashboard/dashboard.html", {"user": user, "base_url": base_url, "request": request, "error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
-        # else:
-        #     print("User is not authorized (user_type is not 3)")
-        #     logout(request)
-        #     return RedirectResponse("/admin/login?error=You+are+not+authorized", 302)
+        if hasattr(user, 'user_type') and user.user_type == 3:
+            return templates.TemplateResponse("admin/pages/dashboard/dashboard.html", {"user": user, "base_url": base_url, "request": request, "error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
+        else:
+            print("User is not authorized (user_type is not 3)")
+            logout(request)
+            return RedirectResponse("/admin/login?error=You+are+not+authorized", 302)
         
     except TokenDecodeError as e:
         print(f"Token Decoding Error: {e}")

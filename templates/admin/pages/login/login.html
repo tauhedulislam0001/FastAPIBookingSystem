@@ -1,95 +1,104 @@
+
 <!DOCTYPE html>
-<html lang="en">
-  
+<html lang="en" class="h-100">
+
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Mofi admin is super flexible, powerful, clean &amp; modern responsive bootstrap 5 admin template with unlimited possibilities.">
-    <meta name="keywords" content="admin template, Mofi admin template, dashboard template, flat admin template, responsive admin template, web app">
-    <meta name="author" content="pixelstrap">
-    <link rel="icon" href="{{ url_for('admin-assets', path='images/favicon.png') }}" type="image/x-icon">
-    <link rel="shortcut icon" href="{{ url_for('admin-assets', path='images/favicon.png') }}" type="image/x-icon">
-    <title>Admin Login | Garibook</title>
-    <!-- Google font-->
-    <link rel="preconnect" href="{{ url_for('admin-assets', path='fonts.googleapis.com/index.html') }}">
-    <link rel="preconnect" href="{{ url_for('admin-assets', path='fonts.gstatic.com/index.html') }}" crossorigin="">
-    <link href="{{ url_for('admin-assets', path='fonts.googleapis.com/css2e6d1.css?family=Outfit:wght@100;200;300;400;500;600;700;800;900&amp;display=swap') }}" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('admin-assets', path='css/font-awesome.css') }}">
-    <!-- ico-font-->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('admin-assets', path='css/vendors/icofont.css') }}">
-    <!-- Themify icon-->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('admin-assets', path='css/vendors/themify.css') }}">
-    <!-- Flag icon-->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('admin-assets', path='css/vendors/flag-icon.css') }}">
-    <!-- Feather icon-->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('admin-assets', path='css/vendors/feather-icon.css') }}">
-    <!-- Plugins css start-->
-    <!-- Plugins css Ends-->
-    <!-- Bootstrap css-->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('admin-assets', path='css/vendors/bootstrap.css') }}">
-    <!-- App css-->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('admin-assets', path='css/style.css') }}">
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="keywords" content="">
+	<meta name="author" content="">
+	<meta name="robots" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="W3crm:Customer Relationship Management Admin Bootstrap 5 Template">
+	<meta property="og:title" content="W3crm:Customer Relationship Management Admin Bootstrap 5 Template">
+	<meta property="og:description" content="W3crm:Customer Relationship Management Admin Bootstrap 5 Template">
+	<meta property="og:image" content="https://w3crm.dexignzone.com/xhtml/social-image.png">
+	<meta name="format-detection" content="telephone=no">
+	
+	<!-- PAGE TITLE HERE -->
+	<title>Admin Login | Garibook</title>
+	
+	<!-- FAVICONS ICON -->
+	<link rel="shortcut icon" type="image/png" href="{{ url_for('admin-assets', path='images/favicon.png') }}">
+	<link href="{{ url_for('admin-assets', path='vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}" rel="stylesheet">
+   <link href="{{ url_for('admin-assets', path='css/style.css') }}" rel="stylesheet">
 
+</head>
 
-    <link id="color" rel="stylesheet" href="{{ url_for('admin-assets', path='css/color-1.css') }}" media="screen">
-    <!-- Responsive css-->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('admin-assets', path='css/responsive.css') }}">
-  </head>
-  <body>
-    <!-- login page start-->
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-xl-5"><img class="bg-img-cover bg-center" src="{{ url_for('admin-assets', path='images/login/3.jpg') }}" alt="looginpage"></div>
-        <div class="col-xl-7 p-0">    
-          <div class="login-card login-dark">
-            <div>
-              <div><a class="logo text-start" href="index.html"><img class="img-fluid for-light" src="{{ url_for('admin-assets', path='images/logo/logo.png') }}" alt="looginpage"><img class="img-fluid for-dark" src="../assets/images/logo/logo_dark.png" alt="looginpage"></a></div>
-              <div class="login-main"> 
-                <form class="theme-form" action="/admin/login/submit" method="post">
-                  <h4>Sign in to account</h4>
-                  <p>Enter your email & password to login</p>
-                  <div class="form-group">
-                    <label class="col-form-label">Email Address</label>
-                    <input class="form-control" type="email" name="email" required placeholder="Test@gmail.com">
-                  </div>
-                  <div class="form-group">
-                    <label class="col-form-label">Password</label>
-                    <div class="form-input position-relative">
-                      <input class="form-control" type="password" name="password" required placeholder="*********">
-                      <div class="show-hide"><span class="show">                         </span></div>
-                    </div>
-                  </div>
-                  <div class="form-group mb-0">
-                    <div class="checkbox p-0">
-                      <input id="checkbox1" type="checkbox">
-                      <label class="text-muted" for="checkbox1">Remember password</label>
-                    </div>
-                    <button class="btn btn-primary btn-block w-100" type="submit">Sign in</button>
-                  </div>
-                </form>
-              </div>
+<body class="vh-100">
+    <div class="authincation h-100">
+        <div class="container-fluid h-100">
+            <div class="row h-100">
+				<div class="col-lg-6 col-md-12 col-sm-12 mx-auto align-self-center">
+					<div class="login-form">
+						<div class="text-center">
+							<h3 class="title">Sign In</h3>
+							<p>Sign in to your account to start using Garibook</p>
+						</div>
+						<form action="/admin/login/submit" method="post">
+							<div class="mb-4">
+								<label class="mb-1 text-dark">Email</label>
+								<input type="email" name="email" class="form-control form-control" value="hello@example.com">
+							</div>
+							<div class="mb-4 position-relative">
+								<label class="mb-1 text-dark">Password</label>
+								<input type="password" id="dz-password" name="password" class="form-control" value="123456">
+								<span class="show-pass eye">
+									<i class="fa fa-eye-slash"></i>
+									<i class="fa fa-eye"></i>
+								</span>
+							</div>
+							<div class="form-row d-flex justify-content-between mt-4 mb-2">
+								<div class="mb-4">
+									<a href="page-forgot-password.html" class="btn-link text-primary">Forgot Password?</a>
+								</div>
+							</div>
+							<div class="text-center mb-4">
+								<button type="submit" class="btn btn-primary btn-block">Sign In</button>
+							</div>
+							<h6 class="login-title"><span>Or continue with</span></h6>
+							
+							<div class="mb-3">
+								<ul class="d-flex align-self-center justify-content-center">
+									<li><a target="_blank" href="https://www.facebook.com/" class="fab fa-facebook-f btn-facebook"></a></li>
+									<li><a target="_blank" href="https://www.google.com/" class="fab fa-google-plus-g btn-google-plus mx-2"></a></li>
+									<li><a target="_blank" href="https://www.linkedin.com/" class="fab fa-linkedin-in btn-linkedin me-2"></a></li>
+									<li><a target="_blank" href="https://twitter.com/" class="fab fa-twitter btn-twitter"></a></li>
+								</ul>
+							</div>
+							<p class="text-center">Not registered?  
+								<a class="btn-link text-primary" href="page-register.html">Register</a>
+							</p>
+						</form>
+					</div>
+				</div>
+                <div class="col-xl-6 col-lg-6">
+					<div class="pages-left h-100">
+						<div class="login-content">
+							<a href="/admin/login"><img src="{{ url_for('admin-assets', path='images/logo.png') }}" width="200px" class="mb-3 logo-dark" alt=""></a>
+							<a href="/admin/login"><img src="{{ url_for('admin-assets', path='images/logi_white.png') }}" class="mb-3 logo-light" alt=""></a>
+							
+							<p>CRM dashboard uses line charts to visualize customer-related metrics and trends over time.</p>
+						</div>
+						<div class="login-media text-center">
+							<img src="images/login.png" alt="">
+						</div>
+					</div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-      <!-- latest jquery-->
-      <script src="{{ url_for('admin-assets', path='js/jquery.min.js') }}"></script>
-      <!-- Bootstrap js-->
-      <script src="{{ url_for('admin-assets', path='js/bootstrap/bootstrap.bundle.min.js') }}"></script>
-      <!-- feather icon js-->
-      <script src="{{ url_for('admin-assets', path='js/icons/feather-icon/feather.min.js') }}"></script>
-      <script src="{{ url_for('admin-assets', path='js/icons/feather-icon/feather-icon.js') }}"></script>
-      <!-- scrollbar js-->
-      <!-- Sidebar jquery-->
-      <script src="{{ url_for('admin-assets', path='js/config.js') }}"></script>
-      <!-- Plugins JS start-->
-      <!-- calendar js-->
-      <!-- Plugins JS Ends-->
-      <!-- Theme js-->
-      <script src="{{ url_for('admin-assets', path='js/script.js') }}"></script>
-      <!-- Plugin used-->
     </div>
-  </body>
 
+<!--**********************************
+	Scripts
+***********************************-->
+<!-- Required vendors -->
+ <script src="{{ url_for('admin-assets', path='vendor/global/global.min.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='vendor/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='js/deznav-init.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='js/demo.js') }}"></script>
+  <script src="{{ url_for('admin-assets', path='js/custom.js') }}"></script>
+<script src="{{ url_for('admin-assets', path='js/styleSwitcher.js') }}"></script>
+
+</body>
 </html>
