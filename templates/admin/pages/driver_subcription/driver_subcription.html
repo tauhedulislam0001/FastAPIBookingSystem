@@ -67,7 +67,7 @@
 												<td><span>00{{ row.id }}</span></td>
 												<td><span>{{ row.package_name }}</span></td>
 												<td><span>{{ row.package_description }}</span></td>
-												<td><span>{{ row.package_duration }}</span></td>
+												<td><span>{{ row.package_duration }} days</span></td>
 												<td><a href="javascript:void(0)" class="text-primary">{{ row.amount }}</a></td>
 												<td>
 													{% if row.status == 1 %}
@@ -85,7 +85,7 @@
 													<a href="/driver-subscription/inactive/{{row.id}}">
 														<button type="button" class="btn btn-danger btn-sm me-2"><i class="fa-solid fa-exchange me-2"></i>Inactive</button>
 													</a>
-													{% elif row.status == 2 %}
+													{% elif row.status == 0 %}
 													<a href="/driver-subscription/active/{{row.id}}">
 														<button type="button" class="btn btn-success btn-sm me-2"><i class="fa-solid fa-exchange me-2"></i>Active</button>
 													</a>
@@ -233,11 +233,6 @@
 								<option value="css">Sergey Brin</option>
 								<option value="javascript"> Larry Ellison</option>
 							</select>
-						</div>
-						<div class="col-xl-6 mb-3">
-							<label class="form-label">Responsible Person<span class="text-danger">*</span></label>
-							<input name='tagify' class="form-control py-0 ps-0" value='James, Harry'>
-							
 						</div>
 						<div class="col-xl-12 mb-3">
 							<label class="form-label">Description<span class="text-danger">*</span></label>

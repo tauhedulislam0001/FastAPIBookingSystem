@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session
 from database import engine, SessionLocal, Base,get_db,base_url, db_dependency
 import models
 from datetime import datetime, timedelta
+from core.helper import truncated_description
+
 
 driverSubcription = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -64,4 +66,30 @@ async def update_driver_endpoint(
         return RedirectResponse("/driver-subscription/?error=Driver+are+not+authorized",302)
     except TokenDecodeError as e:
         return RedirectResponse("/driver-subscription/?error=Driver+subscription+not+added",302)
+    
+    
+@driverSubcription.get("/driver-subscription/active/{id}")
+async def active_status(id: int, db: Session = Depends(get_db)):
+    driver = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.id == id).first()
+
+    if not driver:
+        raise HTTPException(status_code=404, detail="Driver not found")
+
+    driver.status = 1
+    db.commit()
+
+    return RedirectResponse("/driver-subscription/?success=Driver+subcription+has+been+activated+successfully",302)
+
+
+@driverSubcription.get("/driver-subscription/inactive/{id}")
+async def active_status(id: int, db: Session = Depends(get_db)):
+    driver = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.id == id).first()
+
+    if not driver:
+        raise HTTPException(status_code=404, detail="Driver not found")
+
+    driver.status = 0
+    db.commit()
+
+    return RedirectResponse("/driver-subscription/?success=Driver+subcription+has+been+inactivated+successfully",302)
     
