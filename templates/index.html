@@ -429,22 +429,3 @@
 
 
 {% include 'layouts/footer.html' %}
-
-
-
-<script>
-	$(document).ready(function () {
-		setTimeout(function () {
-			$('#ToastAlert').toast('hide');
-			var urlParams = new URLSearchParams(window.location.search);
-			if (urlParams.has('error') && urlParams.get('error') === '{{error}}') {
-				urlParams.delete('error');
-				
-			}else if(urlParams.has('success') && urlParams.get('success') === '{{success}}'){
-				urlParams.delete('success');
-			}
-			var newUrl = window.location.pathname + '' + urlParams.toString();
-			window.history.replaceState({}, '', newUrl);
-		}, 5000);
-	});
-</script>
