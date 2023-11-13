@@ -71,6 +71,19 @@ class Drivers(Base):
     image = mapped_column(String)
     status = mapped_column(Integer)
     created_at = mapped_column(String)
+    
+
+class DriverSubscriptions(Base):
+    __tablename__ = "driver_subscriptions"
+    
+    
+    id = Column(Integer, primary_key=True, index=True)
+    driver_id = mapped_column(Integer)
+    package_duration = mapped_column(String)
+    amount = mapped_column(Integer)
+    validity = mapped_column(String)
+    status = mapped_column(Integer)
+    created_at = mapped_column(String)
 
 
 class Trips(Base):
