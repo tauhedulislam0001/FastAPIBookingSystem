@@ -49,10 +49,10 @@ async def register(
         image: UploadFile = File(...),
 ):
     if password != confirm_password:
-        return RedirectResponse("/?success_customer=Passwords+do+not+match", 302)
+        return RedirectResponse("/?success=Passwords+do+not+match", 302)
     existing_user = await get_user_by_email(email, db, models.Admins)
     if existing_user:
-        return RedirectResponse("/?success_customer=Email+already+exists", 302)
+        return RedirectResponse("/?success=Email+already+exists", 302)
     # hashed_password = pwd_context.hash(password)
     hashed_password = hashlib.md5(password.encode()).hexdigest()
     dir = "templates/admin/assets/profile_pic/"
@@ -68,7 +68,7 @@ async def register(
     db.add(register)
     db.commit()
     db.refresh(register)
-    return RedirectResponse("/?success_customer=Admin+Registration+successfully", 302)
+    return RedirectResponse("/?success=Admin+Registration+successfully", 302)
 
 
 @router.post("/customer/register/submit")

@@ -26,15 +26,11 @@ app.add_websocket_route("/socket.io/", sio_asgi_app)
 async def read_root(request: Request, db: Annotated[Session, Depends(get_db)],base_url: str = base_url):
     error = request.query_params.get("error")
     success = request.query_params.get("success")
-    error_driver = request.query_params.get("error_driver")
-    error_customer = request.query_params.get("error_customer")
-    success_customer = request.query_params.get("success_customer")
-    success_driver = request.query_params.get("success_driver")
     token = request.cookies.get("access_token")
     try:
         user = await decode_token(token, db)
         if user.user_type==2 :
-            return templates.TemplateResponse("driver_trip_list.html", {"user": user,"base_url": base_url,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
+            return templates.TemplateResponse("driver_trip_list.html", {"user": user,"base_url": base_url,"request": request,"error": error, "success": success})
         return RedirectResponse("/?error=You+are+not+authorized",302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
@@ -53,11 +49,7 @@ async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(g
         # Example: trips = db.query(models.Trips).filter(models.Trips.id == id).all()
         error = request.query_params.get("error")
         success = request.query_params.get("success")
-        error_driver = request.query_params.get("error_driver")
-        error_customer = request.query_params.get("error_customer")
-        success_customer = request.query_params.get("success_customer")
-        success_driver = request.query_params.get("success_driver")
-        return templates.TemplateResponse("driver_bid.html", {"user": user,"trips": trips_by_id,"base_url": base_url,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
+        return templates.TemplateResponse("driver_bid.html", {"user": user,"trips": trips_by_id,"base_url": base_url,"request": request,"error": error, "success": success})
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
 
@@ -87,7 +79,7 @@ async def bid_store(
     amount: int = Form(None)
     ):
     if  amount is None:
-        return RedirectResponse(url=f"/bid/submit/{id}?success_customer=Amount is required", status_code=302)
+        return RedirectResponse(url=f"/bid/submit/{id}?success=Amount is required", status_code=302)
     token = request.cookies.get("access_token")
     try:
         user = await decode_token(token, db)
@@ -101,7 +93,7 @@ async def bid_store(
         db.refresh(BidsAdd)
         print(f"Bid: {BidsAdd.amount}")
         await sio.emit("BidList" + str(id), 'New Bid Store BidList' + str(id))
-        return RedirectResponse(url=f"/bid/submit/{id}?success_customer=Trips+Add+successfully", status_code=302)
+        return RedirectResponse(url=f"/bid/submit/{id}?success=Trips+Add+successfully", status_code=302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
     
@@ -112,17 +104,13 @@ async def bid_store(
 async def read_root(request: Request, db: db_dependency,base_url: str = base_url):
     error = request.query_params.get("error")
     success = request.query_params.get("success")
-    error_driver = request.query_params.get("error_driver")
-    error_customer = request.query_params.get("error_customer")
-    success_customer = request.query_params.get("success_customer")
-    success_driver = request.query_params.get("success_driver")
     token = request.cookies.get("access_token")
     try:
         user = await decode_token(token, db)
         if user.user_type==3 :
             # drivers = db.query(models.Drivers).all()
             drivers = db.query(models.Drivers).order_by(models.Drivers.id.desc()).all()
-            return templates.TemplateResponse("admin/pages/driver/driver.html", {"user": user, "drivers": drivers, "base_url": base_url,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
+            return templates.TemplateResponse("admin/pages/driver/driver.html", {"user": user, "drivers": drivers, "base_url": base_url,"request": request,"error": error, "success": success})
         return RedirectResponse("/?error=You+are+not+authorized",302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
@@ -164,16 +152,12 @@ async def active_status(id: int, request: Request, db: db_dependency, base_url: 
 
     error = request.query_params.get("error")
     success = request.query_params.get("success")
-    error_driver = request.query_params.get("error_driver")
-    error_customer = request.query_params.get("error_customer")
-    success_customer = request.query_params.get("success_customer")
-    success_driver = request.query_params.get("success_driver")
     token = request.cookies.get("access_token")
     
     try:
         user = await decode_token(token, db)
         if user.user_type==3 :
-            return templates.TemplateResponse("admin/pages/driver/driverUpdate.html", {"user": user, "driver": driver, "base_url": base_url,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
+            return templates.TemplateResponse("admin/pages/driver/driverUpdate.html", {"user": user, "driver": driver, "base_url": base_url,"request": request,"error": error, "success": success})
         return RedirectResponse("/?error=You+are+not+authorized",302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
