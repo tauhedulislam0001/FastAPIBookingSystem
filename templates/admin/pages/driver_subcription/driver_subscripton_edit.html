@@ -1,0 +1,105 @@
+{% include 'admin/layouts/header.html' %}
+		
+        <!--**********************************
+            Content body end
+        ***********************************-->
+		<div class="content-body">
+			<div class="page-titles">
+				<ol class="breadcrumb">
+					<li><h5 class="bc-title">Dashboard</h5></li>
+					<li class="breadcrumb-item"><a href="javascript:void(0)">
+						<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="../../external.html?link=http://www.w3.org/2000/svg">
+							<path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+							<path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+						Drivers </a>
+					</li>
+					<li class="breadcrumb-item active"><a href="javascript:void(0)">Subscription information update</a></li>
+				</ol>
+			</div>
+            <!-- row -->
+			<div class="container-fluid">
+				<!-- row -->
+				<div class="row">
+					<div class="col-xl-3 col-lg-4">
+						<div class="clearfix">
+							<div class="card card-bx profile-card author-profile m-b30">
+								<div class="card-body">
+									<div class="p-5">
+										<div class="author-profile">
+											<div class="author-media">
+												<img src="{{ url_for('admin-assets', path='/images/logo.png/') }}" width="2px" alt="">
+												<div class="upload-link" title="" data-toggle="tooltip" data-placement="right" data-original-title="update">
+													<input type="file" class="update-flie">
+													<i class="fa fa-camera"></i>
+												</div>
+											</div>
+											<div class="author-info">
+												<h6 class="title">{{driverSubscription.package_name}}</h6>
+											</div>
+										</div>
+									</div>
+									<div class="info-list">
+										<ul>
+											<li><a href="/driver/subscription">Subscription name</a>{{ driverSubscription.package_name }}</li>
+											<li><a href="uc-lightgallery.html">Subscription Status</a><span>
+												{% if driverSubscription.status == 1 %}
+													<span class="badge badge-success light border-0">Active</span>
+												{% elif driverSubscription.status == 0 %}
+													<span class="badge badge-danger light border-0">Inactive</span>
+												{% endif %}
+											</span></li>
+											<li><a href="app-profile.html">Created at</a><span>{{ (driverSubscription.created_at) }} Days</span></li>
+										</ul>
+									</div>
+								</div>
+								<div class="card-footer">
+									<div class="input-group mb-3">
+										<div class="form-control rounded text-center bg-white">Portfolio</div>
+									</div>
+									<div class="input-group">
+										<a href="https://www.garibook.com/" target="_blank" class="form-control text-primary rounded text-start bg-white">https://www.garibook.com/</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-9 col-lg-8">
+						<div class="card profile-card card-bx m-b30">
+							<div class="card-header">
+								<h6 class="title">Account setup</h6>
+							</div>
+							<form class="profile-form" method="post" action="/driver-subscription/update/{{driverSubscription.id}}">
+								<div class="card-body">
+									<div class="row">
+										<div class="col-sm-6 m-b30">
+											<label class="form-label">Packeage Name</label>
+											<input type="text" name="package_name" class="form-control" value="{{driverSubscription.package_name}}">
+										</div>
+										<div class="col-sm-6 m-b30">
+											<label class="form-label">Package Description</label>
+											<textarea name="package_description" class="form-control" id="" cols="30" rows="3">{{ driverSubscription.package_description }}</textarea>
+										</div>
+										<div class="col-sm-6 m-b30">
+											<label class="form-label">Package Duration</label>
+											<input type="text" name="package_duration" class="form-control" value="{{driverSubscription.package_duration}}">
+										</div>
+										<div class="col-sm-6 m-b30">
+											<label class="form-label">Package Amount</label>
+											<input type="text" name="amount" class="form-control" value="{{driverSubscription.amount}}">
+										</div>
+									</div>
+								</div>
+								<div class="card-footer">
+									<button class="btn btn-primary" type="submit">UPDATE</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+            </div>
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+	{% include 'admin/layouts/footer.html' %}
