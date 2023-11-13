@@ -37,6 +37,19 @@ class Customers(Base):
     status = Column(Integer, default=1)
     created_at = Column(TIMESTAMP, default=func.now())
     
+
+class DriverSubscriptions(Base):
+    __tablename__ = "driver_subscriptions"
+    
+    
+    id = Column(Integer, primary_key=True, index=True)
+    driver_id = Column(Integer)
+    package_duration = Column(String)
+    amount = Column(Integer)
+    validity = Column(String)
+    status = Column(Integer, default=1)
+    created_at = Column(TIMESTAMP, default=func.now())
+    
     
 class Drivers(Base):
     __tablename__ = "drivers"
@@ -51,10 +64,9 @@ class Drivers(Base):
     refresh_token = Column(String(300), default=None)
     image = Column(String(100))
     status = Column(Integer, default=1)
+    subscription_status = Column(Integer, default=0)
     created_at = Column(TIMESTAMP, default=func.now())
     
-
-
 
 class Trips(Base):
     __tablename__ = "trips"
