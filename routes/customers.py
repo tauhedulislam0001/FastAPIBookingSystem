@@ -30,15 +30,11 @@ app.add_websocket_route("/socket.io/", sio_asgi_app)
 async def read_root(request: Request,db:Annotated[Session, Depends(get_db)]):
     error = request.query_params.get("error")
     success = request.query_params.get("success")
-    error_driver = request.query_params.get("error_driver")
-    error_customer = request.query_params.get("error_customer")
-    success_customer = request.query_params.get("success_customer")
-    success_driver = request.query_params.get("success_driver")
     token = request.cookies.get("access_token")
     try:
         user = await decode_token(token, db)
         if user.user_type==1 :
-            return templates.TemplateResponse("customer_request_trip.html", {"user": user,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
+            return templates.TemplateResponse("customer_request_trip.html", {"user": user,"request": request,"error": error, "success": success})
         return RedirectResponse("/?error=You+are+not+authorized",302)
 
     except TokenDecodeError as e:
@@ -48,15 +44,11 @@ async def read_root(request: Request,db:Annotated[Session, Depends(get_db)]):
 async def read_root(request: Request,db:Annotated[Session, Depends(get_db)],base_url: str = base_url):
     error = request.query_params.get("error")
     success = request.query_params.get("success")
-    error_driver = request.query_params.get("error_driver")
-    error_customer = request.query_params.get("error_customer")
-    success_customer = request.query_params.get("success_customer")
-    success_driver = request.query_params.get("success_driver")
     token = request.cookies.get("access_token")
     try:
         user = await decode_token(token, db)
         if user.user_type==1 :
-            return templates.TemplateResponse("customer_accept_trips.html", {"user": user,"base_url": base_url,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
+            return templates.TemplateResponse("customer_accept_trips.html", {"user": user,"base_url": base_url,"request": request,"error": error, "success": success})
         return RedirectResponse("/?error=You+are+not+authorized",302)
 
     except TokenDecodeError as e:
@@ -92,7 +84,7 @@ async def trip_store(
         db.refresh(tripsAdd)
         print(f"trips: {tripsAdd.car_name}")
         await sio.emit("tripList",'New Trip Store')
-        return RedirectResponse("/customer?success_customer=Trips+Add+successfully",302)
+        return RedirectResponse("/customer?success=Trips+Add+successfully",302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
    
@@ -134,11 +126,7 @@ async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(g
         # Example: trips = db.query(models.Trips).filter(models.Trips.id == id).all()
         error = request.query_params.get("error")
         success = request.query_params.get("success")
-        error_driver = request.query_params.get("error_driver")
-        error_customer = request.query_params.get("error_customer")
-        success_customer = request.query_params.get("success_customer")
-        success_driver = request.query_params.get("success_driver")
-        return templates.TemplateResponse("customer_bid.html", {"user": user,"trips": trips_by_id,"base_url": base_url,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
+        return templates.TemplateResponse("customer_bid.html", {"user": user,"trips": trips_by_id,"base_url": base_url,"request": request,"error": error, "success": success})
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
     
@@ -156,6 +144,6 @@ async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(g
             db.commit()
             db.refresh(TripAccept)
             await sio.emit("TripAccept" + str(bid.trip_id), 'Trip Accepted' + str(bid.trip_id))
-            return RedirectResponse(url=f"/trip/accept?success_customer=Trips+Accept+successfully", status_code=302)
+            return RedirectResponse(url=f"/trip/accept?success=Trips+Accept+successfully", status_code=302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
