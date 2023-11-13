@@ -12,6 +12,7 @@ from sqlalchemy.ext.declarative import declarative_base
 import routes.auth
 import routes.drivers
 import routes.customers
+import routes.admins
 from jose import JWTError, jwt
 from core.utils import ALGORITHM, JWT_SECRET_KEY, decode_token, TokenDecodeError
 from core.helper import get_user_by_email
@@ -23,7 +24,9 @@ app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 templates = Jinja2Templates(directory="templates")
 app.mount("/assets", StaticFiles(directory="templates/assets"), name="assets")
+app.mount("/admin/assets", StaticFiles(directory="templates/admin/assets"), name="admin-assets")
 app.include_router(routes.auth.router)
+app.include_router(routes.admins.admin)
 from middleware.CheckUser import UserCheck
 # Start Socket 
 from core.socket_manager import get_socketio_asgi_app
@@ -107,7 +110,7 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 
 @app.get("/")
-async def read_root(request: Request, db: Annotated[Session, Depends(get_db)]):
+async def read_root(request: Request, db: db_dependency):
     error = request.query_params.get("error")
     success = request.query_params.get("success")
     error_driver = request.query_params.get("error_driver")
@@ -115,10 +118,10 @@ async def read_root(request: Request, db: Annotated[Session, Depends(get_db)]):
     success_customer = request.query_params.get("success_customer")
     success_driver = request.query_params.get("success_driver")
     token = request.cookies.get("access_token")
+    
     try:
         user = await decode_token(token, db)
-        return templates.TemplateResponse("index.html",
-                                          {"user": user, "request": request, "error": error, "success": success,
+        return templates.TemplateResponse("index.html", {"user": user, "request": request, "error": error, "success": success,
                                            "error_driver": error_driver, "success_customer": success_customer,
                                            "error_customer": error_customer, "success_driver": success_driver})
     except TokenDecodeError as e:
