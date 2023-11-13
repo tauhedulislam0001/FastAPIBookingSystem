@@ -79,7 +79,9 @@ section.section-padding{
     line-height: 25px;
     color: #595959;
 }
-
+.toast{
+    z-index: 9999 !important;
+}
 
 /* ====  banner section css START  ============ */
 .section {
@@ -250,7 +252,7 @@ section.section-padding{
 
 ::-webkit-scrollbar
 {
-    width: 12px;
+    width: 8px;
     background-color: #F5F5F5;
 }
 
@@ -258,7 +260,8 @@ section.section-padding{
 {
     box-shadow: inset 0 0 6px rgba(0,0,0,.3);
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-    background-color: #555;
+    background-color: #01aeef;
+    border-radius: 20px;
 }
 
 
@@ -340,7 +343,7 @@ section.section-padding{
     padding: 15px;
     border-radius: 8px;
 }
-img.car-image {
+img.scr-image {
     width: 100%;
     height: 250px;
     object-fit: cover;
@@ -422,7 +425,6 @@ img.car-image {
 }
 .footer .footer-top {
     position: relative;
-    z-index: 99;
     margin: 0;
     padding: 60px 0 20px;
 }
@@ -493,7 +495,6 @@ img.car-image {
     background: #201F1D;
     padding: 60px 0 60px;
     position: relative;
-    z-index: 1;
     width: 100%;
 }
 .breadcrumb-bar .breadcrumb-title {
@@ -522,4 +523,18 @@ img.car-image {
     position: relative;
     margin-top: -77px !important;
     z-index: 9;
+}
+
+.sw-icon>i {
+    font-size: 40px;
+    color: #01aeef;
+    margin: 20px;
+}
+.single-package-request{
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    position: relative;
+    border-radius: 8px;
+}
+.single-package-request > h2 {
+    font-size: 20px;
 }

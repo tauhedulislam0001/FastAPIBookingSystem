@@ -29,14 +29,6 @@
                                 <div class="row">
                                     <div class="col-md-4 col-sm-6 col-12">
                                         <div class="form-floating ">
-                                            <input required type="text" class="form-control" name="pick_up_location"
-                                                id="pickPoint" placeholder="Pick Up Location">
-
-                                            <label for="pickPoint">Pick Up Location</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-6 col-12">
-                                        <div class="form-floating ">
                                             <select required class="form-select" name="car_name" id="carType">
                                                 <option selected>Choose a Car Type</option>
                                                 <option value="Sedan">Sedan</option>
@@ -44,6 +36,14 @@
                                                 <option value="Hiace">Hiace</option>
                                             </select>
                                             <label for="carType">Car Type</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 col-12">
+                                        <div class="form-floating ">
+                                            <input required type="text" class="form-control" name="pick_up_location"
+                                                id="pickPoint" placeholder="Pick Up Location">
+
+                                            <label for="pickPoint">Pick Up Location</label>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-sm-6 col-12">
@@ -73,21 +73,23 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <table id="example" class="display nowrap table" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th scope="col">ID</th>
-                                    <th scope="col">Car Name</th>
-                                    <th scope="col">Pickup location </th>
-                                    <th scope="col">Destination</th>
-                                    <th scope="col">Booking Time</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="MyTripListShow">
-
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table id="example" class="display nowrap table" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Car Name</th>
+                                        <th scope="col">Pickup location </th>
+                                        <th scope="col">Destination</th>
+                                        <th scope="col">Booking Time</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="MyTripListShow">
+    
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

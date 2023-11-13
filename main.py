@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends, Request
-from fastapi.responses import HTMLResponse, RedirectResponse, Response
+from fastapi.responses import HTMLResponse, RedirectResponse, Response,JSONResponse
 from pydantic import BaseModel
 import models
 from database import engine, SessionLocal, Base
@@ -45,7 +45,6 @@ app.include_router(routes.drivers.driver)
 app.include_router(routes.customers.customer)
 
 
-
 def get_db() -> Session:
     db = SessionLocal()
     try:
@@ -56,6 +55,13 @@ def get_db() -> Session:
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
+@app.exception_handler(404)
+async def custom_404_handler(request, __):
+    return templates.TemplateResponse("404.html",{"request": request})
+
+@app.exception_handler(500)
+async def custom_404_handler(request, __):
+    return templates.TemplateResponse("500.html",{"request": request})
 
 @app.get("/")
 async def read_root(request: Request, db: db_dependency):
