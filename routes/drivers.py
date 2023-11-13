@@ -172,9 +172,13 @@ async def active_status(id: int, request: Request, db: db_dependency, base_url: 
     
 
 @driver.get("/driver/package")
-async def driver_package(request: Request):
-    return templates.TemplateResponse("driver_package.html", {"request": request})
-
+async def driver_package(request: Request, db: db_dependency,base_url: str = base_url):
+    token = request.cookies.get("access_token")
+    try:
+        user = await decode_token(token, db)
+        return templates.TemplateResponse("driver_package.html", {"request": request,"user": user})
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",302)
     
 @driver.post("/driver/update/{driver_id}")
 async def update_driver_endpoint(
