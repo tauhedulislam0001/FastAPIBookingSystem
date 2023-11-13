@@ -161,4 +161,10 @@ async def active_status(id: int, request: Request, db: db_dependency, base_url: 
         return RedirectResponse("/?error=You+are+not+authorized",302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
+    
+
+@driver.get("/driver/package")
+async def driver_package(request: Request):
+    return templates.TemplateResponse("driver_package.html", {"request": request})
+
 
