@@ -12,9 +12,9 @@
 							<path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
 							<path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
 						</svg>
-						Drivers </a>
+						Customers </a>
 					</li>
-					<li class="breadcrumb-item active"><a href="javascript:void(0)">Driver information update</a></li>
+					<li class="breadcrumb-item active"><a href="javascript:void(0)">Customer information update</a></li>
 				</ol>
 			</div>
             <!-- row -->
@@ -42,13 +42,7 @@
 									</div>
 									<div class="info-list">
 										<ul>
-											<li><a href="/customer/subscription">Customer subscription</a>
-												{% if customer.subscription_status == 1 %}
-													<span class="badge badge-success light border-0">Active</span>
-												{% elif customer.subscription_status == 0 %}
-													<span class="badge badge-danger light border-0">Inactive</span>
-												{% endif %}
-											</li>
+											<li><a href="/customer/subscription">Fullname</a>{{customer.name}}</li>
 											<li><a href="uc-lightgallery.html">Customer Status</a><span>
 												{% if customer.status == 1 %}
 													<span class="badge badge-success light border-0">Active</span>
@@ -56,7 +50,7 @@
 													<span class="badge badge-danger light border-0">Inactive</span>
 												{% endif %}
 											</span></li>
-											<li><a href="app-profile.html">Employement</a><span>{{ employement }} Days</span></li>
+											<li><a href="app-profile.html">With Garibook</a><span>{{ employement }} Days</span></li>
 										</ul>
 									</div>
 								</div>
@@ -76,7 +70,7 @@
 							<div class="card-header">
 								<h6 class="title">Account setup</h6>
 							</div>
-							<form class="profile-form" method="post" action="/customer/update/{{driver.id}}">
+							<form class="profile-form" method="post" action="/customer/update/{{customer.id}}">
 								<div class="card-body">
 									<div class="row">
 										<div class="col-sm-6 m-b30">

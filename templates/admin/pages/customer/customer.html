@@ -67,8 +67,8 @@
 													<div class="products">
 														<img src="{{ url_for('assets', path='/upload/profile/') }}{{customer.image}}" class="avatar avatar-md" alt="">
 														<div>
-															<h6><a href="app-profile-2.html">{{ customer.full_name }}</a></h6>
-															<span>{{ customer.full_name }}</span>	
+															<h6><a href="app-profile-2.html">{{ customer.name }}</a></h6>
+															<span>{{ customer.name }}</span>	
 														</div>	
 													</div>
 												</td>
@@ -86,7 +86,7 @@
 														<button type="button" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-edit me-2"></i>Edit</button>
 													</a>
 													{% if customer.status == 1 %}
-													<a href="/driver/inactive/{{customer.id}}">
+													<a href="/customer/inactive/{{customer.id}}">
 														<button type="button" class="btn btn-danger btn-sm me-2"><i class="fa-solid fa-exchange me-2"></i>Inactive</button>
 													</a>
 													{% elif customer.status == 0 %}
@@ -113,14 +113,14 @@
         ***********************************-->
 		<div class="offcanvas offcanvas-end customeoff" tabindex="-1" id="offcanvasExample">
 		  <div class="offcanvas-header">
-		  <h5 class="modal-title" id="#gridSystemModal">Add Driver</h5>
+		  <h5 class="modal-title" id="#gridSystemModal">Add Customer</h5>
 			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
 				<i class="fa-solid fa-xmark"></i>
 			</button>
 		  </div>
 		  <div class="offcanvas-body">
 			<div class="container-fluid">
-				<form id="driverForm" action="/driver/register/submit" class="dropzone" enctype="multipart/form-data" method="post">
+				<form id="customerForm" action="/customer/register/submit" class="dropzone" enctype="multipart/form-data" method="post">
 					<div>
 						<label>Profile Picture</label>
 						<div class="dz-default dlab-message upload-img mb-3">	
@@ -137,11 +137,11 @@
 					</div>
 					<div class="row">
 						<div class="col-xl-6 mb-3">
-							<label for="exampleFormControlInput2" class="form-label">Driver Name<span class="text-danger">*</span></label>
+							<label for="exampleFormControlInput2" class="form-label">Customer Name<span class="text-danger">*</span></label>
 							<input type="text" class="form-control" name="name" id="exampleFormControlInput2" placeholder="">
 						</div>	
 						<div class="col-xl-6 mb-3">
-							<label for="exampleFormControlInput3" class="form-label">Driver Email<span class="text-danger">*</span></label>
+							<label for="exampleFormControlInput3" class="form-label">Customer Email<span class="text-danger">*</span></label>
 							<input type="email" class="form-control" name="email" id="exampleFormControlInput3" placeholder="">
 						</div>
 						<div class="col-xl-6 mb-3">
@@ -154,7 +154,7 @@
 						</div>
 					<div>
 						<button class="btn btn-danger light me-1">Cancel</button>
-						<button class="btn btn-primary me-1" type="button" onclick="newDriver()">Submit</button>
+						<button class="btn btn-primary me-1" type="button" onclick="newCustomer()">Submit</button>
 					</div>
 				</form>
 			  </div>

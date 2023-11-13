@@ -164,7 +164,7 @@ async def active_status(id: int, request: Request, db: db_dependency, base_url: 
     try:
         user = await decode_token(token, db)
         if user.user_type==3 :
-            return templates.TemplateResponse("admin/pages/driver/driverUpdate.html", {"user": user, "employement":days_difference, "driver": driver, "base_url": base_url,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
+            return templates.TemplateResponse("admin/pages/driver/driverUpdate.html", {"user": user, "employement":days_difference, "driver": driver, "base_url": base_url,"request": request,"error": error, "success": success})
 
         return RedirectResponse("/?error=You+are+not+authorized",302)
     except TokenDecodeError as e:

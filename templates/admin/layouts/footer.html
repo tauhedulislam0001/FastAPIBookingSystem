@@ -117,6 +117,26 @@ function performLogout() {
         });
     }
 </script>
+
+<script>
+    function newCustomer() {
+        const formData = new FormData(document.getElementById('customerForm'));
+    
+        fetch('/customer/register/submit', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            window.location.href = '/customers';
+        })
+        .catch(error => {
+            console.error('Error during form submission:', error);
+        });
+    }
+</script>
 </body>
 
 </html>
