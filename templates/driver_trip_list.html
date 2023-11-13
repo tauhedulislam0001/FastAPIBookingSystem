@@ -25,35 +25,60 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <table id="example" class="display nowrap table" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th scope="col">ID</th>
-                                    <th scope="col">Car Name</th>
-                                    <th scope="col">Pickup location </th>
-                                    <th scope="col">Destination</th>
-                                    <th scope="col">Booking Time</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="TripListShow">
-                                <!-- <tr>
-                                    <th scope="row">23456</th>
-                                    <td>Toyota Corolla X</td>
-                                    <td><p class="text-success m-0">Mohammadpur (Dhaka) - Pirojpur (Barsal)</p></td>
-                                    <td><p class="text-success m-0"><b>Pick Time: </b> 12:00 PM</p> </td>
-                                    <td>
-                                        <button type="button" class="btn btn-info text-white">Bid Now</button>
-                                    </td>
-                                </tr> -->
-
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table id="example" class="display nowrap table" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Car Name</th>
+                                        <th scope="col">Pickup location </th>
+                                        <th scope="col">Destination</th>
+                                        <th scope="col">Booking Time</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="TripListShow">
+                                    <!-- <tr>
+                                        <th scope="row">23456</th>
+                                        <td>Toyota Corolla X</td>
+                                        <td><p class="text-success m-0">Mohammadpur (Dhaka) - Pirojpur (Barsal)</p></td>
+                                        <td><p class="text-success m-0"><b>Pick Time: </b> 12:00 PM</p> </td>
+                                        <td>
+                                            <button type="button" class="btn btn-info text-white">Bid Now</button>
+                                        </td>
+                                    </tr> -->
+    
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+
+
+    <!-- modal ID -->
+    <div class="modal fade" id="subscriptionModal" tabindex="-1" role="dialog" aria-labelledby="subscriptionModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="subscribe-wrapper text-center">
+                        <div class="sw-icon mb-2">
+                           <img src="{{ url_for('assets', path='image/icons/danger-icon.png') }}" alt="" width="80" height="80">
+                        </div>
+                        <div class="sw-content">
+                            <h4 class="text-danger">You are not Subscribed</h2>
+                            <p class="text-primary">Enjoy unlimited bidding after subscription</p>
+                            <a href="/driver/package" class="btn-theme-primary text-decoration-none d-block">Subscribe Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
 
@@ -98,9 +123,12 @@
                             row.append('<td><p class="text-success m-0">' + data[i].pick_up_location + '</p></td>');
                             row.append('<td><p class="text-success m-0">' + data[i].location + '</p></td>');
                             row.append('<td><p class="text-success m-0">' + formattedDate + '</p></td>');
-                            row.append('<td><a href="/bid/submit/' + data[i].id + '" class="btn btn-info text-white">Bid Now</a></td>');
+                            // row.append('<td><a href="/bid/submit/' + data[i].id + '" class="btn btn-info text-white" id="bid_now_button">Bid Now</a></td>');
+                            row.append('<td><a href="/bid/submit/' + data[i].id + '" class="btn btn-info text-white" id="bid_now_button">Bid Now</a></td>');
+
                             $('#TripListShow').append(row);
                         }
+                        console.log("i am 1st")
                     }
 
                     $('#example').DataTable({
@@ -110,6 +138,21 @@
                 }
             });
         }
+
+        $(document).ready(function(){
+            var isCheckSubscription = 0;
+            $(document).on("click", "#bid_now_button", function(event) {
+                event.preventDefault();
+
+                if (isCheckSubscription === 1) {
+                    var currentHref = $(this).attr("href");
+                    var newHref = currentHref;
+                    window.location.href = newHref;
+                } else {
+                    $("#subscriptionModal").modal('show');
+                }
+            });
+        })
 
     </script>
 
