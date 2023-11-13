@@ -7,6 +7,8 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from database import engine, SessionLocal, Base,get_db,base_url, db_dependency
 import models
+from datetime import datetime, timedelta
+
 
 driver = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -157,7 +159,12 @@ async def active_status(id: int, db: Session = Depends(get_db)):
 @driver.get("/driver/edit/{id}")
 async def active_status(id: int, request: Request, db: db_dependency, base_url: str = base_url):
     driver = db.query(models.Drivers).filter(models.Drivers.id == id).first()
-
+    created_at = driver.created_at
+    today_date = datetime.now()
+    
+    time_difference = today_date - created_at
+    days_difference = time_difference.days
+    
     if not driver:
         return RedirectResponse("drivers/?error=Driver+not+found",302)
 
@@ -172,8 +179,31 @@ async def active_status(id: int, request: Request, db: db_dependency, base_url: 
     try:
         user = await decode_token(token, db)
         if user.user_type==3 :
-            return templates.TemplateResponse("admin/pages/driver/driverUpdate.html", {"user": user, "driver": driver, "base_url": base_url,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
+            return templates.TemplateResponse("admin/pages/driver/driverUpdate.html", {"user": user, "employement":days_difference, "driver": driver, "base_url": base_url,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
         return RedirectResponse("/?error=You+are+not+authorized",302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
+    
+    
+@driver.post("/driver/update/{driver_id}")
+async def update_driver_endpoint(
+    request: Request,
+    db:db_dependency,
+    driver_id: int,
+    name: str = Form(...),
+    email: str = Form(...)):
+    
+    # Retrieve the existing driver from the database
+    driver = db.query(models.Drivers).filter(models.Drivers.id == driver_id).first()
+
+    if not driver:
+        raise HTTPException(status_code=404, detail="Driver not found")
+    
+    driver.name = name
+    driver.email = email
+    
+    db.commit()
+    # Refresh the driver instance to reflect the changes
+    db.refresh(driver)
+    return RedirectResponse(f"/driver/edit/{driver_id}?success=Driver+information+updated+successfully!", status_code=302)
 

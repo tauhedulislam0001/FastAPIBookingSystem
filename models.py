@@ -64,8 +64,8 @@ class Drivers(Base):
     refresh_token = Column(String(300), default=None)
     image = Column(String(100))
     status = Column(Integer, default=1)
-    subscription_status = Column(Integer, default=0)
     created_at = Column(TIMESTAMP, default=func.now())
+    subscription_status = Column(Integer, default=0)
     
 
 class Trips(Base):

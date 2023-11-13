@@ -70,7 +70,8 @@ class Drivers(Base):
     refresh_token = mapped_column(String)
     image = mapped_column(String)
     status = mapped_column(Integer)
-    created_at = mapped_column(String)
+    subscription_status = mapped_column(Integer)
+    created_at = mapped_column(String)    
     
 
 class DriverSubscriptions(Base):
