@@ -15,7 +15,7 @@
 						</svg>
 						Dashboard </a>
 					</li>
-					<li class="breadcrumb-item active"><a href="javascript:void(0)">Drivers</a></li>
+					<li class="breadcrumb-item active"><a href="javascript:void(0)">Customers</a></li>
 				</ol>
 				<a class="text-primary fs-13" data-bs-toggle="offcanvas" href="#offcanvasExample1" role="button" aria-controls="offcanvasExample1">+ Add Task</a>
 			</div>
@@ -23,12 +23,12 @@
 				<div class="row">
 					<div class="col-xl-12 bst-seller">
 						<div class="d-flex align-items-center justify-content-between mb-4">
-							<h4 class="heading mb-0">Drivers</h4>
+							<h4 class="heading mb-0">Customers</h4>
 							<div class="d-flex align-items-center">
 								<button type="button" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-filter me-2"></i>Filter
 								</button>
 								
-								<a class="btn btn-primary btn-sm ms-2" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">+ Add Driver</a>
+								<a class="btn btn-primary btn-sm ms-2" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">+ Add Customer</a>
 							</div>
 						</div>
 						<div class="card h-auto">
@@ -45,7 +45,7 @@
 														<label class="form-check-label" for="checkAll"></label>
 													</div>
 												</th>
-                                                <th>Driver ID</th>
+                                                <th>Customers ID</th>
                                                 <th>Full Name</th>
                                                 <th>User Type</th>
                                                 <th>Email Address</th>
@@ -54,7 +54,7 @@
                                             </tr>
                                         </thead>
 										<tbody>
-											{% for driver in drivers %}
+											{% for customer in customers %}
 											<tr>
 												<td>
 													<div class="form-check custom-checkbox">
@@ -62,35 +62,35 @@
 														<label class="form-check-label" for="customCheckBox022"></label>
 													</div>
 												</td>
-												<td><span>00{{ driver.id }}</span></td>
+												<td><span>00{{ customer.id }}</span></td>
 												<td>
 													<div class="products">
-														<img src="{{ url_for('assets', path='/upload/profile/') }}{{driver.image}}" class="avatar avatar-md" alt="">
+														<img src="{{ url_for('assets', path='/upload/profile/') }}{{customer.image}}" class="avatar avatar-md" alt="">
 														<div>
-															<h6><a href="app-profile-2.html">{{ driver.full_name }}</a></h6>
-															<span>{{ driver.full_name }}</span>	
+															<h6><a href="app-profile-2.html">{{ customer.full_name }}</a></h6>
+															<span>{{ customer.full_name }}</span>	
 														</div>	
 													</div>
 												</td>
-												<td><span>{{ driver.user_type }}</span></td>
-												<td><a href="javascript:void(0)" class="text-primary">{{ driver.email }}</a></td>
+												<td><span>{{ customer.user_type }}</span></td>
+												<td><a href="javascript:void(0)" class="text-primary">{{ customer.email }}</a></td>
 												<td>
-													{% if driver.status == 1 %}
+													{% if customer.status == 1 %}
 													<span class="badge badge-success light border-0">Active</span>
-													{% elif driver.status == 0 %}
+													{% elif customer.status == 0 %}
 													<span class="badge badge-danger light border-0">Inactive</span>
 													{% endif %}
 												</td>
 												<td>
-													<a href="/driver/edit/{{driver.id}}">
+													<a href="/customer/edit/{{customer.id}}">
 														<button type="button" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-edit me-2"></i>Edit</button>
 													</a>
-													{% if driver.status == 1 %}
-													<a href="/driver/inactive/{{driver.id}}">
+													{% if customer.status == 1 %}
+													<a href="/driver/inactive/{{customer.id}}">
 														<button type="button" class="btn btn-danger btn-sm me-2"><i class="fa-solid fa-exchange me-2"></i>Inactive</button>
 													</a>
-													{% elif driver.status == 2 %}
-													<a href="/driver/active/{{driver.id}}">
+													{% elif customer.status == 0 %}
+													<a href="/customer/active/{{customer.id}}">
 														<button type="button" class="btn btn-success btn-sm me-2"><i class="fa-solid fa-exchange me-2"></i>Active</button>
 													</a>
 													{% endif %}

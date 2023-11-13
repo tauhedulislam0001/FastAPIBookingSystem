@@ -139,7 +139,7 @@ async def active_status(id: int, db: Session = Depends(get_db)):
     if not driver:
         raise HTTPException(status_code=404, detail="Driver not found")
 
-    driver.status = 2
+    driver.status = 0
     db.commit()
 
     return RedirectResponse("/drivers/?success=Driver+has+been+inactivated+successfully",302)

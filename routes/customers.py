@@ -147,3 +147,96 @@ async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(g
             return RedirectResponse(url=f"/trip/accept?success=Trips+Accept+successfully", status_code=302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
+    
+    
+# all driver
+@customer.get("/customers")
+async def read_root(request: Request, db: db_dependency,base_url: str = base_url):
+    error = request.query_params.get("error")
+    success = request.query_params.get("success")
+    token = request.cookies.get("access_token")
+    try:
+        user = await decode_token(token, db)
+        if user.user_type==3 :
+            # drivers = db.query(models.Drivers).all()
+            customers = db.query(models.Customers).order_by(models.Customers.id.desc()).all()
+            return templates.TemplateResponse("admin/pages/customer/customer.html", {"user": user, "customers": customers, "base_url": base_url,"request": request,"error": error, "success": success})
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+    
+    
+    
+@customer.get("/customer/active/{id}")
+async def active_status(id: int, db: Session = Depends(get_db)):
+    driver = db.query(models.Drivers).filter(models.Drivers.id == id).first()
+
+    if not driver:
+        raise HTTPException(status_code=404, detail="Driver not found")
+
+    driver.status = 1
+    db.commit()
+
+    return RedirectResponse("/customer/?success=Driver+has+been+activated+successfully",302)
+
+
+@customer.get("/customer/inactive/{id}")
+async def active_status(id: int, db: Session = Depends(get_db)):
+    driver = db.query(models.Drivers).filter(models.Drivers.id == id).first()
+
+    if not driver:
+        raise HTTPException(status_code=404, detail="Driver not found")
+
+    driver.status = 0
+    db.commit()
+
+    return RedirectResponse("/customer/?success=Driver+has+been+inactivated+successfully",302)
+
+
+@customer.get("/customer/edit/{id}")
+async def active_status(id: int, request: Request, db: db_dependency, base_url: str = base_url):
+    driver = db.query(models.Drivers).filter(models.Drivers.id == id).first()
+    created_at = driver.created_at
+    today_date = datetime.now()
+    
+    time_difference = today_date - created_at
+    days_difference = time_difference.days
+    
+    if not driver:
+        return RedirectResponse("drivers/?error=Driver+not+found",302)
+
+    error = request.query_params.get("error")
+    success = request.query_params.get("success")
+    token = request.cookies.get("access_token")
+    
+    try:
+        user = await decode_token(token, db)
+        if user.user_type==3 :
+            return templates.TemplateResponse("admin/pages/driver/driverUpdate.html", {"user": user, "employement":days_difference, "driver": driver, "base_url": base_url,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
+
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+    
+    
+@customer.post("/customer/update/{driver_id}")
+async def update_driver_endpoint(
+    request: Request,
+    db:db_dependency,
+    driver_id: int,
+    name: str = Form(...),
+    email: str = Form(...)):
+    
+    # Retrieve the existing driver from the database
+    driver = db.query(models.Drivers).filter(models.Drivers.id == driver_id).first()
+
+    if not driver:
+        raise HTTPException(status_code=404, detail="Driver not found")
+    
+    driver.name = name
+    driver.email = email
+    
+    db.commit()
+    # Refresh the driver instance to reflect the changes
+    db.refresh(driver)
+    return RedirectResponse(f"/customer/edit/{driver_id}?success=Driver+information+updated+successfully!", status_code=302)

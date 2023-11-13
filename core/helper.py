@@ -39,3 +39,12 @@ async def get_user_by_email(email: str, db, models):
 async def get_user_by_id(id: int, db,models):
     user = db.query(models).filter(models.id == id).first()
     return user
+
+
+async def truncated_description(description, max_words=30):
+    words = description.split()
+    truncated_words = words[:max_words]
+    truncated_text = ' '.join(truncated_words)
+    if len(words) > max_words:
+        truncated_text += '...'
+    return truncated_text
