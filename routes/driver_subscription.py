@@ -93,3 +93,50 @@ async def active_status(id: int, db: Session = Depends(get_db)):
 
     return RedirectResponse("/driver-subscription/?success=Driver+subcription+has+been+inactivated+successfully",302)
     
+
+@driverSubcription.get("/driver-subscription/edit/{id}")
+async def active_status(id: int, request: Request, db: db_dependency, base_url: str = base_url):
+    driverSubscription = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.id == id).first()
+    
+    if not driverSubscription:
+        return RedirectResponse("/driver-subscription/?error=Driver+subscription+not+found",302)
+
+    error = request.query_params.get("error")
+    success = request.query_params.get("success")
+    token = request.cookies.get("access_token")
+    
+    try:
+        user = await decode_token(token, db)
+        if user.user_type==3 :
+            return templates.TemplateResponse("admin/pages/driver_subcription/driver_subscripton_edit.html", {"user": user, "driverSubscription": driverSubscription, "base_url": base_url,"request": request,"error": error, "success": success})
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+    
+
+@driverSubcription.post("/driver-subscription/update/{subscription_id}")
+async def update_driver_endpoint(
+    request: Request,
+    db:db_dependency,
+    subscription_id: int,
+    package_name : str = Form(...),
+    package_description : str = Form(...),
+    package_duration : int = Form(...),
+    amount : int = Form(...)):
+    
+    
+    # Retrieve the existing driver from the database
+    subcriptionUpdate = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.id == subscription_id).first()
+
+    if not subcriptionUpdate:
+        raise HTTPException(status_code=404, detail="Driver not found")
+    
+    subcriptionUpdate.package_name = package_name
+    subcriptionUpdate.package_description = package_description
+    subcriptionUpdate.package_duration = package_duration
+    subcriptionUpdate.amount = amount
+    print(subcriptionUpdate.package_duration)
+    db.commit()
+    # Refresh the driver instance to reflect the changes
+    db.refresh(subcriptionUpdate)
+    return RedirectResponse(f"/driver-subscription/edit/{subscription_id}/?success=Driver+information+updated+successfully!", status_code=302)
