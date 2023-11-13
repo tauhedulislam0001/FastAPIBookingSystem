@@ -19,7 +19,7 @@ class Admins(Base):
     image = Column(String(100))
     can_login = Column(Integer, default=1)
     status = Column(Integer, default=1)
-    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+    created_at = Column(TIMESTAMP)
 
 
 class Customers(Base):
@@ -35,7 +35,7 @@ class Customers(Base):
     refresh_token = Column(String(300), default=None)
     image = Column(String(100))
     status = Column(Integer, default=1)
-    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+    created_at = Column(TIMESTAMP)
     
 
 class DriverSubscriptions(Base):
@@ -48,7 +48,7 @@ class DriverSubscriptions(Base):
     package_duration = Column(Integer)
     amount = Column(Integer)
     status = Column(Integer, default=1)
-    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+    created_at = Column(TIMESTAMP)
     
     
 class Drivers(Base):
@@ -64,7 +64,7 @@ class Drivers(Base):
     refresh_token = Column(String(300), default=None)
     image = Column(String(100))
     status = Column(Integer, default=1)
-    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+    created_at = Column(TIMESTAMP)
     subscription_status = Column(Integer, default=0)
     
 
@@ -79,7 +79,7 @@ class Trips(Base):
     location = Column(String(100))
     fare = Column(String(500), nullable=True)
     status = Column(Integer, default=1)
-    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+    created_at = Column(TIMESTAMP)
     driver = relationship('Drivers', backref='trips')
     
 
@@ -91,7 +91,7 @@ class Bids(Base):
     driver_id = Column(Integer, ForeignKey('drivers.id'))
     amount = Column(Integer)
     status = Column(Integer, default=1)
-    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+    created_at = Column(TIMESTAMP)
     driver = relationship('Drivers', backref='bids')
     trip = relationship('Trips', backref='bids')
 
