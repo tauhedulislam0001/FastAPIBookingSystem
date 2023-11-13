@@ -523,3 +523,9 @@ img.car-image {
     margin-top: -77px !important;
     z-index: 9;
 }
+
+.sw-icon>i {
+    font-size: 40px;
+    color: #01aeef;
+    margin: 20px;
+}

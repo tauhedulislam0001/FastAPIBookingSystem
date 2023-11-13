@@ -57,6 +57,29 @@
 
 
 
+    <!-- Corrected modal ID -->
+    <div class="modal fade" id="subscriptionModal" tabindex="-1" role="dialog" aria-labelledby="subscriptionModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="subscribe-wrapper text-center">
+                        <div class="sw-icon">
+                            <i class="fa-regular fa-paper-plane"></i>
+                        </div>
+                        <div class="sw-content">
+                            <h4>Subscribe for Here</h2>
+                            <p class="text-primary"><b>Join us!</b> Subscribe for updates and special offers.</p>
+                            <a href="" class="btn-theme-primary text-decoration-none d-block">Subscribe Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
 
 
 
@@ -98,9 +121,12 @@
                             row.append('<td><p class="text-success m-0">' + data[i].pick_up_location + '</p></td>');
                             row.append('<td><p class="text-success m-0">' + data[i].location + '</p></td>');
                             row.append('<td><p class="text-success m-0">' + formattedDate + '</p></td>');
-                            row.append('<td><a href="/bid/submit/' + data[i].id + '" class="btn btn-info text-white">Bid Now</a></td>');
+                            // row.append('<td><a href="/bid/submit/' + data[i].id + '" class="btn btn-info text-white" id="bid_now_button">Bid Now</a></td>');
+                            row.append('<td><a href="/bid/submit/' + data[i].id + '" class="btn btn-info text-white" id="bid_now_button">Bid Now</a></td>');
+
                             $('#TripListShow').append(row);
                         }
+                        console.log("i am 1st")
                     }
 
                     $('#example').DataTable({
@@ -110,6 +136,22 @@
                 }
             });
         }
+
+        $(document).ready(function(){
+            var isCheckSubscription = 0;
+            $(document).on("click", "#bid_now_button", function(event) {
+                event.preventDefault();
+
+                if (isCheckSubscription === 1) {
+                    var currentHref = $(this).attr("href");
+                    var newHref = currentHref;
+                    window.location.href = newHref;
+                } else {
+                    $("#subscriptionModal").modal('show');
+                    console.log("Gorib");
+                }
+            });
+        })
 
     </script>
 
