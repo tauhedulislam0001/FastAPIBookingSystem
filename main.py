@@ -13,6 +13,7 @@ import routes.auth
 import routes.drivers
 import routes.customers
 import routes.admins
+import routes.driver_subscription
 from jose import JWTError, jwt
 from core.utils import ALGORITHM, JWT_SECRET_KEY, decode_token, TokenDecodeError
 from core.helper import get_user_by_email
@@ -27,6 +28,7 @@ app.mount("/assets", StaticFiles(directory="templates/assets"), name="assets")
 app.mount("/admin/assets", StaticFiles(directory="templates/admin/assets"), name="admin-assets")
 app.include_router(routes.auth.router)
 app.include_router(routes.admins.admin)
+app.include_router(routes.driver_subscription.driverSubcription)
 from middleware.CheckUser import UserCheck
 # Start Socket 
 from core.socket_manager import get_socketio_asgi_app
