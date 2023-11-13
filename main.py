@@ -13,6 +13,7 @@ import routes.auth
 import routes.drivers
 import routes.customers
 import routes.admins
+import routes.driver_subscription
 from jose import JWTError, jwt
 from core.utils import ALGORITHM, JWT_SECRET_KEY, decode_token, TokenDecodeError
 from core.helper import get_user_by_email
@@ -27,6 +28,7 @@ app.mount("/assets", StaticFiles(directory="templates/assets"), name="assets")
 app.mount("/admin/assets", StaticFiles(directory="templates/admin/assets"), name="admin-assets")
 app.include_router(routes.auth.router)
 app.include_router(routes.admins.admin)
+app.include_router(routes.driver_subscription.driverSubcription)
 from middleware.CheckUser import UserCheck
 # Start Socket 
 from core.socket_manager import get_socketio_asgi_app
@@ -42,74 +44,6 @@ app.add_websocket_route("/socket.io/", sio_asgi_app)
 app.include_router(routes.drivers.driver)
 app.include_router(routes.customers.customer)
 
-
-class Customers(Base):
-    __tablename__ = "customers"
-
-    id = Column(Integer, primary_key=True, index=True)
-    user_type = mapped_column(Integer)
-    name = mapped_column(String)
-    email = mapped_column(String)
-    password = mapped_column(String)
-    access_token = mapped_column(String)
-    refresh_token = mapped_column(String)
-    image = mapped_column(String)
-    status = mapped_column(String)
-    created_at = mapped_column(String)
-
-
-class Drivers(Base):
-    __tablename__ = "drivers"
-
-    id = Column(Integer, primary_key=True, index=True)
-    user_type = mapped_column(Integer)
-    name = mapped_column(String)
-    email = mapped_column(String)
-    password = mapped_column(String)
-    access_token = mapped_column(String)
-    refresh_token = mapped_column(String)
-    image = mapped_column(String)
-    status = mapped_column(Integer)
-    subscription_status = mapped_column(Integer)
-    created_at = mapped_column(String)    
-    
-
-class DriverSubscriptions(Base):
-    __tablename__ = "driver_subscriptions"
-    
-    
-    id = Column(Integer, primary_key=True, index=True)
-    driver_id = mapped_column(Integer)
-    package_duration = mapped_column(String)
-    amount = mapped_column(Integer)
-    validity = mapped_column(String)
-    status = mapped_column(Integer)
-    created_at = mapped_column(String)
-
-
-class Trips(Base):
-    __tablename__ = "trips"
-
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = mapped_column(Integer)
-    driver_id = mapped_column(Integer)
-    car_name = mapped_column(String)
-    location = mapped_column(String)
-    pick_up_location = mapped_column(String)
-    fare = mapped_column(String)
-    status = mapped_column(Integer)
-    created_at = mapped_column(String)
-
-
-class Bids(Base):
-    __tablename__ = "bids"
-
-    id = Column(Integer, primary_key=True, index=True)
-    trip_id = mapped_column(Integer)
-    driver_id = mapped_column(Integer)
-    amount = mapped_column(Integer)
-    status = mapped_column(Integer)
-    created_at = mapped_column(Integer)
 
 
 def get_db() -> Session:

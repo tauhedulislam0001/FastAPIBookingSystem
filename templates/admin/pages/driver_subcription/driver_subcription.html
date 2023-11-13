@@ -28,7 +28,7 @@
 								<button type="button" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-filter me-2"></i>Filter
 								</button>
 								
-								<a class="btn btn-primary btn-sm ms-2" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">+ Add Driver</a>
+								<a class="btn btn-primary btn-sm ms-2" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">+ Add Driver Subcription</a>
 							</div>
 						</div>
 						<div class="card h-auto">
@@ -45,16 +45,17 @@
 														<label class="form-check-label" for="checkAll"></label>
 													</div>
 												</th>
-                                                <th>Driver ID</th>
-                                                <th>Full Name</th>
-                                                <th>User Type</th>
-                                                <th>Email Address</th>
+                                                <th>SL</th>
+                                                <th>Package Duration</th>
+                                                <th>Amount</th>
+                                                <th>Validity</th>
                                                 <th>Status</th>
+                                                <th>Created At</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
 										<tbody>
-											{% for driver in drivers %}
+											{% for row in driverSubcription %}
 											<tr>
 												<td>
 													<div class="form-check custom-checkbox">
@@ -62,35 +63,28 @@
 														<label class="form-check-label" for="customCheckBox022"></label>
 													</div>
 												</td>
-												<td><span>00{{ driver.id }}</span></td>
+												<td><span>00{{ row.id }}</span></td>
+												<td><span>{{ row.package_duration }}</span></td>
+												<td><a href="javascript:void(0)" class="text-primary">{{ row.amount }}</a></td>
+												<td><a href="javascript:void(0)" class="text-primary">{{ row.validity }}</a></td>
+												<td><a href="javascript:void(0)" class="text-primary">{{ row.created_at }}</a></td>
 												<td>
-													<div class="products">
-														<img src="{{ url_for('assets', path='/upload/profile/') }}{{driver.image}}" class="avatar avatar-md" alt="">
-														<div>
-															<h6><a href="app-profile-2.html">{{ driver.full_name }}</a></h6>
-															<span>{{ driver.full_name }}</span>	
-														</div>	
-													</div>
-												</td>
-												<td><span>{{ driver.user_type }}</span></td>
-												<td><a href="javascript:void(0)" class="text-primary">{{ driver.email }}</a></td>
-												<td>
-													{% if driver.status == 1 %}
+													{% if row.status == 1 %}
 													<span class="badge badge-success light border-0">Active</span>
-													{% elif driver.status == 2 %}
+													{% elif row.status == 2 %}
 													<span class="badge badge-danger light border-0">Inactive</span>
 													{% endif %}
 												</td>
 												<td>
-													<a href="/driver/edit/{{driver.id}}">
+													<a href="/driver-subscription/edit/{{row.id}}">
 														<button type="button" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-edit me-2"></i>Edit</button>
 													</a>
-													{% if driver.status == 1 %}
-													<a href="/driver/inactive/{{driver.id}}">
+													{% if row.status == 1 %}
+													<a href="/driver-subscription/inactive/{{row.id}}">
 														<button type="button" class="btn btn-danger btn-sm me-2"><i class="fa-solid fa-exchange me-2"></i>Inactive</button>
 													</a>
-													{% elif driver.status == 2 %}
-													<a href="/driver/active/{{driver.id}}">
+													{% elif row.status == 2 %}
+													<a href="/driver-subscription/active/{{row.id}}">
 														<button type="button" class="btn btn-success btn-sm me-2"><i class="fa-solid fa-exchange me-2"></i>Active</button>
 													</a>
 													{% endif %}
@@ -113,44 +107,22 @@
         ***********************************-->
 		<div class="offcanvas offcanvas-end customeoff" tabindex="-1" id="offcanvasExample">
 		  <div class="offcanvas-header">
-		  <h5 class="modal-title" id="#gridSystemModal">Add Driver</h5>
+		  <h5 class="modal-title" id="#gridSystemModal">Add Driver Subcription</h5>
 			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
 				<i class="fa-solid fa-xmark"></i>
 			</button>
 		  </div>
 		  <div class="offcanvas-body">
 			<div class="container-fluid">
-				<form id="driverForm" action="/driver/register/submit" class="dropzone" enctype="multipart/form-data" method="post">
-					<div>
-						<label>Profile Picture</label>
-						<div class="dz-default dlab-message upload-img mb-3">	
-								<svg width="41" height="40" viewBox="0 0 41 40" fill="none" xmlns="../../external.html?link=http://www.w3.org/2000/svg">
-									<path d="M27.1666 26.6667L20.4999 20L13.8333 26.6667" stroke="#DADADA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-									<path d="M20.5 20V35" stroke="#DADADA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-									<path d="M34.4833 30.6501C36.1088 29.7638 37.393 28.3615 38.1331 26.6644C38.8731 24.9673 39.027 23.0721 38.5703 21.2779C38.1136 19.4836 37.0724 17.8926 35.6111 16.7558C34.1497 15.619 32.3514 15.0013 30.4999 15.0001H28.3999C27.8955 13.0488 26.9552 11.2373 25.6498 9.70171C24.3445 8.16614 22.708 6.94647 20.8634 6.1344C19.0189 5.32233 17.0142 4.93899 15.0001 5.01319C12.9861 5.0874 11.015 5.61722 9.23523 6.56283C7.45541 7.50844 5.91312 8.84523 4.7243 10.4727C3.53549 12.1002 2.73108 13.9759 2.37157 15.959C2.01205 17.9421 2.10678 19.9809 2.64862 21.9222C3.19047 23.8634 4.16534 25.6565 5.49994 27.1667" stroke="#DADADA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-									<path d="M27.1666 26.6667L20.4999 20L13.8333 26.6667" stroke="#DADADA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-								</svg>
-								<div class="fallback">
-									<input name="image" type="file" multiple>
-								</div>
-						</div>	
-					</div>
+				<form id="driverForm" action="/driver-subscription/create" class="dropzone" enctype="multipart/form-data" method="post">
 					<div class="row">
 						<div class="col-xl-6 mb-3">
-							<label for="exampleFormControlInput2" class="form-label">Driver Name<span class="text-danger">*</span></label>
-							<input type="text" class="form-control" name="name" id="exampleFormControlInput2" placeholder="">
+							<label for="exampleFormControlInput2" class="form-label">Package Duration<span class="text-danger">*</span></label>
+							<input name="package_duration" class="datepicker-default form-control" id="datepicker">
 						</div>	
 						<div class="col-xl-6 mb-3">
-							<label for="exampleFormControlInput3" class="form-label">Driver Email<span class="text-danger">*</span></label>
+							<label for="exampleFormControlInput3" class="form-label">Amount<span class="text-danger">*</span></label>
 							<input type="email" class="form-control" name="email" id="exampleFormControlInput3" placeholder="">
-						</div>
-						<div class="col-xl-6 mb-3">
-							<label for="exampleFormControlInput4" class="form-label">Password<span class="text-danger">*</span></label>
-							<input type="password" class="form-control" name="password" id="exampleFormControlInput4" placeholder="">
-						</div>
-						<div class="col-xl-6 mb-3">
-							<label for="exampleFormControlInput4" class="form-label">Confirm Password<span class="text-danger">*</span></label>
-							<input type="password" class="form-control" name="confirm_password" id="exampleFormControlInput4" placeholder="">
 						</div>
 					<div>
 						<button class="btn btn-danger light me-1">Cancel</button>

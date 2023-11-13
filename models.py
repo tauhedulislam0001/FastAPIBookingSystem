@@ -43,7 +43,6 @@ class DriverSubscriptions(Base):
     
     
     id = Column(Integer, primary_key=True, index=True)
-    driver_id = Column(Integer)
     package_duration = Column(String)
     amount = Column(Integer)
     validity = Column(String)
