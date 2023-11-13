@@ -8,6 +8,8 @@ import models
 from sqlalchemy.orm import Session
 from database import engine, SessionLocal, Base,get_db,base_url
 from middleware.CheckUser import UserCheck
+from datetime import datetime, timedelta
+
 customer = APIRouter()
 
 templates = Jinja2Templates(directory="templates")
@@ -149,7 +151,7 @@ async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(g
         return RedirectResponse("/?error=You+are+not+authorized",302)
     
     
-# all driver
+# all customer
 @customer.get("/customers")
 async def read_root(request: Request, db: db_dependency,base_url: str = base_url):
     error = request.query_params.get("error")
@@ -158,7 +160,6 @@ async def read_root(request: Request, db: db_dependency,base_url: str = base_url
     try:
         user = await decode_token(token, db)
         if user.user_type==3 :
-            # drivers = db.query(models.Drivers).all()
             customers = db.query(models.Customers).order_by(models.Customers.id.desc()).all()
             return templates.TemplateResponse("admin/pages/customer/customer.html", {"user": user, "customers": customers, "base_url": base_url,"request": request,"error": error, "success": success})
         return RedirectResponse("/?error=You+are+not+authorized",302)
@@ -169,41 +170,41 @@ async def read_root(request: Request, db: db_dependency,base_url: str = base_url
     
 @customer.get("/customer/active/{id}")
 async def active_status(id: int, db: Session = Depends(get_db)):
-    driver = db.query(models.Drivers).filter(models.Drivers.id == id).first()
+    customer = db.query(models.Customers).filter(models.Customers.id == id).first()
 
-    if not driver:
-        raise HTTPException(status_code=404, detail="Driver not found")
+    if not customer:
+        raise HTTPException(status_code=404, detail="Customer not found")
 
-    driver.status = 1
+    customer.status = 1
     db.commit()
 
-    return RedirectResponse("/customer/?success=Driver+has+been+activated+successfully",302)
+    return RedirectResponse("/customers/?success=Customer+has+been+activated+successfully",302)
 
 
 @customer.get("/customer/inactive/{id}")
 async def active_status(id: int, db: Session = Depends(get_db)):
-    driver = db.query(models.Drivers).filter(models.Drivers.id == id).first()
+    customer = db.query(models.Customers).filter(models.Customers.id == id).first()
 
-    if not driver:
-        raise HTTPException(status_code=404, detail="Driver not found")
+    if not customer:
+        raise HTTPException(status_code=404, detail="Customer not found")
 
-    driver.status = 0
+    customer.status = 0
     db.commit()
 
-    return RedirectResponse("/customer/?success=Driver+has+been+inactivated+successfully",302)
+    return RedirectResponse("/customers/?success=Customer+has+been+inactivated+successfully",302)
 
 
 @customer.get("/customer/edit/{id}")
-async def active_status(id: int, request: Request, db: db_dependency, base_url: str = base_url):
-    driver = db.query(models.Drivers).filter(models.Drivers.id == id).first()
-    created_at = driver.created_at
+async def edit_customer(id: int, request: Request, db: db_dependency, base_url: str = base_url):
+    customer = db.query(models.Customers).filter(models.Customers.id == id).first()
+    created_at = customer.created_at
     today_date = datetime.now()
     
     time_difference = today_date - created_at
     days_difference = time_difference.days
     
-    if not driver:
-        return RedirectResponse("drivers/?error=Driver+not+found",302)
+    if not customer:
+        return RedirectResponse("customers/?error=Customer+not+found",302)
 
     error = request.query_params.get("error")
     success = request.query_params.get("success")
@@ -212,31 +213,30 @@ async def active_status(id: int, request: Request, db: db_dependency, base_url: 
     try:
         user = await decode_token(token, db)
         if user.user_type==3 :
-            return templates.TemplateResponse("admin/pages/driver/driverUpdate.html", {"user": user, "employement":days_difference, "driver": driver, "base_url": base_url,"request": request,"error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
-
+            return templates.TemplateResponse("admin/pages/customer/customerUpdate.html", {"user": user, "employement":days_difference, "customer": customer, "base_url": base_url,"request": request,"error": error, "success": success})
         return RedirectResponse("/?error=You+are+not+authorized",302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
     
     
-@customer.post("/customer/update/{driver_id}")
-async def update_driver_endpoint(
+@customer.post("/customer/update/{customer_id}")
+async def update_customer_endpoint(
     request: Request,
     db:db_dependency,
-    driver_id: int,
+    customer_id: int,
     name: str = Form(...),
     email: str = Form(...)):
     
-    # Retrieve the existing driver from the database
-    driver = db.query(models.Drivers).filter(models.Drivers.id == driver_id).first()
+    # Retrieve the existing customer from the database
+    customer = db.query(models.Customers).filter(models.Customers.id == customer_id).first()
 
-    if not driver:
-        raise HTTPException(status_code=404, detail="Driver not found")
+    if not customer:
+        raise HTTPException(status_code=404, detail="Customer not found")
     
-    driver.name = name
-    driver.email = email
+    customer.name = name
+    customer.email = email
     
     db.commit()
-    # Refresh the driver instance to reflect the changes
-    db.refresh(driver)
-    return RedirectResponse(f"/customer/edit/{driver_id}?success=Driver+information+updated+successfully!", status_code=302)
+    # Refresh the customer instance to reflect the changes
+    db.refresh(customer)
+    return RedirectResponse(f"/customer/edit/{customer_id}?success=customer+information+updated+successfully!", status_code=302)
