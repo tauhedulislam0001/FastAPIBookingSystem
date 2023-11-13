@@ -66,11 +66,18 @@ async def read_root(request: Request,db:Annotated[Session, Depends(get_db)],base
 async def trip_store(
     request: Request,
     db: db_dependency,
-    car_name: str = Form(...),
-    pick_up_location: str = Form(...),
-    location: str = Form(...),
+    car_name: str = Form(None),
+    pick_up_location: str = Form(None),
+    location: str = Form(None),
     ):
-
+    if  car_name is None :
+        return RedirectResponse("/customer?error=Car Name is require", 302)
+    if  pick_up_location is None:
+        return RedirectResponse("/customer?error=Pick Up Location is required", 302)
+    if  location is None:
+        return RedirectResponse("/customer?error=Destination is required", 302)
+    
+   
     token = request.cookies.get("access_token")
     try:
         user = await decode_token(token, db)
