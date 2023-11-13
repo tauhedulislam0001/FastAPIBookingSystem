@@ -86,9 +86,10 @@ async def bid_store(
     id: int,
     request: Request,
     db: Annotated[Session, Depends(get_db)],
-    amount: int = Form(...)
+    amount: int = Form(None)
     ):
-
+    if  amount is None:
+        return RedirectResponse(url=f"/bid/submit/{id}?success_customer=Amount is required", status_code=302)
     token = request.cookies.get("access_token")
     try:
         user = await decode_token(token, db)

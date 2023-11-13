@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import Column, Integer , String
-from sqlalchemy.orm import mapped_column
+# from sqlalchemy.orm import mapped_column
 from sqlalchemy.ext.declarative import declarative_base
 import routes.auth
 import routes.drivers
