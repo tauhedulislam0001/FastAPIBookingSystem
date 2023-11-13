@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Text, ForeignKey, Integer, String, TIMESTAMP, func
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, TIMESTAMP, func
 from database import Base
 from pydantic import BaseModel, Field, EmailStr
 from sqlalchemy.orm import relationship
@@ -19,7 +19,7 @@ class Admins(Base):
     image = Column(String(100))
     can_login = Column(Integer, default=1)
     status = Column(Integer, default=1)
-    created_at = Column(TIMESTAMP)
+    created_at = Column(TIMESTAMP, default=func.now())
 
 
 class Customers(Base):
@@ -35,7 +35,7 @@ class Customers(Base):
     refresh_token = Column(String(300), default=None)
     image = Column(String(100))
     status = Column(Integer, default=1)
-    created_at = Column(TIMESTAMP)
+    created_at = Column(TIMESTAMP, default=func.now())
     
 
 class DriverSubscriptions(Base):
@@ -43,12 +43,12 @@ class DriverSubscriptions(Base):
     
     
     id = Column(Integer, primary_key=True, index=True)
-    package_name = Column(String)
-    package_description = Column(Text)
-    package_duration = Column(Integer)
+    driver_id = Column(Integer)
+    package_duration = Column(String)
     amount = Column(Integer)
+    validity = Column(String)
     status = Column(Integer, default=1)
-    created_at = Column(TIMESTAMP)
+    created_at = Column(TIMESTAMP, default=func.now())
     
     
 class Drivers(Base):
@@ -64,8 +64,8 @@ class Drivers(Base):
     refresh_token = Column(String(300), default=None)
     image = Column(String(100))
     status = Column(Integer, default=1)
-    created_at = Column(TIMESTAMP)
     subscription_status = Column(Integer, default=0)
+    created_at = Column(TIMESTAMP, default=func.now())
     
 
 class Trips(Base):
@@ -79,7 +79,7 @@ class Trips(Base):
     location = Column(String(100))
     fare = Column(String(500), nullable=True)
     status = Column(Integer, default=1)
-    created_at = Column(TIMESTAMP)
+    created_at = Column(TIMESTAMP, default=func.now())
     driver = relationship('Drivers', backref='trips')
     
 
@@ -91,7 +91,7 @@ class Bids(Base):
     driver_id = Column(Integer, ForeignKey('drivers.id'))
     amount = Column(Integer)
     status = Column(Integer, default=1)
-    created_at = Column(TIMESTAMP)
+    created_at = Column(TIMESTAMP, default=func.now())
     driver = relationship('Drivers', backref='bids')
     trip = relationship('Trips', backref='bids')
 
