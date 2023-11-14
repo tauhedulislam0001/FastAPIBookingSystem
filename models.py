@@ -73,7 +73,7 @@ class Trips(Base):
     __tablename__ = "trips"
     
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer)
+    user_id = Column(Integer, ForeignKey("customers.id"))
     driver_id = Column(Integer, ForeignKey('drivers.id'), nullable=True)
     car_name = Column(String(50))
     pick_up_location = Column(String(100))
@@ -82,7 +82,8 @@ class Trips(Base):
     status = Column(Integer, default=1)
     created_at = Column(TIMESTAMP, default=func.now())
     driver = relationship('Drivers', backref='trips')
-    
+    customer = relationship('Customers', backref='trips')
+        
 
 class Bids(Base):
     __tablename__ = "bids"
