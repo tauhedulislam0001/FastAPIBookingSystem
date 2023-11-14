@@ -152,11 +152,15 @@ async def active_status(id: int, db: Session = Depends(get_db)):
 @driver.get("/driver/edit/{id}")
 async def active_status(id: int, request: Request, db: db_dependency, base_url: str = base_url):
     driver = db.query(models.Drivers).filter(models.Drivers.id == id).first()
-    created_at = driver.created_at
+    created_at = driver.created_at  # Assuming driver.created_at is a datetime object
+
     today_date = datetime.now()
-    
-    time_difference = today_date - created_at
-    days_difference = time_difference.days
+
+    if created_at:
+        time_difference = today_date - created_at
+        days_difference = time_difference.days
+    else:
+        days_difference = 0
     
     if not driver:
         return RedirectResponse("drivers/?error=Driver+not+found",302)

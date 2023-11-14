@@ -23,24 +23,12 @@ templates = Jinja2Templates(directory="templates")
 async def read_root(request: Request, db: db_dependency):
     error = request.query_params.get("error")
     success = request.query_params.get("success")
-    error_driver = request.query_params.get("error_driver")
-    error_customer = request.query_params.get("error_customer")
-    success_customer = request.query_params.get("success_customer")
-    success_driver = request.query_params.get("success_driver")
     token = request.cookies.get("access_token")
-    
     try:
         user = await decode_token(token, db)
-        return templates.TemplateResponse("admin/pages/login/login.html",
-                                          {"user": user, "request": request, "error": error, "success": success,
-                                           "error_driver": error_driver, "success_customer": success_customer,
-                                           "error_customer": error_customer, "success_driver": success_driver})
+        return RedirectResponse("/admin/dashboard", 302)
     except TokenDecodeError as e:
-        return templates.TemplateResponse("admin/pages/login/login.html", {"request": request, "error": error, "success": success,
-                                                         "error_driver": error_driver,
-                                                         "success_customer": success_customer,
-                                                         "error_customer": error_customer,
-                                                         "success_driver": success_driver})
+        return templates.TemplateResponse("admin/pages/login/login.html", {"request": request, "error": error, "success": success})
         
 
 # login admin user
