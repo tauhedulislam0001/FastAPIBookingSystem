@@ -55,7 +55,7 @@ async def register(
         return RedirectResponse("/?success=Email+already+exists", 302)
     # hashed_password = pwd_context.hash(password)
     hashed_password = hashlib.md5(password.encode()).hexdigest()
-    dir = "templates/admin/assets/profile_pic/"
+    dir = "templates/admin/assets/profile/"
     filename = await insert_image(image, dir)
     print(f"file:{filename}")
     register = models.Admins(
