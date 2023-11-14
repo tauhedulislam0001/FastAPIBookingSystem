@@ -8,8 +8,7 @@ from sqlalchemy.orm import Session
 from database import engine, SessionLocal, Base,get_db,base_url, db_dependency
 import models
 from datetime import datetime, timedelta
-import pytz
-
+from core.helper import subscription_validity
 
 driver = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -49,9 +48,14 @@ async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(g
     try:
         user = await decode_token(token, db)
         if user.subscription_status == 0:
-            return RedirectResponse("/?error=You+are+not+authorized",302)
+            return RedirectResponse("/?error=You+are+not+subscribed",302)
 
         trips_by_id = db.query(models.Trips).filter(models.Trips.id == id).first()
+        subscription_check = await subscription_validity(user,db)
+        print(f'package : {subscription_check}')
+
+        if subscription_check == 1:
+            return RedirectResponse("/driver/package?error=Your+subscribed+validity+expired",302)
         # Example: trips = db.query(models.Trips).filter(models.Trips.id == id).all()
         error = request.query_params.get("error")
         success = request.query_params.get("success")
@@ -185,10 +189,12 @@ async def active_status(id: int, request: Request, db: db_dependency, base_url: 
 @driver.get("/driver/package")
 async def driver_package(request: Request, db: db_dependency,base_url: str = base_url):
     token = request.cookies.get("access_token")
+    error = request.query_params.get("error")
+    success = request.query_params.get("success")
     try:
         user = await decode_token(token, db)
         package = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.status == 1).all()
-        return templates.TemplateResponse("driver_package.html", {"request": request,"user": user, "package": package})
+        return templates.TemplateResponse("driver_package.html", {"request": request,"user": user, "package": package,"error": error, "success": success})
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
     
