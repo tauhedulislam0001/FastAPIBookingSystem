@@ -100,7 +100,10 @@ async def read_root(request: Request, db: db_dependency,base_url: str = base_url
         print(user)
 
         if hasattr(user, 'user_type') and user.user_type == 3:
-            return templates.TemplateResponse("admin/pages/dashboard/dashboard.html", {"user": user, "base_url": base_url, "request": request, "error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
+            total_trips = db.query(models.Trips).count()
+            total_customer = db.query(models.Customers).count()
+            total_driver = db.query(models.Drivers).count()
+            return templates.TemplateResponse("admin/pages/dashboard/dashboard.html", {"user": user, "total_trips": total_trips, "total_customer": total_customer, "total_driver": total_driver, "base_url": base_url, "request": request, "error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
         else:
             print("User is not authorized (user_type is not 3)")
             logout(request)
