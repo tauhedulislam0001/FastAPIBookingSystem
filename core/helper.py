@@ -2,7 +2,7 @@ from datetime import datetime
 import os
 import uuid
 from fastapi.responses import HTMLResponse, RedirectResponse, Response
-
+import models
 
 async def insert_image(image, dir):
     try:
@@ -48,3 +48,20 @@ async def truncated_description(description, max_words=30):
     if len(words) > max_words:
         truncated_text += '...'
     return truncated_text
+
+async def subscription_validity(user,db):
+    if user.subscription_status == 1:
+        if user.subscription_id is not None:
+            package = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.id == user.subscription_id).first()
+            package_duration=package.package_duration
+            if user.subscription_at is not None:
+                subscription_at=user.subscription_at
+                today_date = datetime.now()
+                today_date = today_date.replace(tzinfo=subscription_at.tzinfo)
+                time_difference = today_date - subscription_at
+                days_difference = time_difference.days
+                if package_duration < days_difference:
+                    return 1
+                else :
+                    return 0
+                
