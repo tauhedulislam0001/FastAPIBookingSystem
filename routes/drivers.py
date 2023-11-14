@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from database import engine, SessionLocal, Base,get_db,base_url, db_dependency
 import models
 from datetime import datetime, timedelta
-
+from core.helper import subscription_validity
 
 driver = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -47,7 +47,15 @@ async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(g
     token = request.cookies.get("access_token")
     try:
         user = await decode_token(token, db)
+        if user.subscription_status == 0:
+            return RedirectResponse("/?error=You+are+not+subscribed",302)
+
         trips_by_id = db.query(models.Trips).filter(models.Trips.id == id).first()
+        subscription_check = await subscription_validity(user,db)
+        print(f'package : {subscription_check}')
+
+        if subscription_check == 1:
+            return RedirectResponse("/driver/package?error=Your+subscribed+validity+expired",302)
         # Example: trips = db.query(models.Trips).filter(models.Trips.id == id).all()
         error = request.query_params.get("error")
         success = request.query_params.get("success")
@@ -60,6 +68,7 @@ async def trips_get(id: int,request: Request,db:Annotated[Session, Depends(get_d
     token = request.cookies.get("access_token")
     try:
         user = await decode_token(token, db)
+       
         bids = db.query(models.Bids)\
             .join(models.Drivers, models.Bids.driver_id == models.Drivers.id)\
             .join(models.Trips, models.Bids.trip_id == models.Trips.id)\
@@ -150,9 +159,15 @@ async def active_status(id: int, request: Request, db: db_dependency, base_url: 
     driver = db.query(models.Drivers).filter(models.Drivers.id == id).first()
     created_at = driver.created_at
     today_date = datetime.now()
-    
-    time_difference = today_date - created_at
-    days_difference = time_difference.days
+
+    if created_at:
+        # Convert today_date to the same timezone as created_at
+        today_date = today_date.replace(tzinfo=created_at.tzinfo)
+
+        time_difference = today_date - created_at
+        days_difference = time_difference.days
+    else:
+        days_difference = 0
     
     if not driver:
         return RedirectResponse("drivers/?error=Driver+not+found",302)
@@ -172,9 +187,16 @@ async def active_status(id: int, request: Request, db: db_dependency, base_url: 
     
 
 @driver.get("/driver/package")
-async def driver_package(request: Request):
-    return templates.TemplateResponse("driver_package.html", {"request": request})
-
+async def driver_package(request: Request, db: db_dependency,base_url: str = base_url):
+    token = request.cookies.get("access_token")
+    error = request.query_params.get("error")
+    success = request.query_params.get("success")
+    try:
+        user = await decode_token(token, db)
+        package = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.status == 1).all()
+        return templates.TemplateResponse("driver_package.html", {"request": request,"user": user, "package": package,"error": error, "success": success})
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",302)
     
 @driver.post("/driver/update/{driver_id}")
 async def update_driver_endpoint(
@@ -197,4 +219,26 @@ async def update_driver_endpoint(
     # Refresh the driver instance to reflect the changes
     db.refresh(driver)
     return RedirectResponse(f"/driver/edit/{driver_id}?success=Driver+information+updated+successfully!", status_code=302)
+
+
+    
+@driver.get("/package/purchase/{id}")
+async def update_driver_endpoint(
+    request: Request,
+    db:db_dependency,
+    id: int,):
+    token = request.cookies.get("access_token")
+    try:
+        user = await decode_token(token, db)
+        package = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.id == id).first()
+        driver = db.query(models.Drivers).filter(models.Drivers.id == user.id).first()
+        print(f"date: {id}")
+        driver.subscription_id = package.id
+        driver.subscription_status = 1
+        driver.subscription_at = datetime.now()
+        db.commit()
+        return RedirectResponse(f"/driver?success=Driver+subscription +successfully!", status_code=302)
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+    
 

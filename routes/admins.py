@@ -23,24 +23,16 @@ templates = Jinja2Templates(directory="templates")
 async def read_root(request: Request, db: db_dependency):
     error = request.query_params.get("error")
     success = request.query_params.get("success")
-    error_driver = request.query_params.get("error_driver")
-    error_customer = request.query_params.get("error_customer")
-    success_customer = request.query_params.get("success_customer")
-    success_driver = request.query_params.get("success_driver")
     token = request.cookies.get("access_token")
-    
     try:
         user = await decode_token(token, db)
-        return templates.TemplateResponse("admin/pages/login/login.html",
-                                          {"user": user, "request": request, "error": error, "success": success,
-                                           "error_driver": error_driver, "success_customer": success_customer,
-                                           "error_customer": error_customer, "success_driver": success_driver})
+        db_user = db.query(models.Admins).filter(models.Admins.email == user.email).first()
+        if db_user is not None:
+            return RedirectResponse("/admin/dashboard", 302)
+        else:
+            return templates.TemplateResponse("404.html", {"request": request,'user':user})
     except TokenDecodeError as e:
-        return templates.TemplateResponse("admin/pages/login/login.html", {"request": request, "error": error, "success": success,
-                                                         "error_driver": error_driver,
-                                                         "success_customer": success_customer,
-                                                         "error_customer": error_customer,
-                                                         "success_driver": success_driver})
+        return templates.TemplateResponse("admin/pages/login/login.html", {"request": request, "error": error, "success": success})
         
 
 # login admin user
@@ -90,10 +82,6 @@ async def logout(request: Request):
 async def read_root(request: Request, db: db_dependency,base_url: str = base_url):
     error = request.query_params.get("error")
     success = request.query_params.get("success")
-    error_driver = request.query_params.get("error_driver")
-    error_customer = request.query_params.get("error_customer")
-    success_customer = request.query_params.get("success_customer")
-    success_driver = request.query_params.get("success_driver")
     token = request.cookies.get("access_token")
     try:
         user = await decode_token(token, db)
@@ -103,11 +91,10 @@ async def read_root(request: Request, db: db_dependency,base_url: str = base_url
             total_trips = db.query(models.Trips).count()
             total_customer = db.query(models.Customers).count()
             total_driver = db.query(models.Drivers).count()
-            return templates.TemplateResponse("admin/pages/dashboard/dashboard.html", {"user": user, "total_trips": total_trips, "total_customer": total_customer, "total_driver": total_driver, "base_url": base_url, "request": request, "error": error, "success": success, "error_driver": error_driver, "success_customer": success_customer, "error_customer": error_customer, "success_driver": success_driver})
+            return templates.TemplateResponse("admin/pages/dashboard/dashboard.html", {"user": user, "total_trips": total_trips, "total_customer": total_customer, "total_driver": total_driver, "base_url": base_url, "request": request, "error": error, "success": success})
+
         else:
-            print("User is not authorized (user_type is not 3)")
-            logout(request)
-            return RedirectResponse("/admin/login?error=You+are+not+authorized", 302)
+            return templates.TemplateResponse("404.html", {"request": request,'user':user})
         
     except TokenDecodeError as e:
         print(f"Token Decoding Error: {e}")
