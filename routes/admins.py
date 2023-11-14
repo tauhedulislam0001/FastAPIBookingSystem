@@ -83,11 +83,11 @@ async def read_root(request: Request, db: db_dependency,base_url: str = base_url
     error = request.query_params.get("error")
     success = request.query_params.get("success")
     token = request.cookies.get("access_token")
+    
     try:
         user = await decode_token(token, db)
-        print(user)
 
-        if hasattr(user, 'user_type') and user.user_type == 3:
+        if user.user_type == 3:
             total_trips = db.query(models.Trips).count()
             total_customer = db.query(models.Customers).count()
             total_driver = db.query(models.Drivers).count()

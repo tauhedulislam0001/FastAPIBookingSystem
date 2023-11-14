@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from database import engine, SessionLocal, Base,get_db,base_url, db_dependency
 import models
 from datetime import datetime, timedelta
-from sqlalchemy.orm import joinedload
+
 
 trips = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -30,8 +30,8 @@ async def read_root(request: Request, db: Annotated[Session, Depends(get_db)],ba
                 .all()
             )
             alltrips = db.query(models.Trips).order_by(models.Trips.id.desc()).all()
-            driver_data = [(driver.id, driver.driver.name) for driver in trips]
-            customer_data = [(customer.id, customer.customer.name) for customer in trips]
+            bid_data = [(bid.id, bid.driver.name) for bid in trips]
+            trip_data = [(bid.id, bid.customer.name) for bid in trips]
             return templates.TemplateResponse("admin/pages/trips/trips.html", {"user": user,"alltrips":alltrips, "base_url": base_url,"request": request,"error": error, "success": success})
         return RedirectResponse("/?error=You+are+not+authorized",302)
     except TokenDecodeError as e:
