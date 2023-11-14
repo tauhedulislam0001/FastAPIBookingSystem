@@ -841,7 +841,7 @@
                                     <a class="nav-link" href="javascript:void(0);" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <div class="header-info2 d-flex align-items-center">
                                             <div class="header-media">
-                                                <img src="{{ url_for('admin-assets', path='/profile/') }}{{user.image}}" alt="">
+                                                <img src="{{ url_for('assets', path='/upload/profile/') }}{{user.image}}" alt="">
                                             </div>
                                             <div class="header-info">
                                                 <h6>{{user.full_name}}</h6>
@@ -854,7 +854,7 @@
                                         <div class="card border-0 mb-0">
                                             <div class="card-header py-2">
                                                 <div class="products">
-                                                    <img src="{{ url_for('admin-assets', path='/profile/') }}{{user.image}}" class="avatar avatar-md" alt="">
+                                                    <img src="{{ url_for('assets', path='/upload/profile/') }}{{user.image}}" class="avatar avatar-md" alt="">
                                                     <div>
                                                         <h6>{{user.full_name}}</h6>
                                                         <span>{{user.username}}</span>
