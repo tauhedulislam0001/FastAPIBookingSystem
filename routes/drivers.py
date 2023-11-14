@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from database import engine, SessionLocal, Base,get_db,base_url, db_dependency
 import models
 from datetime import datetime, timedelta
+import pytz
 
 
 driver = APIRouter()
@@ -152,11 +153,13 @@ async def active_status(id: int, db: Session = Depends(get_db)):
 @driver.get("/driver/edit/{id}")
 async def active_status(id: int, request: Request, db: db_dependency, base_url: str = base_url):
     driver = db.query(models.Drivers).filter(models.Drivers.id == id).first()
-    created_at = driver.created_at  # Assuming driver.created_at is a datetime object
-
+    created_at = driver.created_at
     today_date = datetime.now()
 
     if created_at:
+        # Convert today_date to the same timezone as created_at
+        today_date = today_date.replace(tzinfo=created_at.tzinfo)
+
         time_difference = today_date - created_at
         days_difference = time_difference.days
     else:
