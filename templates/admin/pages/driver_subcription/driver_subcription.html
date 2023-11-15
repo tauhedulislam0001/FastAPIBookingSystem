@@ -76,7 +76,7 @@
 													<span class="badge badge-danger light border-0">Inactive</span>
 													{% endif %}
 												</td>
-												<td><a href="javascript:void(0)" class="text-primary">{{ row.created_at }}</a></td>
+												<td><a href="javascript:void(0)" class="text-primary">{{ row.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</a></td>
 												<td>
 													<a href="/driver-subscription/edit/{{row.id}}">
 														<button type="button" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-edit me-2"></i>Edit</button>
@@ -123,7 +123,7 @@
 							<input name="package_name" class="form-control" type="string">
 						</div>	
 						<div class="col-xl-6 mb-3">
-							<label for="exampleFormControlInput2" class="form-label">Package Duration<span class="text-danger">*</span></label>
+							<label for="exampleFormControlInput2" class="form-label">Package Description<span class="text-danger">*</span></label>
 							<textarea name="package_description" cols="30" rows="3"></textarea>
 						</div>	
 						<div class="col-xl-6 mb-3">

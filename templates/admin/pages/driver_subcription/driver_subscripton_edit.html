@@ -49,7 +49,7 @@
 													<span class="badge badge-danger light border-0">Inactive</span>
 												{% endif %}
 											</span></li>
-											<li><a href="app-profile.html">Created at</a><span>{{ (driverSubscription.created_at) }} Days</span></li>
+											<li><a href="app-profile.html">Created at</a><span>{{ (driverSubscription.created_at.strftime('%Y-%m-%d %H:%M:%S')) }} </span></li>
 										</ul>
 									</div>
 								</div>
