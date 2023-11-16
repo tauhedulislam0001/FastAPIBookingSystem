@@ -43,7 +43,7 @@ app.add_websocket_route("/socket.io/", sio_asgi_app)
 # Auth API
 
 
-@api.post("/customer/register/submit", tags=["API"])
+@api.post("/customer/register/submit", tags=["Authentication"])
 async def register(
         db: db_dependency,
         name: str = Form(None),
@@ -93,7 +93,7 @@ async def register(
 
 
 
-@api.post("/driver/register/submit", tags=["API"])
+@api.post("/driver/register/submit", tags=["Authentication"])
 async def driver_register(
         db: db_dependency,
         name: str = Form(None),
@@ -145,7 +145,7 @@ async def driver_register(
 
 
 
-@api.post("/driver-login", status_code=status.HTTP_200_OK, tags=["API"])
+@api.post("/driver-login", status_code=status.HTTP_200_OK,  tags=["Authentication"])
 async def customer_login_user(
         db: db_dependency,
         email: str = Form(None),
@@ -173,7 +173,7 @@ async def customer_login_user(
 
 
 
-@api.post("/customer-login", status_code=status.HTTP_200_OK, tags=["API"])
+@api.post("/customer-login", status_code=status.HTTP_200_OK, tags=["Authentication"])
 async def drover_login_user(
         db: db_dependency,
         email: str = Form(None),
@@ -209,7 +209,7 @@ async def drover_login_user(
 # Customer 
 
 
-@api.post("/trip/store", tags=["API"])
+@api.post("/trip/store",  tags=["Customer"])
 async def trip_store(
     request: Request,
     db: db_dependency,
@@ -246,7 +246,7 @@ async def trip_store(
 
 
 
-@api.get("/customer/trips/get", tags=["API"])
+@api.get("/customer/trips/get",  tags=["Customer"])
 async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)], token: str = Form(None)):
     try:
         user = await decode_token(token, db)
@@ -260,7 +260,7 @@ async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)], tok
         return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
 
 
-@api.get("/customer/trips/accepted", tags=["API"])
+@api.get("/customer/trips/accepted",  tags=["Customer"])
 async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)], token: str = Form(None)):
     try:
         user = await decode_token(token, db)
@@ -275,7 +275,7 @@ async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)], tok
 
 
 
-@api.get("/customer/show/bid/{id}", tags=["API"])
+@api.get("/customer/show/bid/{id}",  tags=["Customer"])
 async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(get_db)],base_url: str = base_url, token: str = Form(None)):
     try:
         user = await decode_token(token, db)
@@ -287,7 +287,7 @@ async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(g
     
 
     
-@api.get("/customer/bid/accept/{id}", tags=["API"])
+@api.get("/customer/bid/accept/{id}",  tags=["Customer"])
 async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(get_db)], token: str = Form(None)):
     try:
         user = await decode_token(token, db)
@@ -313,7 +313,7 @@ async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(g
 
 
 
-@api.get("/driver/trips/get", tags=["API"])
+@api.get("/driver/trips/get",  tags=["Driver"])
 async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)], token: str = Form(None)):
     try:
         user = await decode_token(token, db)
@@ -323,7 +323,7 @@ async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)], tok
         return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
     
 
-@api.get("/driver/bid/show/{id}", tags=["API"])
+@api.get("/driver/bid/show/{id}", tags=["Driver"])
 async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(get_db)],base_url: str = base_url, token: str = Form(None)):
     try:
         user = await decode_token(token, db)
@@ -341,7 +341,7 @@ async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(g
 
 
 
-@api.get("/bid/get/{id}", tags=["API"])
+@api.get("/bid/get/{id}", tags=["Driver"])
 async def trips_get(id: int,request: Request,db:Annotated[Session, Depends(get_db)],token: str = Form(None)):
     try:
         user = await decode_token(token, db)
@@ -360,7 +360,7 @@ async def trips_get(id: int,request: Request,db:Annotated[Session, Depends(get_d
 
 
 
-@api.post("/driver/bid-submit/{id}", tags=["API"])
+@api.post("/driver/bid-submit/{id}", tags=["Driver"])
 async def bid_store(
     id: int,
     request: Request,
@@ -394,7 +394,7 @@ async def bid_store(
 
 
 
-@api.get("/driver/package", tags=["API"])
+@api.get("/driver/package", tags=["Driver"])
 async def driver_package(request: Request, db: db_dependency,base_url: str = base_url,token: str = Form(None)):
     try:
         user = await decode_token(token, db)
@@ -406,7 +406,7 @@ async def driver_package(request: Request, db: db_dependency,base_url: str = bas
 
 
     
-@api.get("/driver/package/purchase/{id}", tags=["API"])
+@api.get("/driver/package/purchase/{id}", tags=["Driver"])
 async def update_driver_endpoint(
     request: Request,
     db:db_dependency,
