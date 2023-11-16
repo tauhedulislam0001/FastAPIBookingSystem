@@ -92,8 +92,14 @@ async def register(
         return RedirectResponse("/?error=Image is required", 302)        
     if password != confirm_password:
         return RedirectResponse("/?error=Passwords+do+not+match", 302)
-    existing_user = await get_user_by_email(email, db, models.Customers)
-    if existing_user:
+    existing_driver = await get_user_by_email(email, db, models.Drivers)
+    existing_customer = await get_user_by_email(email, db, models.Customers)
+    existing_admin = await get_user_by_email(email, db, models.Admins)
+    if existing_driver:
+        return RedirectResponse("/?error=Email+already+exists", 302)
+    elif existing_customer:
+        return RedirectResponse("/?error=Email+already+exists", 302)
+    elif existing_admin:
         return RedirectResponse("/?error=Email+already+exists", 302)
     # hashed_password = pwd_context.hash(password)
     hashed_password = hashlib.md5(password.encode()).hexdigest()
@@ -136,8 +142,14 @@ async def driver_register(
     
     if password != confirm_password:
         return RedirectResponse("/?error=Passwords+do+not+match", 302)
-    existing_user = await get_user_by_email(email, db, models.Drivers)
-    if existing_user:
+    existing_driver = await get_user_by_email(email, db, models.Drivers)
+    existing_customer = await get_user_by_email(email, db, models.Customers)
+    existing_admin = await get_user_by_email(email, db, models.Admins)
+    if existing_driver:
+        return RedirectResponse("/?error=Email+already+exists", 302)
+    elif existing_customer:
+        return RedirectResponse("/?error=Email+already+exists", 302)
+    elif existing_admin:
         return RedirectResponse("/?error=Email+already+exists", 302)
     # hashed_password = pwd_context.hash(password)
     hashed_password = hashlib.md5(password.encode()).hexdigest()
