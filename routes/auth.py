@@ -23,7 +23,7 @@ templates = Jinja2Templates(directory="templates")
 
 from core.utils import ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_MINUTES
 
-router = APIRouter()
+router = APIRouter(include_in_schema=False)
 
 
 def get_db():

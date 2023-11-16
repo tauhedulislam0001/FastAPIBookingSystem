@@ -10,7 +10,7 @@ from database import engine, SessionLocal, Base,get_db,base_url
 from middleware.CheckUser import UserCheck
 from datetime import datetime, timedelta
 
-customer = APIRouter()
+customer = APIRouter(include_in_schema=False)
 
 templates = Jinja2Templates(directory="templates")
 
