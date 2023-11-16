@@ -104,7 +104,7 @@ async def bid_store(
         db.refresh(BidsAdd)
         print(f"Bid: {BidsAdd.amount}")
         await sio.emit("BidList" + str(id), 'New Bid Store BidList' + str(id))
-        return RedirectResponse(url=f"/bid/submit/{id}?success=Trips+Add+successfully", status_code=302)
+        return RedirectResponse(url=f"/bid/submit/{id}?success=Bid+Submit+Successfully", status_code=302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
     
