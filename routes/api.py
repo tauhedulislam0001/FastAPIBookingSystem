@@ -131,3 +131,64 @@ async def driver_register(
     db.refresh(register)
     return JSONResponse(content={"success": "Driver Registration successfully"}, status_code=200)
 
+
+
+@api.post("/driver-login", status_code=status.HTTP_200_OK, tags=["Authentication"])
+async def customer_login_user(
+        db: db_dependency,
+        email: str = Form(None),
+        password: str = Form(None)):
+    if  email is None:
+        return JSONResponse(content={"error": "Email is required"}, status_code=500)
+    if  password is None:
+        return JSONResponse(content={"error": "Password is required"}, status_code=500)
+    db_user = db.query(models.Drivers).filter(models.Drivers.email == email).first()
+    if db_user and db_user.password == hashlib.md5(password.encode()).hexdigest():
+        if db_user.status == 1:
+            # If the user is authenticated, generate an access token
+            access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
+            access_token = create_access_token(db_user.email)
+            refresh_token = create_refresh_token(db_user.email)
+
+            # Update the access token in the database
+            db_user.access_token = access_token
+            db.commit()
+            return {"access_token": access_token, "token_type": "bearer", "token_expires":access_token_expires}
+
+        return JSONResponse(content={"error": "Account is banned"}, status_code=403)
+    return JSONResponse(content={"error": "Invalid email or password"}, status_code=404)
+
+
+
+@api.post("/customer-login", status_code=status.HTTP_200_OK, tags=["Authentication"])
+async def drover_login_user(
+        db: db_dependency,
+        email: str = Form(None),
+        password: str = Form(None)):
+    if  email is None:
+        return JSONResponse(content={"error": "Email is required"}, status_code=500)
+    if  password is None:
+        return JSONResponse(content={"error": "Password is required"}, status_code=500)
+    db_user = db.query(models.Customers).filter(models.Customers.email == email).first()
+    if db_user and db_user.password == hashlib.md5(password.encode()).hexdigest():
+        if db_user.status == 1:
+            # If the user is authenticated, generate an access token
+            access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
+            access_token = create_access_token(db_user.email)
+            refresh_token = create_refresh_token(db_user.email)
+            db_user.access_token = access_token
+            db.commit()
+            return {"access_token": access_token, "token_type": "bearer", "token_expires":access_token_expires}
+        return JSONResponse(content={"error": "Account is banned"}, status_code=403)
+    return JSONResponse(content={"error": "Invalid email or password"}, status_code=404)
+
+# @api.post("/logout")
+# async def logout(request: Request):
+#     response = RedirectResponse(
+#         '/?success=Logged+out', 302
+#     )
+#     # response = RedirectResponse("/")
+#     response.delete_cookie("access_token")
+#     return response
