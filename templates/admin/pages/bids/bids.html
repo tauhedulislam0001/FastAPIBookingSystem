@@ -15,7 +15,7 @@
 						</svg>
 						Dashboard </a>
 					</li>
-					<li class="breadcrumb-item active"><a href="javascript:void(0)">Trips</a></li>
+					<li class="breadcrumb-item active"><a href="javascript:void(0)">Bids</a></li>
 				</ol>
 				<a class="text-primary fs-13" data-bs-toggle="offcanvas" href="#offcanvasExample1" role="button" aria-controls="offcanvasExample1">+ Add Task</a>
 			</div>
@@ -23,10 +23,12 @@
 				<div class="row">
 					<div class="col-xl-12 bst-seller">
 						<div class="d-flex align-items-center justify-content-between mb-4">
-							<h4 class="heading mb-0">Trips</h4>
+							<h4 class="heading mb-0">Bids</h4>
 							<div class="d-flex align-items-center">
 								<button type="button" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-filter me-2"></i>Filter
 								</button>
+								
+								<a class="btn btn-primary btn-sm ms-2" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">+ Add Customer</a>
 							</div>
 						</div>
 						<div class="card h-auto">
@@ -43,20 +45,16 @@
 														<label class="form-check-label" for="checkAll"></label>
 													</div>
 												</th>
-                                                <th>Sl</th>
-                                                <th>Customer Name</th>
-                                                <th>Driver Name</th>
-                                                <th>Car Name</th>
-                                                <th>Pickup Location</th>
-                                                <th>Destination</th>
-                                                <th>Booking Date time</th>
-                                                <th>Fare</th>
+                                                <th>ID</th>
+                                                <th>Trip ID</th>
+                                                <th>Driver</th>
+                                                <th>Amount</th>
                                                 <th>Status</th>
-                                                <th>Action</th>
+                                                <th>Created at</th>
                                             </tr>
                                         </thead>
 										<tbody>
-											{% for trip in alltrips %}
+											{% for bid in bids %}
 											<tr>
 												<td>
 													<div class="form-check custom-checkbox">
@@ -64,50 +62,31 @@
 														<label class="form-check-label" for="customCheckBox022"></label>
 													</div>
 												</td>
-												<td><span>00{{ trip.id }}</span></td>
+												<td><span>00{{ bid.id }}</span></td>
 												<td>
 													<div class="products">
-														<img src="{{ url_for('assets', path='/upload/profile/') }}{{trip.customer.image}}" class="avatar avatar-md" alt="">
 														<div>
-															<h6><a href="/customer/edit/{{trip.user_id}}">{{ trip.customer.name  }}</a></h6>
-															<span>{{ trip.customer.email  }}</span>	
+															<h6><a href="app-profile-2.html">{{ bid.trip_id }}</a></h6>
 														</div>	
 													</div>
 												</td>
 												<td>
 													<div class="products">
-														<img src="{{ url_for('assets', path='/upload/profile/') }}{{trip.driver.image}}" class="avatar avatar-md" alt="">
 														<div>
-															<h6><a href="/driver/edit/{{trip.driver_id}}">{{ trip.driver.name }}</a></h6>
-															<span>{{ trip.driver.email }}</span>	
+															<h6><a href="app-profile-2.html">{{ bid.driver_id }}</a></h6>
 														</div>	
 													</div>
 												</td>
-												<td><span>{{ trip.car_name }}</span></td>
-												<td><a href="javascript:void(0)" class="text-primary">{{ trip.pick_up_location }}</a></td>
-												<td><a href="javascript:void(0)" class="text-primary">{{ trip.location }}</a></td>
-												<td><a href="javascript:void(0)" class="text-primary">{{ trip.created_at }}</a></td>
-												<td><a href="javascript:void(0)" class="text-primary">{{ trip.fare }}</a></td>
+												<td><a href="javascript:void(0)" class="text-primary">{{ bid.amount }}</a></td>
 												<td>
-													{% if trip.status == 1 %}
+													{% if bid.status == 1 %}
 													<span class="badge badge-success light border-0">Active</span>
-													{% elif trip.status == 0 %}
+													{% elif bid.status == 0 %}
 													<span class="badge badge-danger light border-0">Inactive</span>
 													{% endif %}
 												</td>
 												<td>
-													<a href="/watch/bids/{{trip.id}}">
-														<button type="button" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-eye me-2"></i>Watch Bid</button>
-													</a>
-													{% if trip.status == 1 %}
-													<a href="/trips/inactive/{{trip.id}}">
-														<button type="button" class="btn btn-danger btn-sm me-2"><i class="fa-solid fa-exchange me-2"></i>Inactive</button>
-													</a>
-													{% elif trip.status == 0 %}
-													<a href="/trips/active/{{trip.id}}">
-														<button type="button" class="btn btn-success btn-sm me-2"><i class="fa-solid fa-exchange me-2"></i>Active</button>
-													</a>
-													{% endif %}
+													<h6><a href="app-profile-2.html">{{ bid.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</a></h6>
 												</td>
 											</tr>
 											{% endfor %}
@@ -127,14 +106,14 @@
         ***********************************-->
 		<div class="offcanvas offcanvas-end customeoff" tabindex="-1" id="offcanvasExample">
 		  <div class="offcanvas-header">
-		  <h5 class="modal-title" id="#gridSystemModal">Add Driver</h5>
+		  <h5 class="modal-title" id="#gridSystemModal">Add Customer</h5>
 			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close">
 				<i class="fa-solid fa-xmark"></i>
 			</button>
 		  </div>
 		  <div class="offcanvas-body">
 			<div class="container-fluid">
-				<form id="driverForm" action="/driver/register/submit" class="dropzone" enctype="multipart/form-data" method="post">
+				<form id="customerForm" action="/customer/register/submit" class="dropzone" enctype="multipart/form-data" method="post">
 					<div>
 						<label>Profile Picture</label>
 						<div class="dz-default dlab-message upload-img mb-3">	
@@ -151,11 +130,11 @@
 					</div>
 					<div class="row">
 						<div class="col-xl-6 mb-3">
-							<label for="exampleFormControlInput2" class="form-label">Driver Name<span class="text-danger">*</span></label>
+							<label for="exampleFormControlInput2" class="form-label">Customer Name<span class="text-danger">*</span></label>
 							<input type="text" class="form-control" name="name" id="exampleFormControlInput2" placeholder="">
 						</div>	
 						<div class="col-xl-6 mb-3">
-							<label for="exampleFormControlInput3" class="form-label">Driver Email<span class="text-danger">*</span></label>
+							<label for="exampleFormControlInput3" class="form-label">Customer Email<span class="text-danger">*</span></label>
 							<input type="email" class="form-control" name="email" id="exampleFormControlInput3" placeholder="">
 						</div>
 						<div class="col-xl-6 mb-3">
@@ -168,7 +147,7 @@
 						</div>
 					<div>
 						<button class="btn btn-danger light me-1">Cancel</button>
-						<button class="btn btn-primary me-1" type="button" onclick="newDriver()">Submit</button>
+						<button class="btn btn-primary me-1" type="button" onclick="newCustomer()">Submit</button>
 					</div>
 				</form>
 			  </div>
