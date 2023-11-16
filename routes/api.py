@@ -1,10 +1,11 @@
 from fastapi import FastAPI, Request, HTTPException, Form, APIRouter, Depends, UploadFile, File, status
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse, Response,JSONResponse
-from database import engine, SessionLocal, Base,db_dependency
+from database import engine, SessionLocal, Base,db_dependency,base_url
 from datetime import datetime, timedelta, timezone
 import pytz
 from passlib.context import CryptContext
+from core.utils import decode_token,TokenDecodeError
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 import models
@@ -27,6 +28,17 @@ api = APIRouter(prefix="/api/v1")
 templates = Jinja2Templates(directory="templates")
 
 
+# Start Socket 
+from core.socket_manager import get_socketio_asgi_app
+from core.socket_io import sio
+app = FastAPI()
+
+sio_asgi_app = get_socketio_asgi_app(app)
+app.add_route("/socket.io/", route=sio_asgi_app, methods=["GET", "POST"])
+app.add_websocket_route("/socket.io/", sio_asgi_app)
+
+
+# End Sokcet
 
 # Auth API
 
@@ -192,3 +204,106 @@ async def drover_login_user(
 #     # response = RedirectResponse("/")
 #     response.delete_cookie("access_token")
 #     return response
+
+
+# Customer 
+
+
+@api.post("/trip/store")
+async def trip_store(
+    request: Request,
+    db: db_dependency,
+    car_name: str = Form(None),
+    pick_up_location: str = Form(None),
+    location: str = Form(None),
+    token: str = Form(None),
+    ):
+    if  car_name is None :
+        return JSONResponse(content={"error": "Car Name is require"}, status_code=500)
+    if  pick_up_location is None:
+        return JSONResponse(content={"error": "Pick Up Location is requiree"}, status_code=500)
+    if  location is None:
+        return JSONResponse(content={"error": "Destination is required"}, status_code=500)
+    if  token is None:
+        return JSONResponse(content={"error": "Token not found"}, status_code=500)
+    
+    try:
+        user = await decode_token(token, db)
+        tripsAdd = models.Trips(
+                user_id=user.id,
+                car_name=car_name,
+                pick_up_location=pick_up_location,
+                location=location,
+            )   
+        db.add(tripsAdd)
+        db.commit()
+        db.refresh(tripsAdd)
+        print(f"trips: {tripsAdd.car_name}")
+        await sio.emit("tripList",'New Trip Store')
+        return JSONResponse(content={"success": "Trips Add successfully"}, status_code=200)
+    except TokenDecodeError as e:
+        return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
+
+
+
+@api.get("/customer/trips/get")
+async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)], token: str = Form(None)):
+    try:
+        user = await decode_token(token, db)
+        if user.user_type==1 :
+            my_trips = db.query(models.Trips).filter(models.Trips.user_id==user.id).filter(models.Trips.fare.is_(None)).order_by(models.Trips.id.desc()).all()
+            return my_trips
+        return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
+
+
+    except TokenDecodeError as e:
+        return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
+
+
+@api.get("/customer/trips/accepted")
+async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)], token: str = Form(None)):
+    try:
+        user = await decode_token(token, db)
+        if user.user_type==1 :
+            my_trips = db.query(models.Trips).join(models.Drivers).filter(models.Trips.user_id==user.id).order_by(models.Trips.id.desc()).all()
+            bid_data = [(trip.driver.name) for trip in my_trips]
+            return my_trips
+        return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
+
+    except TokenDecodeError as e:
+        return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
+
+
+
+@api.get("/show/bid/{id}")
+async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(get_db)],base_url: str = base_url, token: str = Form(None)):
+    try:
+        user = await decode_token(token, db)
+        trips = db.query(models.Trips).filter(models.Trips.id == id).first()
+        return {"trips": trips, "base_url":base_url}
+
+    except TokenDecodeError as e:
+        return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
+    
+
+    
+@api.get("/bid/accept/{id}")
+async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(get_db)], token: str = Form(None)):
+    try:
+        user = await decode_token(token, db)
+        bid = db.query(models.Bids).filter(models.Bids.id == id).first()
+        if bid.status ==1 :
+            if bid is not None:
+                TripAccept = db.query(models.Trips).filter(models.Trips.id == bid.trip_id).first()
+                TripAccept.driver_id=bid.driver_id
+                TripAccept.fare=bid.amount
+                db.commit()
+                db.refresh(TripAccept)
+                bid.status= 0
+                db.commit()
+                db.refresh(bid)
+                await sio.emit("TripAccept" + str(bid.trip_id), 'Trip Accepted' + str(bid.trip_id))
+                return JSONResponse(content={"success": "Trip Accept successfully"}, status_code=200)
+        return JSONResponse(content={"error": "Trips all ready accepted"}, status_code=403)
+    except TokenDecodeError as e:
+        return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
