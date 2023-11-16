@@ -15,6 +15,7 @@ import routes.customers
 import routes.admins
 import routes.driver_subscription
 import routes.trips
+import routes.api
 from jose import JWTError, jwt
 from core.utils import ALGORITHM, JWT_SECRET_KEY, decode_token, TokenDecodeError
 from core.helper import get_user_by_email
@@ -31,6 +32,7 @@ app.include_router(routes.auth.router)
 app.include_router(routes.admins.admin)
 app.include_router(routes.driver_subscription.driverSubcription)
 app.include_router(routes.trips.trips)
+app.include_router(routes.api.api)
 from middleware.CheckUser import UserCheck
 # Start Socket 
 from core.socket_manager import get_socketio_asgi_app
