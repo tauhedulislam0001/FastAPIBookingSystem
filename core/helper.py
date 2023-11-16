@@ -1,32 +1,47 @@
 from datetime import datetime
 import os
 import uuid
+from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import HTMLResponse, RedirectResponse, Response
 import models
+from PIL import Image
+from io import BytesIO
 
-async def insert_image(image, dir):
+def compress_image(image: Image.Image, quality: int = 85) -> BytesIO:
+    output_buffer = BytesIO()
+    image.save(output_buffer, format="JPEG", quality=quality)
+    output_buffer.seek(0)
+    return output_buffer
+
+async def insert_image(image: UploadFile, dir: str) -> str:
     try:
+        # Your existing code for creating a unique filename
         currentDate = datetime.today()
         formatted_date = currentDate.strftime("%Y-%m-%d_%H-%M-%S-%f")
         random_filename = str(uuid.uuid4())
-        # Get the original file extension from the image filename
         _, file_extension = os.path.splitext(image.filename)
 
-        # Check if the file extension is allowed (jpg, png, jpeg, webp)
         allowed_extensions = {'.jpg', '.jpeg', '.png', '.webp'}
         if file_extension.lower() not in allowed_extensions:
             raise ValueError("Invalid file type. Only jpg, png, jpeg, and webp are allowed.")
 
-        filename = f'{random_filename}_{image.filename}' 
-
+        filename = f'{random_filename}{file_extension}'
 
         if not os.path.exists(dir):
             os.makedirs(dir)
 
+        # Read and compress the image
         contents = await image.read()
-        with open(f"{dir}{filename}", "wb") as f:
-            f.write(contents)
-        return filename
+        original_image = Image.open(BytesIO(contents))
+        quality: int = 85
+        compressed_image = compress_image(original_image, quality)
+
+        # Save the compressed image
+        compressed_filename = f'compressed_{filename}'
+        with open(os.path.join(dir, filename), "wb") as f:
+            f.write(compressed_image.read())
+
+        return compressed_filename
     except ValueError as e:
         error_message = str(e)
         return None
