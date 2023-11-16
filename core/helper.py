@@ -37,11 +37,11 @@ async def insert_image(image: UploadFile, dir: str) -> str:
         compressed_image = compress_image(original_image, quality)
 
         # Save the compressed image
-        compressed_filename = f'compressed_{filename}'
+        # compressed_filename = f'compressed_{filename}'
         with open(os.path.join(dir, filename), "wb") as f:
             f.write(compressed_image.read())
 
-        return compressed_filename
+        return filename
     except ValueError as e:
         error_message = str(e)
         return None
