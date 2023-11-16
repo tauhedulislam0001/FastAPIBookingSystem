@@ -1,5 +1,5 @@
-from fastapi import FastAPI, HTTPException, Depends, Request
-from fastapi.responses import HTMLResponse, RedirectResponse, Response,JSONResponse
+from fastapi import FastAPI, HTTPException, Depends, Request,status
+from fastapi.responses import HTMLResponse, RedirectResponse, Response,JSONResponse,UJSONResponse
 from pydantic import BaseModel
 import models
 from database import engine, SessionLocal, Base
@@ -19,11 +19,44 @@ import routes.api
 from jose import JWTError, jwt
 from core.utils import ALGORITHM, JWT_SECRET_KEY, decode_token, TokenDecodeError
 from core.helper import get_user_by_email
-
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+import secrets 
 Base = declarative_base()
 from typing import Annotated
+from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 
-app = FastAPI()
+app = FastAPI(
+    title="Garibook API",
+    docs_url=None,
+    redoc_url=None,
+    openapi_url="/api/openapi.json",
+    default_response_class=UJSONResponse
+    )
+# swagger auth
+security = HTTPBasic()
+def get_current_username(credentials: HTTPBasicCredentials = Depends(security)) -> str:
+    correct_username = secrets.compare_digest(credentials.username, "garibook")
+    correct_password = secrets.compare_digest(credentials.password, "Garibook#NRB")
+    if not (correct_username and correct_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+    return credentials.username
+@app.get("/docs", response_class=HTMLResponse,include_in_schema=False)
+async def get_docs(username: str = Depends(get_current_username)) -> HTMLResponse:
+    return get_swagger_ui_html(openapi_url="/api/openapi.json", title="docs")
+
+
+@app.get("/redoc", response_class=HTMLResponse,include_in_schema=False)
+async def get_redoc(username: str = Depends(get_current_username)) -> HTMLResponse:
+    return get_redoc_html(openapi_url="/api/openapi.json", title="redoc")
+
+
+# swagger auth end
+
+
 models.Base.metadata.create_all(bind=engine)
 templates = Jinja2Templates(directory="templates")
 app.mount("/assets", StaticFiles(directory="templates/assets"), name="assets")
@@ -34,6 +67,7 @@ app.include_router(routes.driver_subscription.driverSubcription)
 app.include_router(routes.trips.trips)
 app.include_router(routes.api.api)
 from middleware.CheckUser import UserCheck
+
 # Start Socket 
 from core.socket_manager import get_socketio_asgi_app
 from core.socket_io import sio
