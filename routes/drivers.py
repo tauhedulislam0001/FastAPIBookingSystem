@@ -10,13 +10,13 @@ import models
 from datetime import datetime, timedelta
 from core.helper import subscription_validity
 
-driver = APIRouter()
+driver = APIRouter(include_in_schema=False)
 templates = Jinja2Templates(directory="templates")
 
 # Start Socket 
 from core.socket_manager import get_socketio_asgi_app
 from core.socket_io import sio
-app = FastAPI()
+app = FastAPI(include_in_schema=False)
 
 sio_asgi_app = get_socketio_asgi_app(app)
 app.add_route("/socket.io/", route=sio_asgi_app, methods=["GET", "POST"])

@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 from core.helper import truncated_description
 
 
-driverSubcription = APIRouter()
+driverSubcription = APIRouter(include_in_schema=False)
 templates = Jinja2Templates(directory="templates")
 
 # Start Socket 

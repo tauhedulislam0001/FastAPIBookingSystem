@@ -67,7 +67,7 @@ async def custom_404_handler(request, __):
 async def custom_404_handler(request, __):
     return templates.TemplateResponse("500.html",{"request": request})
 
-@app.get("/")
+@app.get("/",include_in_schema=False)
 async def read_root(request: Request, db: db_dependency):
     error = request.query_params.get("error")
     success = request.query_params.get("success")
