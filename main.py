@@ -106,12 +106,12 @@ async def read_root(request: Request, db: db_dependency):
     error = request.query_params.get("error")
     success = request.query_params.get("success")
     token = request.cookies.get("access_token")
-    
+    trips = db.query(models.Trips).order_by(models.Trips.id.desc()).filter(models.Trips.fare.is_(None)).all()
     try:
         user = await decode_token(token, db)
-        return templates.TemplateResponse("index.html", {"user": user, "request": request, "error": error, "success": success})
+        return templates.TemplateResponse("index.html", {"user": user,"trips": trips, "request": request, "error": error, "success": success})
     except TokenDecodeError as e:
-        return templates.TemplateResponse("index.html", {"request": request, "error": error, "success": success})
+        return templates.TemplateResponse("index.html", {"trips": trips,"request": request, "error": error, "success": success})
 
 
 @app.get("/ip")
