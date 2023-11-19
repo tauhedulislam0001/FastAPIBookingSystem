@@ -292,7 +292,7 @@ async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(g
     try:
         user = await decode_token(token, db)
         bid = db.query(models.Bids).filter(models.Bids.id == id).first()
-        if bid.status ==1 :
+        if bid.status ==0 :
             if bid is not None:
                 TripAccept = db.query(models.Trips).filter(models.Trips.id == bid.trip_id).first()
                 TripAccept.driver_id=bid.driver_id
