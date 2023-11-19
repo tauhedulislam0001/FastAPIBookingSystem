@@ -122,16 +122,20 @@
 			</div>
 			<div class="section-content section-inside-top-margin">
 				<div class="row">
-					{% if user %}
-						{% if user.user_type ==1 %}
-						{% for item in trips %}
-							{% include 'layouts/trips.html' %}
-						{% endfor %}
+					{% for item in HomeTrips %}
+						{% if user %}
+							{% if user.user_type ==1 %}
+								{% if item.user_id == user.id %}
+									{% include 'layouts/trips.html' %}
+								{% endif %}
+							{% else %}
+								{% include 'layouts/trips.html' %}
+							{% endif %}
 						{% else %}
+							{% include 'layouts/trips.html' %}
 						{% endif %}
-					{% else %}
+					{% endfor %}
 					
-					{% endif %}
 					
 				</div>
 			</div>
