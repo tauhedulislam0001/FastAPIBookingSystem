@@ -32,7 +32,7 @@ async def insert_image(image: UploadFile, dir: str) -> str:
 
         # Read and compress the image
         contents = await image.read()
-        original_image = Image.open(BytesIO(contents))
+        original_image = Image.open(BytesIO(contents)).convert('RGB')
         quality: int = 85
         compressed_image = compress_image(original_image, quality)
 
