@@ -292,19 +292,17 @@ async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(g
     try:
         user = await decode_token(token, db)
         bid = db.query(models.Bids).filter(models.Bids.id == id).first()
-        if bid.status ==0 :
-            if bid is not None:
-                TripAccept = db.query(models.Trips).filter(models.Trips.id == bid.trip_id).first()
-                TripAccept.driver_id=bid.driver_id
-                TripAccept.fare=bid.amount
-                db.commit()
-                db.refresh(TripAccept)
-                bid.status= 0
-                db.commit()
-                db.refresh(bid)
-                await sio.emit("TripAccept" + str(bid.trip_id), 'Trip Accepted' + str(bid.trip_id))
-                return JSONResponse(content={"success": "Trip Accept successfully"}, status_code=200)
-        return JSONResponse(content={"error": "Trips all ready accepted"}, status_code=403)
+        if bid is not None:
+            TripAccept = db.query(models.Trips).filter(models.Trips.id == bid.trip_id).first()
+            TripAccept.driver_id=bid.driver_id
+            TripAccept.fare=bid.amount
+            db.commit()
+            db.refresh(TripAccept)
+            bid.status= 0
+            db.commit()
+            db.refresh(bid)
+            await sio.emit("TripAccept" + str(bid.trip_id), 'Trip Accepted' + str(bid.trip_id))
+            return JSONResponse(content={"success": "Trip Accept successfully"}, status_code=200)
     except TokenDecodeError as e:
         return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
     
