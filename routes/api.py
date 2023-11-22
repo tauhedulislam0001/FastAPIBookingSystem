@@ -206,6 +206,25 @@ async def drover_login_user(
 #     return response
 
 
+
+@api.get("/user/profile",  tags=["Users"])
+async def profile(
+    request: Request,
+    db: db_dependency,
+    token: str = Form(None),
+    ):
+    if  token is None:
+        return JSONResponse(content={"error": "Token not found"}, status_code=500)
+    
+    try:
+        user = await decode_token(token, db)
+
+        return {'user':user}
+    except TokenDecodeError as e:
+        return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
+
+
+
 # Customer 
 
 
@@ -322,6 +341,17 @@ async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)], tok
     except TokenDecodeError as e:
         return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
     
+
+@api.get("/driver/accepted/trips/list",  tags=["Driver"])
+async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)], token: str = Form(None)):
+    try:
+        user = await decode_token(token, db)
+        trips = db.query(models.Trips).order_by(models.Trips.id.desc()).filter(models.Trips.driver_id==user.id).all()
+        return {"trips": trips}
+    except TokenDecodeError as e:
+        return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
+    
+
 
 @api.get("/driver/bid/show/{id}", tags=["Driver"])
 async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(get_db)],base_url: str = base_url, token: str = Form(None)):
