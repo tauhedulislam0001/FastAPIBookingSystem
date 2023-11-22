@@ -232,6 +232,10 @@ async def profile(
 async def trip_store(
     request: Request,
     db: db_dependency,
+    p_lat: str = Form(None),
+    p_long: str = Form(None),
+    d_lat: str = Form(None),
+    d_long: str = Form(None),
     car_name: str = Form(None),
     pick_up_location: str = Form(None),
     location: str = Form(None),
@@ -251,6 +255,10 @@ async def trip_store(
         tripsAdd = models.Trips(
                 user_id=user.id,
                 car_name=car_name,
+                p_lat=p_lat,
+                p_long=p_long,
+                d_lat=d_lat,
+                d_long=d_long,
                 pick_up_location=pick_up_location,
                 location=location,
             )   
