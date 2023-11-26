@@ -161,7 +161,7 @@
             $.ajax({
                 url: '/home/trips',
                 method: 'GET',
-                data: { start: start, limit: limit },  // Replace 'your_token' with the actual token
+                data: { skip: start, limit: limit },  // Replace 'your_token' with the actual token
                 success: function (response) {
                     // Access user and trip_data from the response
                     var user = response.user;
@@ -172,6 +172,13 @@
                     console.log('Trip Data:', tripData);
 
                     appendDataToPage(tripData, user);
+                    // Check if there is more data or if the data is empty
+                    var hasMoreData = tripData.length >= limit;
+                    var noDataFound = tripData.length === 0;
+
+                    // Update the visibility of the "Load More" button
+                    updateLoadMoreButtonVisibility(hasMoreData, noDataFound);
+
 
                     // Call the callback function to indicate data loading is complete
                     if (callback && typeof callback === 'function') {
@@ -193,7 +200,6 @@
         // Function to append data to the page (replace this with your actual logic)
         function appendDataToPage(data, user) {
             var container = $('.data-container');
-
             for (var i = 0; i < data.length; i++) {
 
                 if (user != null) {
@@ -289,6 +295,21 @@
         `);
             }
         }
+        function updateLoadMoreButtonVisibility(hasMoreData, noDataFound) {
+            var loadMoreButton = $('#load-more-btn');
+
+            if (noDataFound) {
+                loadMoreButton.hide();
+                // Optionally show a message indicating no data found
+                // $('#no-data-message').show();
+            } else if (!hasMoreData) {
+                loadMoreButton.hide();
+            } else {
+                loadMoreButton.show();
+                $('#no-data-message').hide(); // Hide the no data message if it was previously shown
+            }
+        }
+
 
 
         setTimeout(function () {
