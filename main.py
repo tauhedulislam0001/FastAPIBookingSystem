@@ -1,12 +1,12 @@
-from fastapi import FastAPI, HTTPException, Depends, Request,status
+from fastapi import FastAPI, HTTPException, Depends, Request,status,Query
 from fastapi.responses import HTMLResponse, RedirectResponse, Response,JSONResponse,UJSONResponse
 from pydantic import BaseModel
 import models
 from database import engine, SessionLocal, Base
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session,joinedload
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from sqlalchemy import Column, Integer , String
+from sqlalchemy import Column, Integer , String,desc
 # from sqlalchemy.orm import mapped_column
 from sqlalchemy.ext.declarative import declarative_base
 import routes.auth
@@ -121,6 +121,27 @@ async def read_root(request: Request, db: db_dependency):
     except TokenDecodeError as e:
         return templates.TemplateResponse("index.html", {"HomeTrips": alltrips,"request": request, "error": error, "success": success})
 
+fake_items = [{"item_name": f"Item {i}"} for i in range(1, 101)]
+
+
+@app.get("/home/trips")
+async def read_items(request: Request,skip: int = Query(0), limit: int = Query(9),db: Session = Depends(get_db)):
+    token = request.cookies.get("access_token")
+    
+    alltrips = (
+        db.query(models.Trips)
+        .filter(models.Trips.fare.is_(None))
+        .order_by(desc(models.Trips.id))
+        .options(joinedload(models.Trips.customer), joinedload(models.Trips.driver))
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+    try:
+        user = await decode_token(token, db)
+        return {"user": user, "trip_data": alltrips}
+    except TokenDecodeError as e:
+        return {"user": None, "trip_data": alltrips}
 
 @app.get("/ip")
 def read_root(request: Request):

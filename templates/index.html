@@ -120,29 +120,52 @@
 					</div>
 				</div>
 			</div>
-			<div class="section-content section-inside-top-margin">
+			<!-- <div class="section-content section-inside-top-margin">
 				<div class="row">
 					{% for item in HomeTrips %}
-						{% if user %}
-							{% if user.user_type ==1 %}
-								{% if item.user_id == user.id %}
-									{% include 'layouts/trips.html' %}
-								{% endif %}
-							{% else %}
-								{% include 'layouts/trips.html' %}
-							{% endif %}
-						{% else %}
-							{% include 'layouts/trips.html' %}
-						{% endif %}
+					{% if user %}
+					{% if user.user_type ==1 %}
+					{% if item.user_id == user.id %}
+
+					asd
+					
+					{% endif %}
+					{% else %}
+					as
+					{% endif %}
+					{% else %}
+					asd
+					{% endif %}
 					{% endfor %}
-					
-					
+
+
 				</div>
-			</div>
+			</div> -->
 		</div>
 	</section>
 	<!-- /live car request END -->
 
+	<section id="your-middle-section-id">
+		<div class="container">
+			<div class="row data-container">
+
+			</div>
+			<div class="col-md-12">
+				<div class="text-center">
+					<div class="ajax_load" style="display: none">
+						<div class="spinner-border text-success spinner-border-md" role="status">
+							<span class="visually-hidden">Loading...</span>
+						</div>
+						<div class="spinner-grow text-success spinner-grow-md" role="status">
+							<span class="visually-hidden">Loading...</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<button id="load-more-btn" style="margin: auto;display: block;background: #a0d04c;border: none;padding: 11px 25px;color: #fff;margin-top: 25px;">Load More</button>
+		</div>
+
+	</section>
 	<!-- live car request -->
 	<section class="section download-app-section section-padding">
 		<div class="container">
@@ -152,7 +175,11 @@
 						<div class="userapp-heading">
 							<div class="section-header text-left">
 								<h2>Download the Garibook App</h2>
-								<p>Garibook offers exclusive airport pickup and drop-off service for all local and international passengers. Garibook offers Single trip, Round trip, and Multicity car services. Garibook also offers car rental services for individuals and corporates. Garibook has services in the United Kingdom, United Arab Emirates, Malaysia, and Thailand.</p>
+								<p>Garibook offers exclusive airport pickup and drop-off service for all local and
+									international passengers. Garibook offers Single trip, Round trip, and Multicity car
+									services. Garibook also offers car rental services for individuals and corporates.
+									Garibook has services in the United Kingdom, United Arab Emirates, Malaysia, and
+									Thailand.</p>
 							</div>
 							<div
 								class="download-btn d-flex gap-2 flex-wrap justify-content-center justify-content-md-start">
