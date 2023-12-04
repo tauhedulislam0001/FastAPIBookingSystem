@@ -1,0 +1,171 @@
+{% include 'admin/layouts/header.html' %}
+		
+		<!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body">
+            <!-- row -->	
+			<div class="page-titles">
+				<ol class="breadcrumb">
+					<li><h5 class="bc-title">Dashboard</h5></li>
+					<li class="breadcrumb-item"><a href="javascript:void(0)">
+						<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="../../external.html?link=http://www.w3.org/2000/svg">
+							<path d="M2.125 6.375L8.5 1.41667L14.875 6.375V14.1667C14.875 14.5424 14.7257 14.9027 14.4601 15.1684C14.1944 15.4341 13.8341 15.5833 13.4583 15.5833H3.54167C3.16594 15.5833 2.80561 15.4341 2.53993 15.1684C2.27426 14.9027 2.125 14.5424 2.125 14.1667V6.375Z" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+							<path d="M6.375 15.5833V8.5H10.625V15.5833" stroke="#2C2C2C" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+						Dashboard </a>
+					</li>
+					<li class="breadcrumb-item active"><a href="javascript:void(0)">Watch Bids</a></li>
+				</ol>
+				<a class="text-primary fs-13" data-bs-toggle="offcanvas" href="#offcanvasExample1" role="button" aria-controls="offcanvasExample1">+ Add Task</a>
+			</div>
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xl-12 bst-seller">
+						<div class="d-flex align-items-center justify-content-between mb-4">
+							<h4 class="heading mb-0">Watch Bids</h4>
+							<div class="d-flex align-items-center">
+								<button type="button" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-filter me-2"></i>Filter
+								</button>
+								
+								<a class="btn btn-primary btn-sm ms-2" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">+ Add Customer</a>
+							</div>
+						</div>
+						<div class="card h-auto">
+							<div class="card-body p-0">
+								<div class="table-responsive active-projects style-1 dt-filter exports">
+									<div class="tbl-caption">
+									</div>
+									<table id="customer-tbl" class="table shorting">
+										<tbody>
+											<tr>
+												<td><b>Car Name: </b> {{watch_bids.car_name}}</td>
+												<td>
+													<b>Booking Date: </b>
+													<span id="formattedDate"></span>
+												</td>
+												<script>
+													var date = new Date('{{watch_bids.created_at}}');
+													var formattedDate = date.toLocaleString();
+													document.getElementById("formattedDate").textContent = formattedDate;
+												</script>
+											</tr>
+											<tr>
+												<td><b>Pick up location: </b> {{watch_bids.pick_up_location}}</td>
+												<td style="text-align: left"><b>Destination: </b> {{watch_bids.location}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="chat-wrapper mt-3">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-12 mx-auto">
+								<div class="card mb-4">
+									<div class="card-header text-center">
+										{% if watch_bids.fare == null %}
+										<b><h6 class="text-primary">Trip Bids Ongoing</h6></b>
+										{% else  %}
+										<b><h6 class="text-success">Customer accepted bid for {{ watch_bids.fare }} TK fare</h6></b>
+										{% endif %}
+									</div>
+									<div class="card-body chat-care">
+										<ul class="chat">
+		
+										</ul>
+									</div>
+		
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			</div>
+		
+
+<script>
+			// Customer Bid show Script Start
+		const socket = io(`ws://{{base_url}}:8000/`, { transports: ["websocket"] });
+		socket.on("BidList{{watch_bids.id}}", function (data) {
+			console.log(socket);
+			var chatList = $('.chat');
+			chatList.empty();
+			BidGet();
+	
+		});
+		BidGet();
+		function displayBidInfo(bid, user) {
+			var chatList = $('.chat');
+	
+			agentLi = $('<li>').addClass('agent clearfix').addClass('user-' + user.id);
+			var imgSpan = $('<span>').addClass('chat-img left clearfix mx-2');
+			imgSpan.html('<img src="../../assets/upload/profile/' + bid.driver.image + '" alt="Agent" class="img-circle" />');
+	
+			var bodyDiv = $('<div>').addClass('chat-body clearfix');
+	
+			var headerDiv = $('<div>').addClass('clearfixn d-flex justify-content-between');
+			var strongName = $('<strong>').addClass('primary-font').text(bid.driver.name);
+			var date = new Date(bid.created_at);
+			var formattedDate = timeAgo(date);
+			var smallTime
+			if (bid.driver_id == user.id) {
+				var smallTime = $('<small>').addClass('right text-muted').html('<span class="glyphicon glyphicon-time"></span>' + formattedDate);
+			} else {
+				var smallTime = $('<small>').addClass('left text-muted').html('<span class="glyphicon glyphicon-time"></span>' + formattedDate);
+			}
+			var pElement = $('<p>').text('Amount: ' + bid.amount);
+			if (bid.trip.fare == null) {
+				var acceptLink = $('<a>').addClass('btn btn-success').attr('href', '/bid/accept/' + bid.id).text('Accept');
+				var acceptButton = $('<button>').addClass('btn btn-sm btn-success accept-btn').text('Accept');
+				acceptButton.click(function (event) {
+					event.preventDefault();
+					window.location.href = acceptLink.attr('href');
+				});
+			}
+	
+	
+			headerDiv.append(strongName);
+			headerDiv.append(smallTime);
+	
+			bodyDiv.append(headerDiv);
+			bodyDiv.append(pElement);
+	
+			agentLi.append(imgSpan);
+			agentLi.append(bodyDiv);
+	
+			chatList.append(agentLi);
+		}
+		function BidGet() {
+			$.ajax({
+				url: '/bid/get/{{watch_bids.id}}',
+				method: 'GET',
+				success: function (data) {
+					console.log(data);
+					for (var i = 0; i < data.bids.length; i++) {
+						displayBidInfo(data.bids[i], data.user);
+					}
+				}
+			});
+		}
+		function timeAgo(date) {
+			var now = new Date();
+			var diff = Math.abs(now - date);
+			var minutes = Math.floor((diff / 1000) / 60);
+	
+			if (minutes < 60) {
+				return minutes + ' minute' + (minutes !== 1 ? 's' : '') + ' ago';
+			} else {
+				var hours = Math.floor(minutes / 60);
+				return hours + ' hour' + (hours !== 1 ? 's' : '') + ' ago';
+			}
+		}
+		// Customer Bin show Script END
+</script>
+		
+	{% include 'admin/layouts/footer.html' %}
