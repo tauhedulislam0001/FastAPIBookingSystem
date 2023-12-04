@@ -2,10 +2,11 @@ from datetime import datetime
 import os
 import uuid
 from fastapi import FastAPI, File, UploadFile
-from fastapi.responses import HTMLResponse, RedirectResponse, Response
+from fastapi.responses import HTMLResponse, RedirectResponse, Response,JSONResponse
 import models
 from PIL import Image
 from io import BytesIO
+import re
 
 def compress_image(image: Image.Image, quality: int = 85) -> BytesIO:
     output_buffer = BytesIO()
@@ -89,3 +90,11 @@ async def subscription_validity(user,db):
                 else :
                     return 0
                 
+def validate_phone_number(phone_number):
+    if phone_number is None:
+        return JSONResponse(content={"error": "Phone Number is required"}, status_code=400)
+    phone_pattern = re.compile(r'^0(13|14|15|16|18|19|17)\d{8}$')
+    if not phone_pattern.match(phone_number):
+        return JSONResponse(content={"error": "Invalid phone number format"}, status_code=400)
+    else:
+        return 1
