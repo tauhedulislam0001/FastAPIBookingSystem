@@ -10,7 +10,7 @@ import models
 from datetime import datetime, timedelta
 
 
-trips = APIRouter()
+trips = APIRouter(include_in_schema=False)
 templates = Jinja2Templates(directory="templates")
 
 

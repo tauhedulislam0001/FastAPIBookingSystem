@@ -11,7 +11,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 import models
 from sqlalchemy.orm import Session
 from typing import Annotated, Optional
-from core.helper import insert_image, get_user_by_email
+from core.helper import insert_image, get_user_by_email,subscription_validity
 from core.utils import create_access_token, create_refresh_token
 
 from pydantic import BaseModel
@@ -43,7 +43,7 @@ app.add_websocket_route("/socket.io/", sio_asgi_app)
 # Auth API
 
 
-@api.post("/customer/register/submit")
+@api.post("/customer/register/submit", tags=["Authentication"])
 async def register(
         db: db_dependency,
         name: str = Form(None),
@@ -93,7 +93,7 @@ async def register(
 
 
 
-@api.post("/driver/register/submit")
+@api.post("/driver/register/submit", tags=["Authentication"])
 async def driver_register(
         db: db_dependency,
         name: str = Form(None),
@@ -145,7 +145,7 @@ async def driver_register(
 
 
 
-@api.post("/driver-login", status_code=status.HTTP_200_OK, tags=["Authentication"])
+@api.post("/driver-login", status_code=status.HTTP_200_OK,  tags=["Authentication"])
 async def customer_login_user(
         db: db_dependency,
         email: str = Form(None),
@@ -206,13 +206,36 @@ async def drover_login_user(
 #     return response
 
 
+
+@api.get("/user/profile",  tags=["Users"])
+async def profile(
+    request: Request,
+    db: db_dependency,
+    token: str = Form(None),
+    ):
+    if  token is None:
+        return JSONResponse(content={"error": "Token not found"}, status_code=500)
+    
+    try:
+        user = await decode_token(token, db)
+
+        return {'user':user}
+    except TokenDecodeError as e:
+        return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
+
+
+
 # Customer 
 
 
-@api.post("/trip/store")
+@api.post("/trip/store",  tags=["Customer"])
 async def trip_store(
     request: Request,
     db: db_dependency,
+    p_lat: str = Form(None),
+    p_long: str = Form(None),
+    d_lat: str = Form(None),
+    d_long: str = Form(None),
     car_name: str = Form(None),
     pick_up_location: str = Form(None),
     location: str = Form(None),
@@ -232,6 +255,10 @@ async def trip_store(
         tripsAdd = models.Trips(
                 user_id=user.id,
                 car_name=car_name,
+                p_lat=p_lat,
+                p_long=p_long,
+                d_lat=d_lat,
+                d_long=d_long,
                 pick_up_location=pick_up_location,
                 location=location,
             )   
@@ -246,7 +273,7 @@ async def trip_store(
 
 
 
-@api.get("/customer/trips/get")
+@api.get("/customer/trips/get",  tags=["Customer"])
 async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)], token: str = Form(None)):
     try:
         user = await decode_token(token, db)
@@ -260,7 +287,7 @@ async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)], tok
         return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
 
 
-@api.get("/customer/trips/accepted")
+@api.get("/customer/trips/accepted",  tags=["Customer"])
 async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)], token: str = Form(None)):
     try:
         user = await decode_token(token, db)
@@ -275,7 +302,7 @@ async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)], tok
 
 
 
-@api.get("/show/bid/{id}")
+@api.get("/customer/show/bid/{id}",  tags=["Customer"])
 async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(get_db)],base_url: str = base_url, token: str = Form(None)):
     try:
         user = await decode_token(token, db)
@@ -287,7 +314,7 @@ async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(g
     
 
     
-@api.get("/bid/accept/{id}")
+@api.get("/customer/bid/accept/{id}",  tags=["Customer"])
 async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(get_db)], token: str = Form(None)):
     try:
         user = await decode_token(token, db)
@@ -307,3 +334,133 @@ async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(g
         return JSONResponse(content={"error": "Trips all ready accepted"}, status_code=403)
     except TokenDecodeError as e:
         return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
+    
+
+# Driver
+
+
+
+@api.get("/driver/trips/get",  tags=["Driver"])
+async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)], token: str = Form(None)):
+    try:
+        user = await decode_token(token, db)
+        trips = db.query(models.Trips).order_by(models.Trips.id.desc()).filter(models.Trips.fare.is_(None)).all()
+        return {"trips": trips}
+    except TokenDecodeError as e:
+        return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
+    
+
+@api.get("/driver/accepted/trips/list",  tags=["Driver"])
+async def trips_get(request: Request,db:Annotated[Session, Depends(get_db)], token: str = Form(None)):
+    try:
+        user = await decode_token(token, db)
+        trips = db.query(models.Trips).order_by(models.Trips.id.desc()).filter(models.Trips.driver_id==user.id).all()
+        return {"trips": trips}
+    except TokenDecodeError as e:
+        return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
+    
+
+
+@api.get("/driver/bid/show/{id}", tags=["Driver"])
+async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(get_db)],base_url: str = base_url, token: str = Form(None)):
+    try:
+        user = await decode_token(token, db)
+        if user.subscription_status == 0:
+            return JSONResponse(content={"status":user.subscription_status,"error": "You are not subscribed"}, status_code=403)
+
+        trips = db.query(models.Trips).filter(models.Trips.id == id).first()
+        subscription_check = await subscription_validity(user,db)
+
+        if subscription_check == 1:
+            return JSONResponse(content={"status":subscription_check,"error": "Your subscribed validity expired"}, status_code=403)
+        return {"trips": trips}
+    except TokenDecodeError as e:
+        return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
+
+
+
+@api.get("/bid/get/{id}", tags=["Driver"])
+async def trips_get(id: int,request: Request,db:Annotated[Session, Depends(get_db)],token: str = Form(None)):
+    try:
+        user = await decode_token(token, db)
+       
+        bids = db.query(models.Bids)\
+            .join(models.Drivers, models.Bids.driver_id == models.Drivers.id)\
+            .join(models.Trips, models.Bids.trip_id == models.Trips.id)\
+            .filter(models.Bids.trip_id == id)\
+            .all()
+        bid_data = [(bid.id, bid.amount, bid.driver.name) for bid in bids]
+        trip_data = [(bid.id, bid.amount, bid.trip.fare) for bid in bids]
+        return {'bids': bids, 'user': user}
+    except TokenDecodeError as e:
+        return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
+
+
+
+
+@api.post("/driver/bid-submit/{id}", tags=["Driver"])
+async def bid_store(
+    id: int,
+    request: Request,
+    db: Annotated[Session, Depends(get_db)],
+    amount: int = Form(None),
+    token: str = Form(None)
+    ):
+    if  amount is None:
+        return JSONResponse(content={"error": "Amount is required"}, status_code=403)
+    try:
+        user = await decode_token(token, db)
+        if user.subscription_status == 0:
+            return JSONResponse(content={"status":user.subscription_status,"error": "You are not subscribed"}, status_code=403)
+        subscription_check = await subscription_validity(user,db)
+        if subscription_check == 1:
+            return JSONResponse(content={"status":subscription_check,"error": "Your subscribed validity expired"}, status_code=403)
+        BidsAdd = models.Bids(
+                trip_id=id,
+                driver_id=user.id,
+                amount=amount,
+            )   
+        db.add(BidsAdd)
+        db.commit()
+        db.refresh(BidsAdd)
+        print(f"Bid: {BidsAdd.amount}")
+        await sio.emit("BidList" + str(id), 'New Bid Store BidList' + str(id))
+        return JSONResponse(content={"success": "Bid submit successfully"}, status_code=200)
+    except TokenDecodeError as e:
+        return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
+
+
+
+
+@api.get("/driver/package", tags=["Driver"])
+async def driver_package(request: Request, db: db_dependency,base_url: str = base_url,token: str = Form(None)):
+    try:
+        user = await decode_token(token, db)
+        package = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.status == 1).all()
+        return {'package': package, 'user': user}
+    except TokenDecodeError as e:
+        return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
+    
+
+
+    
+@api.get("/driver/package/purchase/{id}", tags=["Driver"])
+async def update_driver_endpoint(
+    request: Request,
+    db:db_dependency,
+    id: int,
+    token: str = Form(None)):
+    try:
+        user = await decode_token(token, db)
+        package = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.id == id).first()
+        driver = db.query(models.Drivers).filter(models.Drivers.id == user.id).first()
+        print(f"date: {id}")
+        driver.subscription_id = package.id
+        driver.subscription_status = 1
+        driver.subscription_at = datetime.now()
+        db.commit()
+        return JSONResponse(content={"success": "Driver subscription successfully"}, status_code=200)
+    except TokenDecodeError as e:
+        return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
+    
+
