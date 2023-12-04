@@ -1,8 +1,8 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, TIMESTAMP, func,Text
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, TIMESTAMP, func,Text, DateTime
 from database import Base
 from pydantic import BaseModel, Field, EmailStr
 from sqlalchemy.orm import relationship
-
+from sqlalchemy import DateTime
 
 class Admins(Base):
     __tablename__ = "admins"
@@ -29,8 +29,11 @@ class Customers(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_type = Column(Integer,default=1)
     name = Column(String(50))
+    mobile = Column(String(50))
     email = Column(String(100))
-    password = Column(String(500))
+    gender = Column(String(100))
+    date_of_birth = Column(DateTime, nullable=True)
+    password = Column(String(500), default=None)
     access_token = Column(String(300), default=None)
     refresh_token = Column(String(300), default=None)
     image = Column(String(100))
@@ -58,15 +61,102 @@ class Drivers(Base):
     user_type = Column(Integer,default=2)
     name = Column(String(50))
     email = Column(String(100))
-    password = Column(String(500))
+    mobile = Column(String(50))
+    password = Column(String(500), default=None)
+    gender = Column(String(100))
+    date_of_birth = Column(DateTime, nullable=True)
     access_token = Column(String(300), default=None)
     refresh_token = Column(String(300), default=None)
     image = Column(String(100))
+    nid_no = Column(String(100))
+    nid_image = Column(String(100))
     status = Column(Integer, default=1)
     subscription_status = Column(Integer, default=0)
     subscription_id = Column(Integer, default=None)
     subscription_at = Column(TIMESTAMP, default=None)
     created_at = Column(TIMESTAMP, default=func.now())
+    
+    
+class DrivingLicense(Base):
+    __tablename__ = "driving_licenses"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    driver_id = Column(Integer, ForeignKey('drivers.id'))
+    license_no = Column(String, unique=True)
+    exp_date = Column(DateTime)
+    experience = Column(DateTime)
+    image_front = Column(String)
+    image_front_status = Column(Integer, default=0, comment='verified=1, Not verified=0, Rejected=2')
+    image_back = Column(String)
+    image_back_status = Column(Integer, default=0, comment='verified=1, Not verified=0, Rejected=2')
+    verification_status = Column(Integer, default=0, comment='verified=1, Not verified=0, Rejected=2')
+    created_by = Column(String)
+    updated_by = Column(String, nullable=True)
+    verified_by = Column(String, nullable=True)
+    created_at = Column(TIMESTAMP, default=func.now())
+    updated_at = Column(TIMESTAMP, onupdate=func.now())
+
+    driver = relationship('Drivers', backref='driving_licenses')
+
+
+class Car(Base):
+    __tablename__ = "cars"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    driver_id = Column(Integer, ForeignKey('drivers.id'))
+    car_type = Column(String)
+    car_number = Column(String, unique=True)
+    ac_status = Column(Integer, comment='1 = AC, 2 = Non-AC')
+    transmission_type = Column(Integer, comment='1 = Auto, 2 = Manual')
+    car_image = Column(String)
+    status = Column(Integer, default=2, comment='0 = Inactive, 1 = Active, 2 = Require approval')
+    created_at = Column(TIMESTAMP, default=func.now())
+    updated_at = Column(TIMESTAMP, onupdate=func.now())
+
+    driver = relationship('Drivers', backref='cars')
+    
+
+class CarInformation(Base):
+    __tablename__ = "car_information"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    driver_id = Column(Integer, ForeignKey('drivers.id'))
+    car_number = Column(String, unique=True)
+    car_model = Column(String)
+    model_year = Column(Integer)
+    registration_p_front = Column(String)
+    registration_p_back = Column(String)
+    car_color = Column(String)
+    ac_status = Column(Integer, comment='full-ac=1, semi-ac=2, non-ac=0')
+    transmission_type = Column(Integer, comment='auto=1, manual=2')
+    fuel_type = Column(Integer, comment='auto=1, manual=2')
+    created_by = Column(String)
+    updated_by = Column(String, nullable=True)
+    verified_by = Column(String, nullable=True)
+    created_at = Column(TIMESTAMP, default=func.now())
+    updated_at = Column(TIMESTAMP, onupdate=func.now())
+
+    driver = relationship('Drivers', backref='car_information')
+    
+
+class CarImages(Base):
+    __tablename__ = "car_images"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    car_info_id = Column(Integer, ForeignKey('car_information.id'))
+    front_image = Column(String)
+    back_image = Column(String)
+    right_side_image = Column(String)
+    left_side_image = Column(String)
+    inside_front = Column(String)
+    inside_back = Column(String)
+    created_by = Column(String)
+    updated_by = Column(String, nullable=True)
+    verified_by = Column(String, nullable=True)
+    created_at = Column(TIMESTAMP, default=func.now())
+    updated_at = Column(TIMESTAMP, onupdate=func.now())
+
+    car_info = relationship('CarInformation', backref='car_images')
     
 
 class Trips(Base):
