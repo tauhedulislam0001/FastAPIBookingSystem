@@ -10,13 +10,13 @@ import models
 from datetime import datetime, timedelta
 from core.helper import subscription_validity
 
-driver = APIRouter()
+driver = APIRouter(include_in_schema=False)
 templates = Jinja2Templates(directory="templates")
 
 # Start Socket 
 from core.socket_manager import get_socketio_asgi_app
 from core.socket_io import sio
-app = FastAPI()
+app = FastAPI(include_in_schema=False)
 
 sio_asgi_app = get_socketio_asgi_app(app)
 app.add_route("/socket.io/", route=sio_asgi_app, methods=["GET", "POST"])
@@ -104,7 +104,7 @@ async def bid_store(
         db.refresh(BidsAdd)
         print(f"Bid: {BidsAdd.amount}")
         await sio.emit("BidList" + str(id), 'New Bid Store BidList' + str(id))
-        return RedirectResponse(url=f"/bid/submit/{id}?success=Trips+Add+successfully", status_code=302)
+        return RedirectResponse(url=f"/bid/submit/{id}?success=Bid+Submit+Successfully", status_code=302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
     

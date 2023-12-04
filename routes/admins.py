@@ -14,7 +14,7 @@ import hashlib
 from core.utils import create_access_token, create_refresh_token
 
 
-admin = APIRouter()
+admin = APIRouter(include_in_schema=False)
 templates = Jinja2Templates(directory="templates")
 
 

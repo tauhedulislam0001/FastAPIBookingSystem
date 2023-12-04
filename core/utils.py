@@ -10,7 +10,7 @@ JWT_SECRET_KEY = 'Garibook!23'
 JWT_REFRESH_SECRET_KEY ='Garibook!233'     
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 import models
-from core.helper import get_user_by_email
+from core.helper import get_user_by_email,get_user
 from fastapi.responses import HTMLResponse, RedirectResponse,Response
 
 
@@ -48,9 +48,9 @@ async def decode_token(token,db):
             payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
             email= payload['sub']
             exp=payload['exp']
-            customer =await get_user_by_email(email,db,models.Customers)
-            driver =await get_user_by_email(email,db,models.Drivers)
-            admin =await get_user_by_email(email,db,models.Admins)
+            customer =await get_user(email,db,models.Customers)
+            driver =await get_user(email,db,models.Drivers)
+            admin =await get_user(email,db,models.Admins)
             if customer:
                 return customer
             elif driver:

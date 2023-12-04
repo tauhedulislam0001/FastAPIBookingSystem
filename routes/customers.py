@@ -10,7 +10,7 @@ from database import engine, SessionLocal, Base,get_db,base_url
 from middleware.CheckUser import UserCheck
 from datetime import datetime, timedelta
 
-customer = APIRouter()
+customer = APIRouter(include_in_schema=False)
 
 templates = Jinja2Templates(directory="templates")
 
@@ -139,18 +139,23 @@ async def bid_submit(id: int, request: Request, db: Annotated[Session, Depends(g
     try:
         user = await decode_token(token, db)
         bid = db.query(models.Bids).filter(models.Bids.id == id).first()
-        if bid is not None:
-            TripAccept = db.query(models.Trips).filter(models.Trips.id == bid.trip_id).first()
-            TripAccept.driver_id=bid.driver_id
-            TripAccept.fare=bid.amount
-            db.commit()
-            db.refresh(TripAccept)
-            await sio.emit("TripAccept" + str(bid.trip_id), 'Trip Accepted' + str(bid.trip_id))
-            return RedirectResponse(url=f"/trip/accept?success=Trips+Accept+successfully", status_code=302)
+        if bid.status ==1 :
+            if bid is not None:
+                TripAccept = db.query(models.Trips).filter(models.Trips.id == bid.trip_id).first()
+                TripAccept.driver_id=bid.driver_id
+                TripAccept.fare=bid.amount
+                db.commit()
+                db.refresh(TripAccept)
+                bid.status= 0
+                db.commit()
+                db.refresh(bid)
+                await sio.emit("TripAccept" + str(bid.trip_id), 'Trip Accepted' + str(bid.trip_id))
+                return RedirectResponse(url=f"/trip/accept?success=Trips+Accept+successfully", status_code=302)
+        return RedirectResponse(url=f"/trip/accept?error=Trips all ready accepte", status_code=302)            
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
     
-    
+# Admin Panel Route   
 # all customer
 @customer.get("/customers")
 async def read_root(request: Request, db: db_dependency,base_url: str = base_url):
