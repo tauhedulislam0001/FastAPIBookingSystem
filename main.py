@@ -20,13 +20,12 @@ import routes.bids
 from jose import JWTError, jwt
 from core.utils import ALGORITHM, JWT_SECRET_KEY, decode_token, TokenDecodeError
 from core.helper import get_user_by_email
-from core.otp import sms
+from core.otp import sms,OtpStoreDB
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 import secrets 
 Base = declarative_base()
 from typing import Annotated
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
-from random import randint
 
 app = FastAPI(
     title="Garibook API",
@@ -157,14 +156,7 @@ def read_root(request: Request):
     return {"domain": domain, "path": path}
 
 
-@app.get("/send_sms")
-async def read_root(request: Request):
-    code= randint(1111, 9999)
-    send_no = '01729531881'
-    message = f"Dear Mehedi, Your One Time Password (OTP): {code}"
 
-    # Call the send_sms function
-    sms_response = await sms(send_no, message)
 
 if __name__ == "__main__":
     import uvicorn

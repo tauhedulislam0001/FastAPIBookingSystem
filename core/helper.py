@@ -51,6 +51,15 @@ async def insert_image(image: UploadFile, dir: str) -> str:
 async def get_user_by_email(email: str, db, models):
     user = db.query(models).filter(models.email == email).first()
     return user
+async def get_user(info: str, db, models):
+    email = db.query(models).filter(models.email == info).first()
+    phone_no = db.query(models).filter(models.phone_no == info).first()
+    print(info)
+    print(f"email : {email}")
+    if email is not None:
+        return email
+    elif phone_no is not None:
+        return phone_no
 async def get_user_by_id(id: int, db,models):
     user = db.query(models).filter(models.id == id).first()
     return user
