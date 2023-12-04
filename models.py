@@ -100,4 +100,18 @@ class Bids(Base):
     created_at = Column(TIMESTAMP, default=func.now())
     driver = relationship('Drivers', backref='bids')
     trip = relationship('Trips', backref='bids')
+    
+
+class OTPs(Base):
+    __tablename__ = "otps"
+
+    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    otp = Column(Integer, nullable=False)
+    sender_id = Column(String, nullable=False)
+    mode = Column(String, nullable=False)
+    resend_it = Column(Integer)
+    status = Column(Integer, default=1)
+    created_at = Column(TIMESTAMP, server_default=func.now(), nullable=False)
+    updated_at = Column(TIMESTAMP, server_default=func.now(), nullable=False)
+    today = Column(Integer, default=0)
 
