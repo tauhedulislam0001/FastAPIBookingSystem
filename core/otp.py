@@ -84,10 +84,13 @@ async def verify_otp(db,otp1,otp2,otp3,otp4,phone_no,email):
             
             if user is not None:
                 db_user=user
+                type='user'
             elif drivers is not None:
                 db_user=drivers
+                type='driver'
             else:
                 return {"message": "Invalid Phone Number."}
+            print(type)
             access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
             refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
             access_token = create_access_token(senderID)

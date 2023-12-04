@@ -11,7 +11,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 import models
 from sqlalchemy.orm import Session
 from typing import Annotated, Optional
-from core.helper import insert_image, get_user_by_email,subscription_validity
+from core.helper import insert_image, get_user_by_email,subscription_validity,validate_phone_number,get_user
 from core.utils import create_access_token, create_refresh_token
 from core.otp import otp_send,verify_otp
 
@@ -147,39 +147,55 @@ async def driver_register(
 
 
 @api.post("/driver-login", status_code=status.HTTP_200_OK,  tags=["Authentication"])
-async def driver_login_user(
-        db: db_dependency,
-        email: str = Form(None),
-        password: str = Form(None)):
-    if  email is None:
-        return JSONResponse(content={"error": "Email is required"}, status_code=500)
-    if  password is None:
-        return JSONResponse(content={"error": "Password is required"}, status_code=500)
-    db_user = db.query(models.Drivers).filter(models.Drivers.email == email).first()
-    if db_user and db_user.password == hashlib.md5(password.encode()).hexdigest():
-        if db_user.status == 1:
-            # If the user is authenticated, generate an access token
-            access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-            refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
-            access_token = create_access_token(db_user.email)
-            refresh_token = create_refresh_token(db_user.email)
+async def driver_login_user(db: db_dependency,phone_no: str = Form(None)):
+    if  phone_no is None:
+        return JSONResponse(content={"error": "Phone Number is required"}, status_code=500)
+    customer =await get_user(phone_no,db,models.Customers)
+    if customer is not None:
+        return {"message": "Your number already exist as a customer"}
+    validate_phone_number_check=validate_phone_number(phone_no)
+    if validate_phone_number_check !=1:
+        return validate_phone_number_check
+    db_user = db.query(models.Drivers).filter(models.Drivers.phone_no == phone_no).first()
+    user='Garibook Driver'
+    if db_user is not None and db_user.status == 1:
+        send_no=db_user.phone_no
+        
+    else:
+        register = models.Drivers(
+            phone_no=phone_no,
+        )
+        db.add(register)
+        db.commit()
+        db.refresh(register)
+        send_no=register.phone_no
 
-            # Update the access token in the database
-            db_user.access_token = access_token
-            db.commit()
-            return {"access_token": access_token, "token_type": "bearer", "token_expires":access_token_expires}
-
-        return JSONResponse(content={"error": "Account is banned"}, status_code=403)
-    return JSONResponse(content={"error": "Invalid email or password"}, status_code=404)
+    if send_no is not None:
+        sms_response=await otp_send(send_no,user,db)
+        if "code" in sms_response and "error" in sms_response:
+            sms_code = sms_response["code"]
+            sms_error = sms_response["error"]
+            if sms_code == "200":
+                return {"message": "SMS sent successfully"}
+            else:
+                return {"message": f"SMS sending failed. Code: {sms_code}, Error: {sms_error}"}
+        else:
+            return {"message": "Invalid response from SMS service"}
+    else:
+        return {"message": "Invalid Phone Number"}
 
 
 
 @api.post("/customer-login", status_code=status.HTTP_200_OK, tags=["Authentication"])
-async def customer_login_user(
-        db: db_dependency,
-        phone_no: str = Form(None)):
+async def customer_login_user(db: db_dependency,phone_no: str = Form(None)):
     if  phone_no is None:
-        return JSONResponse(content={"error": "Phone no is required"}, status_code=500)
+        return JSONResponse(content={"error": "Phone Number is required"}, status_code=500)
+    driver =await get_user(phone_no,db,models.Drivers)
+    if driver is not None:
+        return {"message": "Your number already exist as a driver"}
+    validate_phone_number_check=validate_phone_number(phone_no)
+    if validate_phone_number_check !=1:
+        return validate_phone_number_check
     db_user = db.query(models.Customers).filter(models.Customers.phone_no == phone_no).first()
     user='Garibook User'
     if db_user is not None and db_user.status == 1:
@@ -206,7 +222,7 @@ async def customer_login_user(
         else:
             return {"message": "Invalid response from SMS service"}
     else:
-        return JSONResponse(content={"error": "Phone no is not valid"}, status_code=403)
+        return {"message": "Invalid Phone Number"}
 
 # @api.post("/logout")
 # async def logout(request: Request):
