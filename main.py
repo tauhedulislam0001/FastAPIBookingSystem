@@ -22,6 +22,7 @@ from jose import JWTError, jwt
 from core.utils import ALGORITHM, JWT_SECRET_KEY, decode_token, TokenDecodeError
 from core.helper import get_user_by_email
 from core.otp import sms,OtpStoreDB
+from core.bkash import process_token_request,credentials
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 import secrets 
 Base = declarative_base()
@@ -157,7 +158,65 @@ def read_root(request: Request):
 
     return {"domain": domain, "path": path}
 
+@app.get("/process_token_request")
+async def bkash():
+    # print(credentials)
+    result = await process_token_request(credentials,amount='700',reference='sub')
+    # return result
+    
+    html_content = f"""
+        <html>
+        <head>
+            <title>Bkash Payment</title>
+        </head>
+        <body>
+            <script>
+                window.location.href = "{result}";
+            </script>
+        </body>
+        </html>
+        """
 
+    return HTMLResponse(content=html_content, status_code=200)
+
+
+@app.get("/payment/callback/{slug}", response_class=RedirectResponse, status_code=302)
+def payment_response_endpoint(request: Request, slug: str):
+    # Extract paymentID and status from query parameters
+    payment_id = request.query_params.get("paymentID")
+    status = request.query_params.get("status")
+
+    # Print the extracted values
+    print(f"Payment ID: {payment_id}")
+    print(f"Status: {status}")
+
+    # Your further processing logic here
+
+    return RedirectResponse(url=f"/payment/success/{status}")
+
+@app.get("/payment/success/{status}")
+def payment_status(status: str):
+    if status == "failed":
+        print(f"Payment failed for user transaction reference")
+
+        return {"message": f"Payment failed for user transaction reference"}
+
+    elif status == "failure":
+        print(f"Payment failed for user transaction reference")
+
+        return {"message": f"Payment failed for user transaction reference"}
+    elif status == "success":
+        print(f"Payment successful for user transaction reference")
+
+        return {"message": f"Payment successful for user transaction reference"}
+
+    elif status == "cancel":
+        print(f"Payment cancel for user transaction reference")
+
+        return {"message": f"Payment cancel for user transaction reference"}
+
+    else:
+        raise HTTPException(status_code=400, detail="Invalid payment status")
 
 
 if __name__ == "__main__":
