@@ -192,9 +192,9 @@ def payment_response_endpoint(request: Request, slug: str):
 
     # Your further processing logic here
 
-    return RedirectResponse(url=f"/payment/success/{status}")
+    return RedirectResponse(url=f"/payment/{slug}/{status}")
 
-@app.get("/payment/success/{status}")
+@app.get("/payment/{slug}/{status}")
 def payment_status(status: str):
     if status == "failed":
         print(f"Payment failed for user transaction reference")
