@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 import pytz
 from passlib.context import CryptContext
 from core.utils import decode_token,TokenDecodeError
+from core.bkash import process_token_request,credentials
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 import models
@@ -490,12 +491,18 @@ async def update_driver_endpoint(
     try:
         user = await decode_token(token, db)
         package = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.id == id).first()
-        driver = db.query(models.Drivers).filter(models.Drivers.id == user.id).first()
-        print(f"date: {id}")
-        driver.subscription_id = package.id
-        driver.subscription_status = 1
-        driver.subscription_at = datetime.now()
-        db.commit()
+        payment_method=request.query_params.get("method")
+        if package.status==1:
+            if payment_method is not None:
+                if payment_method =='bkash':
+                    print(package.status)
+                    print(package.amount)
+                    result = await process_token_request(credentials,amount=f"{package.amount}",reference='package_subscription',pay_id=id)
+                    return result
+            else:
+                return JSONResponse(content={"error": "Payment error"}, status_code=404)
+        else:
+            return JSONResponse(content={"error": "Pacakge not available"}, status_code=404)
         return JSONResponse(content={"success": "Driver subscription successfully"}, status_code=200)
     except TokenDecodeError as e:
         return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
