@@ -53,8 +53,8 @@ async def OtpStoreDB( db, otp, sender_id, mode,):
 async def otp_send(send_no,user,db):
     code= randint(1111, 9999)
     message = f"Dear {user}, Your One Time Password (OTP): {code}"
-    sms_response = await sms(send_no, message)
     await OtpStoreDB(db, code, sender_id=send_no, mode="sms")
+    sms_response = await sms(send_no, message)
     return sms_response
 
 async def verify_otp(db,otp1,otp2,otp3,otp4,phone_no,email):
