@@ -259,13 +259,13 @@ async def update_driver_endpoint(
         else:
             return RedirectResponse(f"/driver?error=Pacakge+not +available!", status_code=302)
 
-        driver = db.query(models.Drivers).filter(models.Drivers.id == user.id).first()
-        print(f"date: {id}")
-        driver.subscription_id = package.id
-        driver.subscription_status = 1
-        driver.subscription_at = datetime.now()
-        db.commit()
-        return RedirectResponse(f"/driver?success=Driver+subscription +successfully!", status_code=302)
+        # driver = db.query(models.Drivers).filter(models.Drivers.id == user.id).first()
+        # print(f"date: {id}")
+        # driver.subscription_id = package.id
+        # driver.subscription_status = 1
+        # driver.subscription_at = datetime.now()
+        # db.commit()
+        # return RedirectResponse(f"/driver?success=Driver+subscription +successfully!", status_code=302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
     
