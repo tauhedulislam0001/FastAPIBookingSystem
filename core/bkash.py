@@ -48,7 +48,7 @@ def get_base_url(sandbox: bool) -> str:
 
 async def process_token_request(token_request: BkashCredentials,amount,reference,pay_id):
     url = get_base_url(token_request.sandbox)
-    print(f"id : {id}")
+    print(f"id : {pay_id}")
     payload = {
         "app_key": token_request.sandbox_app_key if token_request.sandbox else token_request.app_key,
         "app_secret": token_request.sandbox_app_secret if token_request.sandbox else token_request.app_secret,
