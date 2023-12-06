@@ -494,7 +494,7 @@ async def update_driver_endpoint(
         package = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.id == b_id).first()
         print(f"package : {package}")
         payment_method=request.query_params.get("method")
-        if package is not None==1:
+        if package is not None:
             if package.status==1:
                 if payment_method is not None:
                     if payment_method =='bkash':
