@@ -46,8 +46,9 @@ def get_base_url(sandbox: bool) -> str:
     else:
         return "https://tokenized.pay.bka.sh/"
 
-async def process_token_request(token_request: BkashCredentials,amount,reference):
+async def process_token_request(token_request: BkashCredentials,amount,reference,pay_id):
     url = get_base_url(token_request.sandbox)
+    print(f"id : {id}")
     payload = {
         "app_key": token_request.sandbox_app_key if token_request.sandbox else token_request.app_key,
         "app_secret": token_request.sandbox_app_secret if token_request.sandbox else token_request.app_secret,
@@ -74,7 +75,7 @@ async def process_token_request(token_request: BkashCredentials,amount,reference
             merchantInvoiceNumber= '01810198960invoice',
             # agreementID= '01810198960ag',
             mode= '0011',
-            callbackURL=f'{base_url}/payment/callback/bkash',
+            callbackURL=f'{base_url}/payment/callback/bkash?reference={reference}&pay_id={pay_id}',
             intent= 'sale',
         )
         bkash_checkout = await create_bkash_checkout(id_token,token_request,checkout_request)
