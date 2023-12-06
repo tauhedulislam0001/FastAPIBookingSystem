@@ -577,3 +577,62 @@ async def profile_update(
         return JSONResponse(content={"success": "Profile updated successfully"}, status_code=200)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",401)
+    
+    
+    
+@api.post("/driver/driving/license")
+async def profile_update(
+    request: Request,
+    db:db_dependency,
+    token:str = Form(...),
+    license_no :str = Form(...),
+    exp_date :str = Form(...),
+    experience :str = Form(...),
+    image_front:UploadFile = File(None),
+    image_back:UploadFile = File(None),
+    ):
+    
+    if  license_no is None :
+        return JSONResponse(content={"error": "license no is require"}, status_code=500)
+    if  exp_date is None:
+        return JSONResponse(content={"error": "Expire date is required"}, status_code=500)
+    if  experience is None:
+        return JSONResponse(content={"error": "Experience no is require"}, status_code=500)
+    if  image_front is None:
+        return JSONResponse(content={"error": "Image front image is required"}, status_code=500)
+    if  image_back is None:
+        return JSONResponse(content={"error": "Image back is required"}, status_code=500)
+    
+    try:
+        user = await decode_token(token, db)
+        
+        fimagedir = "templates/assets/upload/driving_license/"
+        fimagefilename = await insert_image(image_front, fimagedir)
+        
+        bimagedir = "templates/assets/upload/driving_license/"
+        bimagefilename = await insert_image(image_back, bimagedir)
+        
+        if fimagefilename is None:
+            return JSONResponse(content={"error": "Invalid file type. Only jpg, png, jpeg, and webp are allowed"}, status_code=500)
+        print(f"file:{fimagefilename}")
+        
+        if bimagefilename is None:
+            return JSONResponse(content={"error": "Invalid file type. Only jpg, png, jpeg, and webp are allowed"}, status_code=500)
+        print(f"file:{bimagefilename}")
+        
+        driving_license = models.DrivingLicense(
+            driver_id = user.id,
+            license_no = license_no,
+            exp_date = exp_date,
+            experience = experience,
+            image_front = fimagefilename,
+            image_back = bimagefilename,
+            created_by = user.id
+        )
+        print(driving_license)
+        db.add(driving_license)
+        db.commit()
+        db.refresh(driving_license)
+        return JSONResponse(content={"success": "driving license updated successfully"}, status_code=200)
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",401)
