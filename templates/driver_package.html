@@ -34,7 +34,18 @@
                                             <li class="list-group-item"><b>Description : </b> {{ item.package_description }} Days</li>
                                             <li class="list-group-item"><b>Amount : </b> <span class="text-primary fs-3"><b> {{ item.amount }}</b> <sub>TK</sub></span></li>
                                         </ul>
-                                        <a style="text-decoration: none;" href="/package/purchase/{{item.id}}"><button type="submit" class="btn-theme-primary d-block mt-2 w-100">Purchase </button></a>
+                                        <!-- <a 
+                                            style="text-decoration: none;" 
+                                            href="/package/purchase/{{item.id}}"
+                                        > -->
+                                        <button 
+                                            type="submit" 
+                                            class="btn-theme-primary d-block mt-2 w-100"
+                                            data-bs-toggle="modal" data-bs-target="#paymentType"
+                                        >
+                                            Purchase 
+                                        </button>
+                                        <!-- </a> -->
                                     </div>
                                 </div>
                             </div>
@@ -44,6 +55,37 @@
             </div>
         </section>
     
+    </div>
+
+
+
+
+    <!-- Payment Type Model -->
+    <div class="modal fade theme-tab-model payment-type-model" id="paymentType" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"    aria-labelledby="paymentTypeLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close header-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="ptm-header-wrap">
+                        <img src="{{ url_for('assets', path='image/garibook-logo.png') }}" alt="" height="100px" width="100px">
+                        <h5 class="m-0">Garibook.com</h4>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="ptm-content-wrap">
+                        <div class="d-flex flex-wrap justify-content-center align-items-center gap-3">
+                            <a href=""> 
+                                <img src="{{ url_for('assets', path='image/payment_icon/bkash.png') }}" alt="" height="100" width="auto">
+                            </a>
+                            <a href="">
+                                <img src="{{ url_for('assets', path='image/payment_icon/nagad.png') }}" alt="" height="100" width="auto">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
     </div>
 
 {% include 'layouts/footer.html' %}
