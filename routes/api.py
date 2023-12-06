@@ -503,7 +503,7 @@ async def update_driver_endpoint(
                 return JSONResponse(content={"error": "Payment error"}, status_code=404)
         else:
             return JSONResponse(content={"error": "Pacakge not available"}, status_code=404)
-        return JSONResponse(content={"success": "Driver subscription successfully"}, status_code=200)
+        # return JSONResponse(content={"success": "Driver subscription successfully"}, status_code=200)
     except TokenDecodeError as e:
         return JSONResponse(content={"error": "You are not authorized"}, status_code=403)
     
