@@ -194,8 +194,18 @@ async def driver_package(request: Request, db: db_dependency,base_url: str = bas
     success = request.query_params.get("success")
     try:
         user = await decode_token(token, db)
+       
         package = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.status == 1).all()
-        return templates.TemplateResponse("driver_package.html", {"request": request,"user": user, "package": package,"error": error, "success": success})
+        isCheck_DriverSubscriptions = db.query(models.Drivers).filter(models.Drivers.subscription_status == 1).all()
+
+        # isCheck_validity = await subscription_validity(user, db)
+        # print(' status :  ', await subscription_validity(user, db))
+        
+        if isCheck_DriverSubscriptions == 1:
+            isCheck_validity = await subscription_validity(user, db)
+            return RedirectResponse("/?massage=You+already+inrollment+a+subscription+package", 200)
+        else:
+            return templates.TemplateResponse("driver_package.html", {"request": request,"user": user, "package": package,"error": error, "success": success})
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
     
