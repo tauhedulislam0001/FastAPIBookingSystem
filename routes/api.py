@@ -636,3 +636,53 @@ async def profile_update(
         return JSONResponse(content={"success": "driving license updated successfully"}, status_code=200)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",401)
+    
+    
+@api.post("/driver/car/add")
+async def profile_update(
+    request: Request,
+    db:db_dependency,
+    token:str = Form(...),
+    car_type:str = Form(...),
+    car_number:str = Form(...),
+    ac_status: int = Form(...),
+    transmission_type: int = Form(...),
+    car_image:UploadFile = File(None),
+    ):
+    
+    if  car_type is None :
+        return JSONResponse(content={"error": "Car type is require"}, status_code=500)
+    if  car_number is None:
+        return JSONResponse(content={"error": "Car number is required"}, status_code=500)
+    if  ac_status is None:
+        return JSONResponse(content={"error": "Ac status is require"}, status_code=500)
+    if  transmission_type is None:
+        return JSONResponse(content={"error": "Transmission type is required"}, status_code=500)
+    if  car_image is None:
+        return JSONResponse(content={"error": "Car image is required"}, status_code=500)
+    
+    try:
+        user = await decode_token(token, db)
+        
+        carimagedir = "templates/assets/upload/car_image/"
+        carimagefilename = await insert_image(car_image, carimagedir)
+        
+        if carimagefilename is None:
+            return JSONResponse(content={"error": "Invalid file type. Only jpg, png, jpeg, and webp are allowed"}, status_code=500)
+        print(f"file:{carimagefilename}")
+        
+        car = models.Car(
+            driver_id = user.id,
+            car_type = car_type,
+            car_number = car_number,
+            ac_status = ac_status,
+            transmission_type = transmission_type,
+            car_image = carimagefilename,
+        )
+        print(car)
+        db.add(car)
+        db.commit()
+        db.refresh(car)
+        return JSONResponse(content={"success": "car has been updated successfully"}, status_code=200)
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",401)
