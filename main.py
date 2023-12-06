@@ -16,17 +16,18 @@ import routes.admins
 import routes.driver_subscription
 import routes.trips
 import routes.api
+import routes.nogod
 import routes.bids
 from jose import JWTError, jwt
 from core.utils import ALGORITHM, JWT_SECRET_KEY, decode_token, TokenDecodeError
 from core.helper import get_user_by_email
-from core.otp import sms
+from core.otp import sms,OtpStoreDB
+from core.bkash import process_token_request,credentials
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 import secrets 
 Base = declarative_base()
 from typing import Annotated
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
-from random import randint
 
 app = FastAPI(
     title="Garibook API",
@@ -69,6 +70,7 @@ app.include_router(routes.admins.admin)
 app.include_router(routes.driver_subscription.driverSubcription)
 app.include_router(routes.trips.trips)
 app.include_router(routes.api.api)
+app.include_router(routes.nogod.nogod_app)
 app.include_router(routes.bids.bids)
 from middleware.CheckUser import UserCheck
 
@@ -156,15 +158,66 @@ def read_root(request: Request):
 
     return {"domain": domain, "path": path}
 
+@app.get("/process_token_request")
+async def bkash():
+    # print(credentials)
+    result = await process_token_request(credentials,amount='700',reference='sub')
+    # return result
+    
+    html_content = f"""
+        <html>
+        <head>
+            <title>Bkash Payment</title>
+        </head>
+        <body>
+            <script>
+                window.location.href = "{result}";
+            </script>
+        </body>
+        </html>
+        """
 
-@app.get("/send_sms")
-async def read_root(request: Request):
-    code= randint(1111, 9999)
-    send_no = '01729531881'
-    message = f"Dear Mehedi, Your One Time Password (OTP): {code}"
+    return HTMLResponse(content=html_content, status_code=200)
 
-    # Call the send_sms function
-    sms_response = await sms(send_no, message)
+
+@app.get("/payment/callback/{slug}", response_class=RedirectResponse, status_code=302)
+def payment_response_endpoint(request: Request, slug: str):
+    # Extract paymentID and status from query parameters
+    payment_id = request.query_params.get("paymentID")
+    status = request.query_params.get("status")
+
+    # Print the extracted values
+    print(f"Payment ID: {payment_id}")
+    print(f"Status: {status}")
+
+    # Your further processing logic here
+
+    return RedirectResponse(url=f"/payment/{slug}/{status}")
+
+@app.get("/payment/{slug}/{status}")
+def payment_status(status: str):
+    if status == "failed":
+        print(f"Payment failed for user transaction reference")
+
+        return {"message": f"Payment failed for user transaction reference"}
+
+    elif status == "failure":
+        print(f"Payment failed for user transaction reference")
+
+        return {"message": f"Payment failed for user transaction reference"}
+    elif status == "success":
+        print(f"Payment successful for user transaction reference")
+
+        return {"message": f"Payment successful for user transaction reference"}
+
+    elif status == "cancel":
+        print(f"Payment cancel for user transaction reference")
+
+        return {"message": f"Payment cancel for user transaction reference"}
+
+    else:
+        raise HTTPException(status_code=400, detail="Invalid payment status")
+
 
 if __name__ == "__main__":
     import uvicorn

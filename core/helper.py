@@ -2,10 +2,11 @@ from datetime import datetime
 import os
 import uuid
 from fastapi import FastAPI, File, UploadFile
-from fastapi.responses import HTMLResponse, RedirectResponse, Response
+from fastapi.responses import HTMLResponse, RedirectResponse, Response,JSONResponse
 import models
 from PIL import Image
 from io import BytesIO
+import re
 
 def compress_image(image: Image.Image, quality: int = 85) -> BytesIO:
     output_buffer = BytesIO()
@@ -51,6 +52,15 @@ async def insert_image(image: UploadFile, dir: str) -> str:
 async def get_user_by_email(email: str, db, models):
     user = db.query(models).filter(models.email == email).first()
     return user
+async def get_user(info: str, db, models):
+    email = db.query(models).filter(models.email == info).first()
+    phone_no = db.query(models).filter(models.phone_no == info).first()
+    print(info)
+    print(f"email : {email}")
+    if email is not None:
+        return email
+    elif phone_no is not None:
+        return phone_no
 async def get_user_by_id(id: int, db,models):
     user = db.query(models).filter(models.id == id).first()
     return user
@@ -80,3 +90,11 @@ async def subscription_validity(user,db):
                 else :
                     return 0
                 
+def validate_phone_number(phone_number):
+    if phone_number is None:
+        return JSONResponse(content={"error": "Phone Number is required"}, status_code=400)
+    phone_pattern = re.compile(r'^0(13|14|15|16|18|19|17)\d{8}$')
+    if not phone_pattern.match(phone_number):
+        return JSONResponse(content={"error": "Invalid phone number format"}, status_code=400)
+    else:
+        return 1
