@@ -172,10 +172,15 @@ async def driver_login_user(db: db_dependency,phone_no: str = Form(None)):
 
     if send_no is not None:
         sms_response=await otp_send(send_no,user,db)
+        print(sms_response)
         if "code" in sms_response and "error" in sms_response:
             sms_code = sms_response["code"]
             sms_error = sms_response["error"]
-            if sms_code == "200":
+            return {"message": f"SMS sending failed. Code: {sms_code}, Error: {sms_error}"}
+        elif "code" in sms_response and "ref_id" in sms_response:
+            sms_code = sms_response["code"]
+            sms_error = sms_response["ref_id"]
+            if sms_code == "1":
                 return {"message": "SMS sent successfully"}
             else:
                 return {"message": f"SMS sending failed. Code: {sms_code}, Error: {sms_error}"}
@@ -215,7 +220,11 @@ async def customer_login_user(db: db_dependency,phone_no: str = Form(None)):
         if "code" in sms_response and "error" in sms_response:
             sms_code = sms_response["code"]
             sms_error = sms_response["error"]
-            if sms_code == "200":
+            return {"message": f"SMS sending failed. Code: {sms_code}, Error: {sms_error}"}
+        elif "code" in sms_response and "ref_id" in sms_response:
+            sms_code = sms_response["code"]
+            sms_error = sms_response["ref_id"]
+            if sms_code == "1":
                 return {"message": "SMS sent successfully"}
             else:
                 return {"message": f"SMS sending failed. Code: {sms_code}, Error: {sms_error}"}

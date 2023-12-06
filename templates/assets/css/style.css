@@ -272,6 +272,14 @@ section.section-padding{
     color: #fff !important;
     font-size: 12px;
 }
+.theme-tab-model button.header-btn-close {
+    position: absolute;
+    right: 14px;
+    top: 14px;
+    color: #fff !important;
+    font-size: 12px;
+    z-index: 11;
+}
 .theme-tab-model .modal-header button.nav-link{
     font-size: 20px;
     color: #000;
@@ -537,4 +545,26 @@ img.scr-image {
 }
 .single-package-request > h2 {
     font-size: 20px;
+}
+.payment-status-wrap> i {
+    font-size: 100px !important;
+    margin-bottom: 30px;
+}
+
+.ptm-header-wrap {
+    position: relative;
+    margin-top: -58px;
+    text-align: center;
+    width: 100%;
+}
+
+.ptm-header-wrap>img {
+    border-radius: 50%;
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+}
+.ptm-content-wrap a>img {
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    border-radius: 4px;
 }

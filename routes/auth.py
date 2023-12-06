@@ -38,15 +38,15 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 
 # admin register
-@router.post("/admin/register/submit")
+@router.get("/admin/register/submit")
 async def register(
         db: db_dependency,
-        username: str = Form(...),
-        full_name: str = Form(...),
-        email: str = Form(...),
-        password: str = Form(...),
-        confirm_password: str = Form(...),
-        image: UploadFile = File(...),
+        username: str = 'admin',
+        full_name: str = 'NRB Admin',
+        email: str = 'admin@gmail.com',
+        password: str = 'Garibook#NRB',
+        confirm_password: str = 'Garibook#NRB',
+        # image: UploadFile = File(...),
 ):
     if password != confirm_password:
         return RedirectResponse("/?success=Passwords+do+not+match", 302)
@@ -56,14 +56,14 @@ async def register(
     # hashed_password = pwd_context.hash(password)
     hashed_password = hashlib.md5(password.encode()).hexdigest()
     dir = "templates/admin/assets/profile/"
-    filename = await insert_image(image, dir)
-    print(f"file:{filename}")
+    # filename = await insert_image(image, dir)
+    # print(f"file:{filename}")
     register = models.Admins(
         username=username,
         full_name=full_name,
         email=email,
         password=hashed_password,
-        image=filename,
+        image='defaul.png',
     )
     db.add(register)
     db.commit()
