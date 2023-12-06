@@ -40,8 +40,9 @@
                                         > -->
                                         <button 
                                             type="submit" 
-                                            class="btn-theme-primary d-block mt-2 w-100"
+                                            class="btn-theme-primary d-block mt-2 w-100 purchase-btn"
                                             data-bs-toggle="modal" data-bs-target="#paymentType"
+                                            data-package-id="{{ item.id }}"
                                         >
                                             Purchase 
                                         </button>
@@ -74,10 +75,11 @@
                 <div class="modal-body">
                     <div class="ptm-content-wrap">
                         <div class="d-flex flex-wrap justify-content-center align-items-center gap-3">
-                            <a href=""> 
+                            <a href="#" data-payment-method="bkash" class="payment-link">
                                 <img src="{{ url_for('assets', path='image/payment_icon/bkash.png') }}" alt="" height="100" width="auto">
                             </a>
-                            <a href="">
+                            
+                            <a href="#" data-payment-method="nagad" class="payment-link">
                                 <img src="{{ url_for('assets', path='image/payment_icon/nagad.png') }}" alt="" height="100" width="auto">
                             </a>
                         </div>
@@ -87,5 +89,24 @@
             </div>
         </div>
     </div>
-
+    
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modal = new bootstrap.Modal(document.getElementById('paymentType'));
+        var purchaseButtons = document.querySelectorAll('.purchase-btn');
+        var paymentLinks = document.querySelectorAll('.payment-link');
+        purchaseButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                var packageId = button.getAttribute('data-package-id');
+                console.log(packageId);
+                paymentLinks.forEach(function (link) {
+                    var paymentMethod = link.getAttribute('data-payment-method');
+                    link.href = "/package/purchase/" + packageId + "?method=" + paymentMethod;
+                });
+                modal.show();
+            });
+        });
+    });
+</script>
+    
 {% include 'layouts/footer.html' %}

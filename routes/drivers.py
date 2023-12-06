@@ -9,6 +9,7 @@ from database import engine, SessionLocal, Base,get_db,base_url, db_dependency
 import models
 from datetime import datetime, timedelta
 from core.helper import subscription_validity
+from core.bkash import process_token_request,credentials
 
 driver = APIRouter(include_in_schema=False)
 templates = Jinja2Templates(directory="templates")
@@ -228,16 +229,43 @@ async def update_driver_endpoint(
     db:db_dependency,
     id: int,):
     token = request.cookies.get("access_token")
+    payment_method=request.query_params.get("method")
+    print(payment_method)
     try:
         user = await decode_token(token, db)
         package = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.id == id).first()
-        driver = db.query(models.Drivers).filter(models.Drivers.id == user.id).first()
-        print(f"date: {id}")
-        driver.subscription_id = package.id
-        driver.subscription_status = 1
-        driver.subscription_at = datetime.now()
-        db.commit()
-        return RedirectResponse(f"/driver?success=Driver+subscription +successfully!", status_code=302)
+      
+        if package.status==1:
+            if payment_method is not None:
+                if payment_method =='bkash':
+                    print(package.status)
+                    print(package.amount)
+                    result = await process_token_request(credentials,amount=f"{package.amount}",reference='package_subscription',pay_id=id)
+                    html_content = f"""
+                        <html>
+                        <head>
+                            <title>Bkash Payment</title>
+                        </head>
+                        <body>
+                            <script>
+                                window.location.href = "{result}";
+                            </script>
+                        </body>
+                        </html>
+                        """
+                    return HTMLResponse(content=html_content, status_code=200)
+            else:
+                return RedirectResponse(f"/driver?error=Payment+error!", status_code=302)
+        else:
+            return RedirectResponse(f"/driver?error=Pacakge+not +available!", status_code=302)
+
+        # driver = db.query(models.Drivers).filter(models.Drivers.id == user.id).first()
+        # print(f"date: {id}")
+        # driver.subscription_id = package.id
+        # driver.subscription_status = 1
+        # driver.subscription_at = datetime.now()
+        # db.commit()
+        # return RedirectResponse(f"/driver?success=Driver+subscription +successfully!", status_code=302)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",302)
     
