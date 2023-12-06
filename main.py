@@ -213,6 +213,8 @@ async def payment_status(request: Request, status: str,db:db_dependency):
         user = await decode_token(token, db)
         if status == "failed":
             return templates.TemplateResponse("payment_alert.html", {"user": user, "request": request, "success": status, "massage": "Payment failed for user transaction reference"})
+        elif status == "failure":
+            return templates.TemplateResponse("payment_alert.html", {"user": user, "request": request, "success": status, "massage": "Payment failed for user transaction reference"})
         elif status == "success":
             return templates.TemplateResponse("payment_alert.html", {"user": user, "request": request, "success": status, "massage": "Payment successful for user transaction reference"})
         elif status == "cancel":
