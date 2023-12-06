@@ -482,16 +482,16 @@ async def driver_package(request: Request, db: db_dependency,base_url: str = bas
 
 
     
-@api.get("/driver/package/purchase/{id}", tags=["Driver"])
+@api.get("/driver/package/purchase/{b_id}", tags=["Driver"])
 async def update_driver_endpoint(
     request: Request,
     db:db_dependency,
-    id: int,
+    b_id: int,
     token: str = Form(None)):
     try:
         user = await decode_token(token, db)
-        print(f"id : {id}")
-        package = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.id == id).first()
+        print(f"id : {b_id}")
+        package = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.id == b_id).first()
         payment_method=request.query_params.get("method")
         if package is not None==1:
             if package.status==1:
@@ -499,7 +499,7 @@ async def update_driver_endpoint(
                     if payment_method =='bkash':
                         print(package.status)
                         print(package.amount)
-                        result = await process_token_request(credentials,amount=f"{package.amount}",reference='package_subscription',pay_id=id)
+                        result = await process_token_request(credentials,amount=f"{package.amount}",reference='package_subscription',pay_id=b_id)
                         return result
                 else:
                     return JSONResponse(content={"error": "Payment error"}, status_code=404)
