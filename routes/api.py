@@ -693,3 +693,64 @@ async def profile_update(
         return JSONResponse(content={"success": "car has been updated successfully"}, status_code=200)
     except TokenDecodeError as e:
         return RedirectResponse("/?error=You+are+not+authorized",401)
+    
+
+@api.post("/driver/car/information")
+async def profile_update(
+    request: Request,
+    db:db_dependency,
+    token:str = Form(...),
+    car_model:str = Form(...),
+    model_year:int = Form(...),
+    registration_p_front:UploadFile = File(None),
+    registration_p_back:UploadFile = File(None),
+    car_color:str = Form(...),
+    fuel_type:int = Form(...),
+    ):
+    
+    if  car_model is None :
+        return JSONResponse(content={"error": "Car model type is require"}, status_code=500)
+    if  model_year is None:
+        return JSONResponse(content={"error": "Model_year is required"}, status_code=500)
+    if  registration_p_front is None:
+        return JSONResponse(content={"error": "Registration front image is require"}, status_code=500)
+    if  registration_p_back is None:
+        return JSONResponse(content={"error": "Registration back image is required"}, status_code=500)
+    if  car_color is None:
+        return JSONResponse(content={"error": "Car color is required"}, status_code=500)
+    if  fuel_type is None:
+        return JSONResponse(content={"error": "Fuel type is required"}, status_code=500)
+    
+    try:
+        user = await decode_token(token, db)
+        
+        registrationfrontimage = "templates/assets/upload/car_registration_image/"
+        frontimage = await insert_image(registration_p_front, registrationfrontimage)
+        
+        if registrationfrontimage is None:
+            return JSONResponse(content={"error": "Invalid file type. Only jpg, png, jpeg, and webp are allowed"}, status_code=500)
+        print(f"file:{registrationfrontimage}")
+        
+        registrationbackimage = "templates/assets/upload/car_registration_image/"
+        backimage = await insert_image(registration_p_back, registrationbackimage)
+        
+        if backimage is None:
+            return JSONResponse(content={"error": "Invalid file type. Only jpg, png, jpeg, and webp are allowed"}, status_code=500)
+        print(f"file:{backimage}")
+        
+        car = models.CarInformation(
+            driver_id = user.id,
+            car_model = car_model,
+            model_year = model_year,
+            car_color = car_color,
+            fuel_type = fuel_type,
+            registration_p_front = frontimage,
+            registration_p_back = backimage,
+        )
+        print(car)
+        db.add(car)
+        db.commit()
+        db.refresh(car)
+        return JSONResponse(content={"success": "car information has been updated successfully"}, status_code=200)
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",401)
