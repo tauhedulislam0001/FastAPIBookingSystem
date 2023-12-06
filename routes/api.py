@@ -172,6 +172,7 @@ async def driver_login_user(db: db_dependency,phone_no: str = Form(None)):
 
     if send_no is not None:
         sms_response=await otp_send(send_no,user,db)
+        print(sms_response)
         if "code" in sms_response and "error" in sms_response:
             sms_code = sms_response["code"]
             sms_error = sms_response["error"]
