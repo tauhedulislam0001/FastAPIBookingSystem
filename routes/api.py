@@ -506,3 +506,65 @@ async def verify_otp_send(
 ):
     otp_verify=await verify_otp(db,otp1,otp2,otp3,otp4,phone_no,email)
     return otp_verify
+
+
+
+@api.post("/driver/profile/update")
+async def profile_update(
+    request: Request,
+    db:db_dependency,
+    token:str = Form(...),
+    email:str = Form(...),
+    nid_no:str = Form(...),
+    nid_image: UploadFile = File(None),
+    gender:str = Form(...),
+    date_of_birth:str = Form(...),
+    name:str = Form(...),
+    image: UploadFile = File(None),
+    ):
+    
+    if  name is None :
+        return JSONResponse(content={"error": "Name is require"}, status_code=500)
+    if  email is None:
+        return JSONResponse(content={"error": "Email is required"}, status_code=500)
+    if  nid_no is None:
+        return JSONResponse(content={"error": "Nid no is require"}, status_code=500)
+    if  nid_image is None:
+        return JSONResponse(content={"error": "NID image is required"}, status_code=500)
+    if  image is None:
+        return JSONResponse(content={"error": "Image is required"}, status_code=500)
+    if gender is None:
+        return JSONResponse(content={"error": "Gender is required"}, status_code=500)
+    if date_of_birth is None:
+        return JSONResponse(content={"error": "Date of birth is required"}, status_code=500)
+    
+    try:
+        user = await decode_token(token, db)
+        driver = db.query(models.Drivers).filter(models.Drivers.id == user.id).first()       
+        driver.email = email
+        driver.nid_no = nid_no
+        driver.gender = gender
+        driver.date_of_birth = date_of_birth
+        driver.name = name
+        
+        niddir = "templates/assets/upload/nid/"
+        nidfilename = await insert_image(nid_image, niddir)
+        
+        if nidfilename is None:
+            return JSONResponse(content={"error": "Invalid file type. Only jpg, png, jpeg, and webp are allowed"}, status_code=500)
+        print(f"file:{nidfilename}")
+        
+        dir = "templates/assets/upload/profile/"
+        filename = await insert_image(image, dir)
+
+        
+        if filename is None:
+            return JSONResponse(content={"error": "Invalid file type. Only jpg, png, jpeg, and webp are allowed"}, status_code=500)
+        print(f"file:{filename}")
+        
+        driver.nid_image = nidfilename
+        driver.image = filename
+        db.commit()
+        return JSONResponse(content={"success": "Profile updated successfully"}, status_code=200)
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",401)
