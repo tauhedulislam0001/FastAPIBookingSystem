@@ -29,6 +29,7 @@ import secrets
 Base = declarative_base()
 from typing import Annotated
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
+from datetime import datetime, timedelta
 
 app = FastAPI(
     title="Garibook API",
@@ -182,31 +183,44 @@ async def bkash():
 
 
 @app.get("/payment/callback/{slug}", response_class=RedirectResponse, status_code=302)
-def payment_response_endpoint(request: Request, slug: str):
+async def payment_response_endpoint(request: Request, slug: str,db:db_dependency):
     # Extract paymentID and status from query parameters
+    token = request.cookies.get("access_token")
     payment_id = request.query_params.get("paymentID")
     status = request.query_params.get("status")
-
-    # Print the extracted values
-    print(f"Payment ID: {payment_id}")
-    print(f"Status: {status}")
-
-    # Your further processing logic here
-    print(f'/payment/{slug}/{status}')
-    return RedirectResponse(url=f"/payment/{slug}/{status}")
-
+    reference = request.query_params.get("reference")
+    id = request.query_params.get("pay_id")
+    try:
+        user = await decode_token(token, db)
+        if status == "success":
+            if  reference == "package_subscription":
+                driver = db.query(models.Drivers).filter(models.Drivers.id == user.id).first()
+                print(f"date: {id}")
+                driver.subscription_id = id
+                driver.subscription_status = 1
+                driver.subscription_at = datetime.now()
+                db.commit()
+        print(f'/payment/{slug}/{status}')
+        return RedirectResponse(url=f"/payment/{slug}/{status}")
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",302)
+    
 @app.get("/payment/{slug}/{status}")
-def payment_status(request: Request, status: str):
+async def payment_status(request: Request, status: str,db:db_dependency):
     print("status 1", status)
-    if status == "failed":
-        return templates.TemplateResponse("payment_alert.html", {"request": request, "success": status, "massage": "Payment failed for user transaction reference"})
-    elif status == "success":
-        return templates.TemplateResponse("payment_alert.html", {"request": request, "success": status, "massage": "Payment successful for user transaction reference"})
-    elif status == "cancel":
-        return templates.TemplateResponse("payment_alert.html", {"request": request, "success": status, "massage": "Payment cancel for user transaction reference"})
-    else:
-        raise HTTPException(status_code=400, detail="Invalid payment status")
-
+    token = request.cookies.get("access_token")
+    try:
+        user = await decode_token(token, db)
+        if status == "failed":
+            return templates.TemplateResponse("payment_alert.html", {"user": user, "request": request, "success": status, "massage": "Payment failed for user transaction reference"})
+        elif status == "success":
+            return templates.TemplateResponse("payment_alert.html", {"user": user, "request": request, "success": status, "massage": "Payment successful for user transaction reference"})
+        elif status == "cancel":
+            return templates.TemplateResponse("payment_alert.html", {"user": user, "request": request, "success": status, "massage": "Payment cancel for user transaction reference"})
+        else:
+            raise HTTPException(status_code=400, detail="Invalid payment status")
+    except TokenDecodeError as e:
+        return RedirectResponse("/?error=You+are+not+authorized",302)
 
 
 if __name__ == "__main__":
