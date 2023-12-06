@@ -491,7 +491,7 @@ async def update_driver_endpoint(
     try:
         user = await decode_token(token, db)
         print(f"id : {b_id}")
-        package = db.query(models.DriverSubscriptions).filter(models.DriverSubscriptions.id == b_id).first()
+        package = db.query(models.DriverSubscriptions).first()
         payment_method=request.query_params.get("method")
         if package is not None==1:
             if package.status==1:
