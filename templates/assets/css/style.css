@@ -538,3 +538,7 @@ img.scr-image {
 .single-package-request > h2 {
     font-size: 20px;
 }
+.payment-status-wrap> i {
+    font-size: 100px !important;
+    margin-bottom: 30px;
+}

@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends, Request,status,Query
 from fastapi.responses import HTMLResponse, RedirectResponse, Response,JSONResponse,UJSONResponse
 from pydantic import BaseModel
+import requests
 import models
 from database import engine, SessionLocal, Base
 from sqlalchemy.orm import Session,joinedload
@@ -191,32 +192,21 @@ def payment_response_endpoint(request: Request, slug: str):
     print(f"Status: {status}")
 
     # Your further processing logic here
-
+    print(f'/payment/{slug}/{status}')
     return RedirectResponse(url=f"/payment/{slug}/{status}")
 
 @app.get("/payment/{slug}/{status}")
-def payment_status(status: str):
+def payment_status(request: Request, status: str):
+    print("status 1", status)
     if status == "failed":
-        print(f"Payment failed for user transaction reference")
-
-        return {"message": f"Payment failed for user transaction reference"}
-
-    elif status == "failure":
-        print(f"Payment failed for user transaction reference")
-
-        return {"message": f"Payment failed for user transaction reference"}
+        return templates.TemplateResponse("payment_alert.html", {"request": request, "success": status, "massage": "Payment failed for user transaction reference"})
     elif status == "success":
-        print(f"Payment successful for user transaction reference")
-
-        return {"message": f"Payment successful for user transaction reference"}
-
+        return templates.TemplateResponse("payment_alert.html", {"request": request, "success": status, "massage": "Payment successful for user transaction reference"})
     elif status == "cancel":
-        print(f"Payment cancel for user transaction reference")
-
-        return {"message": f"Payment cancel for user transaction reference"}
-
+        return templates.TemplateResponse("payment_alert.html", {"request": request, "success": status, "massage": "Payment cancel for user transaction reference"})
     else:
         raise HTTPException(status_code=400, detail="Invalid payment status")
+
 
 
 if __name__ == "__main__":
