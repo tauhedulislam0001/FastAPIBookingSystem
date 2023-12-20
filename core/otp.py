@@ -10,7 +10,7 @@ app = FastAPI()
 
 async def sms(send_no: str, message: str):
     api_key = "24b81ba1-1d8e-4e1b-aeab-5fd32368f88a"
-    api_id = "nrb.solutions"
+    api_id = "nrb.solutions.fast"
     api_password = "I5s7U7IQOzvb"
     api_url = "https://sms.link3.net/api/SendOTPSMS"
 
